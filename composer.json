@@ -1,0 +1,25 @@
+{
+  "name": "smartcat/magento-connector",
+  "description": "Magento Connector for SmartCat.ai",
+  "require": {
+    "php": "~7.0.13|~7.1.0",
+    "ext-json": "*",
+    "ext-zip": "*",
+    "magento/module-catalog": "102.0.*",
+    "smartcat/smartcat-api": "^2.0.0"
+  },
+  "type": "magento2-module",
+  "version": "1.0.0",
+  "license": [
+    "OSL-3.0",
+    "AFL-3.0"
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "SmartCat\\Connector\\": ""
+    }
+  }
+}

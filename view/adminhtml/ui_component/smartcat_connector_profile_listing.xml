@@ -1,0 +1,159 @@
+<?xml version="1.0" ?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+	<argument name="data" xsi:type="array">
+		<item name="js_config" xsi:type="array">
+			<item name="provider" xsi:type="string">smartcat_connector_profile_listing.smartcat_connector_profile_listing_data_source</item>
+		</item>
+	</argument>
+	<settings>
+		<spinner>smartcat_connector_profile_columns</spinner>
+		<deps>
+			<dep>smartcat_connector_profile_listing.smartcat_connector_profile_listing_data_source</dep>
+		</deps>
+		<buttons>
+			<button name="add">
+				<url path="*/*/new"/>
+				<class>primary</class>
+				<label translate="true">Add new Profile</label>
+			</button>
+		</buttons>
+	</settings>
+	<dataSource component="Magento_Ui/js/grid/provider" name="smartcat_connector_profile_listing_data_source">
+		<settings>
+			<updateUrl path="mui/index/render"/>
+		</settings>
+		<aclResource>SmartCat_Connector::Profile</aclResource>
+		<dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="smartcat_connector_profile_listing_data_source">
+			<settings>
+				<requestFieldName>id</requestFieldName>
+				<primaryFieldName>profile_id</primaryFieldName>
+			</settings>
+		</dataProvider>
+	</dataSource>
+	<listingToolbar name="listing_top">
+		<settings>
+			<sticky>true</sticky>
+		</settings>
+		<bookmark name="bookmarks"/>
+		<columnsControls name="columns_controls"/>
+		<filters name="listing_filters"/>
+		<paging name="listing_paging"/>
+	</listingToolbar>
+	<columns name="smartcat_connector_profile_columns">
+		<selectionsColumn name="ids">
+			<settings>
+				<indexField>profile_id</indexField>
+			</settings>
+		</selectionsColumn>
+		<column name="profile_id">
+			<settings>
+				<filter>text</filter>
+				<sorting>asc</sorting>
+				<label translate="true">ID</label>
+			</settings>
+		</column>
+		<column name="vendor" class="SmartCat\Connector\Ui\Component\Listing\Column\VendorColumn">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Vendor</label>
+				<editor>
+					<editorType>text</editorType>
+					<validation>
+						<rule name="required-entry" xsi:type="boolean">true</rule>
+					</validation>
+				</editor>
+			</settings>
+		</column>
+		<column name="source_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Source Language</label>
+				<editor>
+					<editorType>text</editorType>
+					<validation>
+						<rule name="required-entry" xsi:type="boolean">true</rule>
+					</validation>
+				</editor>
+			</settings>
+		</column>
+		<column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Target Language</label>
+				<editor>
+					<editorType>text</editorType>
+					<validation>
+						<rule name="required-entry" xsi:type="boolean">true</rule>
+					</validation>
+				</editor>
+			</settings>
+		</column>
+		<column name="stages" class="SmartCat\Connector\Ui\Component\Listing\Column\WorkFlowColumn">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Stages</label>
+				<editor>
+					<editorType>text</editorType>
+					<validation>
+						<rule name="required-entry" xsi:type="boolean">true</rule>
+					</validation>
+				</editor>
+			</settings>
+		</column>
+		<column name="name">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Name</label>
+				<editor>
+					<editorType>text</editorType>
+					<validation>
+						<rule name="required-entry" xsi:type="boolean">false</rule>
+					</validation>
+				</editor>
+			</settings>
+		</column>
+		<column name="excluded_attributes" class="SmartCat\Connector\Ui\Component\Listing\Column\AttributesColumn">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Excluded Attributes</label>
+				<editor>
+					<editorType>text</editorType>
+					<validation>
+						<rule name="required-entry" xsi:type="boolean">false</rule>
+					</validation>
+				</editor>
+			</settings>
+		</column>
+		<column name="auto_send_new" component="Magento_Ui/js/grid/columns/select">
+			<settings>
+				<filter>select</filter>
+				<label translate="true">Auto Send New</label>
+				<options class="SmartCat\Connector\Model\Config\Source\YesNoOption"/>
+				<dataType>select</dataType>
+			</settings>
+		</column>
+		<column name="auto_send_save" component="Magento_Ui/js/grid/columns/select">
+			<settings>
+				<filter>select</filter>
+				<label translate="true">Auto Send Save</label>
+				<options class="SmartCat\Connector\Model\Config\Source\YesNoOption"/>
+				<dataType>select</dataType>
+			</settings>
+		</column>
+		<column name="batch_send" component="Magento_Ui/js/grid/columns/select">
+			<settings>
+				<filter>select</filter>
+				<label translate="true">Batch Send</label>
+				<options class="SmartCat\Connector\Model\Config\Source\YesNoOption"/>
+				<dataType>select</dataType>
+			</settings>
+		</column>
+		<actionsColumn class="SmartCat\Connector\Ui\Component\Listing\Column\ProfileActions" name="actions">
+			<settings>
+				<indexField>profile_id</indexField>
+				<resizeEnabled>false</resizeEnabled>
+				<resizeDefaultWidth>107</resizeDefaultWidth>
+			</settings>
+		</actionsColumn>
+	</columns>
+</listing>

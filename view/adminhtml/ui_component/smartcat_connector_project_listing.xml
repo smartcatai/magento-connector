@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+	<argument name="data" xsi:type="array">
+		<item name="js_config" xsi:type="array">
+			<item name="provider" xsi:type="string">smartcat_connector_project_listing.smartcat_connector_project_listing_data_source</item>
+		</item>
+	</argument>
+	<settings>
+		<spinner>smartcat_connector_project_columns</spinner>
+		<deps>
+			<dep>smartcat_connector_project_listing.smartcat_connector_project_listing_data_source</dep>
+		</deps>
+	</settings>
+	<dataSource component="Magento_Ui/js/grid/provider" name="smartcat_connector_project_listing_data_source">
+		<settings>
+			<updateUrl path="mui/index/render"/>
+		</settings>
+		<aclResource>SmartCat_Connector::Project</aclResource>
+		<dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="smartcat_connector_project_listing_data_source">
+			<settings>
+				<requestFieldName>id</requestFieldName>
+				<primaryFieldName>project_id</primaryFieldName>
+			</settings>
+		</dataProvider>
+	</dataSource>
+	<listingToolbar name="listing_top">
+		<settings>
+			<sticky>true</sticky>
+		</settings>
+		<bookmark name="bookmarks"/>
+		<columnsControls name="columns_controls"/>
+		<filters name="listing_filters"/>
+		<paging name="listing_paging"/>
+	</listingToolbar>
+	<columns name="smartcat_connector_project_columns">
+		<selectionsColumn name="ids">
+			<settings>
+				<indexField>project_id</indexField>
+			</settings>
+		</selectionsColumn>
+		<column name="project_id">
+			<settings>
+				<filter>integer</filter>
+				<sorting>desc</sorting>
+				<label translate="true">ID</label>
+			</settings>
+		</column>
+		<column name="element">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Element</label>
+			</settings>
+		</column>
+		<column name="profile_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectProfile">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Profile</label>
+			</settings>
+		</column>
+		<column name="translate">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Translate</label>
+			</settings>
+		</column>
+		<column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectStatusColumn">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Status</label>
+			</settings>
+		</column>
+		<column name="deadline">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Deadline</label>
+			</settings>
+		</column>
+		<column name="comment">
+			<settings>
+				<filter>text</filter>
+				<label translate="true">Comment</label>
+			</settings>
+		</column>
+	</columns>
+</listing>

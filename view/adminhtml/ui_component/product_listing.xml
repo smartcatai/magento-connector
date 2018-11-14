@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <listingToolbar name="listing_top">
+        <massaction name="listing_massaction">
+            <action name="localize_products">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">localize_products</item>
+                        <item name="label" xsi:type="string" translate="true">Localize Products</item>
+                    </item>
+                </argument>
+                <argument name="actions" xsi:type="configurableObject">
+                    <argument name="class" xsi:type="string">SmartCat\Connector\Ui\Component\MassAction\Localize</argument>
+                    <argument name="data" xsi:type="array">
+                        <item name="url" xsi:type="string">smartcat_connector/profile/localize</item>
+                        <item name="paramName" xsi:type="string">profile_id</item>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Localize Products</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure to localize selected products?</item>
+                        </item>
+                    </argument>
+                </argument>
+            </action>
+        </massaction>
+    </listingToolbar>
+</listing>

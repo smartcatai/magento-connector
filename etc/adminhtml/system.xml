@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+	<system>
+		<tab id="localization" sortOrder="999" translate="label">
+			<label>Localization</label>
+		</tab>
+		<section id="general" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label">
+			<label>General</label>
+			<tab>localization</tab>
+			<resource>SmartCat_Connector::config</resource>
+			<group id="smartcat_localization" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
+				<label>SmartCat Localization</label>
+				<field id="token" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="text">
+					<label>API Token</label>
+					<comment>Enter API Token from SmartCat.ai</comment>
+				</field>
+				<field id="application_id" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="text">
+					<label>Application ID</label>
+					<comment>Enter Apication ID from SmartCat.ai</comment>
+				</field>
+				<field id="server" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+					<label>Server</label>
+					<source_model>SmartCat\Connector\Model\Config\Source\ServerList</source_model>
+					<comment>Choose SmartCat.ai server</comment>
+				</field>
+			</group>
+		</section>
+	</system>
+</config>

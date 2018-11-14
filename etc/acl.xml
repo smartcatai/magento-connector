@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+	<acl>
+		<resources>
+			<resource id="Magento_Backend::admin">
+				<resource id="SmartCat_Connector::Profile" sortOrder="10" title="Profile">
+					<resource id="SmartCat_Connector::Profile_save" sortOrder="10" title="Save Profile"/>
+					<resource id="SmartCat_Connector::Profile_delete" sortOrder="20" title="Delete Profile"/>
+					<resource id="SmartCat_Connector::Profile_update" sortOrder="30" title="Update Profile"/>
+					<resource id="SmartCat_Connector::Profile_view" sortOrder="40" title="View Profile"/>
+				</resource>
+				<resource id="SmartCat_Connector::Project" sortOrder="10" title="Project">
+					<resource id="SmartCat_Connector::Project_save" sortOrder="10" title="Save Project"/>
+					<resource id="SmartCat_Connector::Project_delete" sortOrder="20" title="Delete Project"/>
+					<resource id="SmartCat_Connector::Project_update" sortOrder="30" title="Update Project"/>
+					<resource id="SmartCat_Connector::Project_view" sortOrder="40" title="View Project"/>
+				</resource>
+				<resource id="Magento_Backend::stores">
+					<resource id="Magento_Backend::stores_settings">
+						<resource id="Magento_Config::config">
+							<resource id="SmartCat_Connector::config_smartcat_connector" title="general"/>
+						</resource>
+					</resource>
+				</resource>
+			</resource>
+		</resources>
+	</acl>
+</config>

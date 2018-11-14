@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+	<route method="POST" url="/V1/smartcat-connector/profile">
+		<service class="SmartCat\Connector\Api\ProfileRepositoryInterface" method="save"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Profile_save"/>
+		</resources>
+	</route>
+	<route method="GET" url="/V1/smartcat-connector/profile/search">
+		<service class="SmartCat\Connector\Api\ProfileRepositoryInterface" method="getList"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Profile_view"/>
+		</resources>
+	</route>
+	<route method="GET" url="/V1/smartcat-connector/profile/:profileId">
+		<service class="SmartCat\Connector\Api\ProfileRepositoryInterface" method="getById"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Profile_view"/>
+		</resources>
+	</route>
+	<route method="PUT" url="/V1/smartcat-connector/profile/:profileId">
+		<service class="SmartCat\Connector\Api\ProfileRepositoryInterface" method="save"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Profile_update"/>
+		</resources>
+	</route>
+	<route method="DELETE" url="/V1/smartcat-connector/profile/:profileId">
+		<service class="SmartCat\Connector\Api\ProfileRepositoryInterface" method="deleteById"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Profile_delete"/>
+		</resources>
+	</route>
+	<route method="POST" url="/V1/smartcat-connector/project">
+		<service class="SmartCat\Connector\Api\ProjectRepositoryInterface" method="save"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Project_save"/>
+		</resources>
+	</route>
+	<route method="GET" url="/V1/smartcat-connector/project/search">
+		<service class="SmartCat\Connector\Api\ProjectRepositoryInterface" method="getList"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Project_view"/>
+		</resources>
+	</route>
+	<route method="GET" url="/V1/smartcat-connector/project/:projectId">
+		<service class="SmartCat\Connector\Api\ProjectRepositoryInterface" method="getById"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Project_view"/>
+		</resources>
+	</route>
+	<route method="PUT" url="/V1/smartcat-connector/project/:projectId">
+		<service class="SmartCat\Connector\Api\ProjectRepositoryInterface" method="save"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Project_update"/>
+		</resources>
+	</route>
+	<route method="DELETE" url="/V1/smartcat-connector/project/:projectId">
+		<service class="SmartCat\Connector\Api\ProjectRepositoryInterface" method="deleteById"/>
+		<resources>
+			<resource ref="SmartCat_Connector::Project_delete"/>
+		</resources>
+	</route>
+</routes>

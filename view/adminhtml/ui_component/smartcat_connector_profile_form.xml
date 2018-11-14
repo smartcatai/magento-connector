@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+	<argument name="data" xsi:type="array">
+		<item name="js_config" xsi:type="array">
+			<item name="provider" xsi:type="string">smartcat_connector_profile_form.profile_form_data_source</item>
+		</item>
+		<item name="label" translate="true" xsi:type="string">General Information</item>
+		<item name="template" xsi:type="string">templates/form/collapsible</item>
+	</argument>
+	<settings>
+		<buttons>
+			<button class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\BackButton" name="back"/>
+			<button class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\DeleteButton" name="delete"/>
+			<button class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\SaveButton" name="save"/>
+			<button class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\SaveAndContinueButton" name="save_and_continue"/>
+		</buttons>
+		<namespace>smartcat_connector_profile_form</namespace>
+		<dataScope>data</dataScope>
+		<deps>
+			<dep>smartcat_connector_profile_form.profile_form_data_source</dep>
+		</deps>
+	</settings>
+	<dataSource name="profile_form_data_source">
+		<argument name="data" xsi:type="array">
+			<item name="js_config" xsi:type="array">
+				<item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+			</item>
+		</argument>
+		<settings>
+			<submitUrl path="*/*/save"/>
+		</settings>
+		<dataProvider class="SmartCat\Connector\Model\Profile\DataProvider" name="profile_form_data_source">
+			<settings>
+				<requestFieldName>profile_id</requestFieldName>
+				<primaryFieldName>profile_id</primaryFieldName>
+			</settings>
+		</dataProvider>
+	</dataSource>
+	<fieldset name="general">
+		<settings>
+			<label/>
+		</settings>
+		<field formElement="select" name="vendor" sortOrder="20">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\VendorList</item>
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>text</dataType>
+				<label translate="true">Vendor</label>
+				<dataScope>vendor</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">false</rule>
+				</validation>
+			</settings>
+		</field>
+		<field formElement="select" name="source_lang" sortOrder="30">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\LanguagesList</item>
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>text</dataType>
+				<label translate="true">Source Language</label>
+				<dataScope>source_lang</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">true</rule>
+				</validation>
+			</settings>
+		</field>
+		<field formElement="multiselect" name="target_lang" sortOrder="40">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\LanguagesList</item>
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>text</dataType>
+				<label translate="true">Target Language</label>
+				<dataScope>target_lang</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">true</rule>
+				</validation>
+			</settings>
+		</field>
+		<field formElement="multiselect" name="stages" sortOrder="50">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\WorkflowStagesList</item>
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>text</dataType>
+				<label translate="true">Stages</label>
+				<dataScope>stages</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">true</rule>
+				</validation>
+			</settings>
+		</field>
+		<field formElement="input" name="name" sortOrder="60">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>text</dataType>
+				<label translate="true">Name</label>
+				<dataScope>name</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">false</rule>
+				</validation>
+			</settings>
+		</field>
+		<field formElement="multiselect" name="excluded_attributes" sortOrder="65">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\AttributesList</item>
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>text</dataType>
+				<label translate="true">Excluded attributes</label>
+				<dataScope>excluded_attributes</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">false</rule>
+				</validation>
+			</settings>
+		</field>
+		<field formElement="checkbox" name="auto_send_new" sortOrder="70">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>boolean</dataType>
+				<label translate="true">Auto send after creating product</label>
+				<dataScope>auto_send_new</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">false</rule>
+				</validation>
+			</settings>
+		</field>
+		<field formElement="checkbox" name="auto_send_save" sortOrder="80">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>boolean</dataType>
+				<label translate="true">Auto send after every save product (exclude creating)</label>
+				<dataScope>auto_send_save</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">false</rule>
+				</validation>
+			</settings>
+		</field>
+		<field formElement="checkbox" name="batch_send" sortOrder="70">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>boolean</dataType>
+				<label translate="true">Products batch send</label>
+				<dataScope>batch_send</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">false</rule>
+				</validation>
+			</settings>
+		</field>
+	</fieldset>
+</form>
