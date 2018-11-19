@@ -191,7 +191,7 @@ class SenderService
                 }
 
                 $this->fileService->writeFile(
-                    "{$projectGuid}/{$sourceLang}/{$attributeCode}({$product->getSku()}).txt",
+                    "{$projectGuid}/{$sourceLang}/{$attributeCode}({$product->getSku()}).html",
                     $data
                 );
             }
