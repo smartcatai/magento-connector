@@ -33,6 +33,7 @@ use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Model\ProfileRepository;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Module;
 use SmartCat\Connector\Service\ConnectorService;
 use Magento\Catalog\Model\ProductRepository;
 use SmartCat\Connector\Model\ProjectProductRepository;
@@ -210,6 +211,17 @@ class ProjectsRetrieve
                 return $this->saveDocuments($taskId, $project, ++$attempt);
             case 200:
                 $fileName = "{$project->getGuid()}/zip/file_" . uniqid() . uniqid() . ".zip";
+
+                if (in_array($response->getHeaderLine('Content-Type'), Module::TEXT_MIME_TYPES)) {
+                    $matches = [];
+
+                    preg_match(
+                        '/filename\s*=\s*"?(?P<attribute>.*?)\((?P<sku>.*?)\)\((?P<languageCode>.*?)\)\.\w+/',
+                        $response->getHeaderLine('Content-Disposition'),
+                        $matches
+                    );
+                    $fileName = "{$project->getGuid()}/completed/{$matches['languageCode']}/{$matches['sku']}/{$matches['attribute']}";
+                }
                 $this->fileService->writeFile($fileName, $response->getBody()->getContents());
 
                 return $this->fileService->getAbsolutePath($fileName);
@@ -232,8 +244,12 @@ class ProjectsRetrieve
         }
 
         $completedPath = $this->fileService->getAbsolutePath("{$projectId}/completed/");
-        $result = $this->fileService->unZip($filePath, $completedPath);
 
+        if (in_array(mime_content_type($filePath), Module::TEXT_MIME_TYPES)) {
+            return;
+        }
+
+        $result = $this->fileService->unZip($filePath, $completedPath);
         $files = $this->fileService->getDirectoryFiles($completedPath);
 
         foreach ($files as $file) {

@@ -31,4 +31,17 @@ class Module
     const PROJECT_PRODUCT_TABLE_NAME = self::MANUFACTURER . '_project_product';
 
     const MODULE_FOLDER = 'modules/smartcat_connector';
+
+    const TEXT_MIME_TYPES = [
+        'text/cmd',
+        'text/css',
+        'text/csv',
+        'text/html',
+        'text/javascript (Obsolete)',
+        'text/plain',
+        'text/php',
+        'text/xml',
+        'text/markdown',
+        'text/cache-manifest'
+    ];
 }
