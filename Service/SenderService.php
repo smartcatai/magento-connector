@@ -222,11 +222,7 @@ class SenderService
     private function getProjectName(array $products)
     {
         $name = null;
-
-        if (count($products) == 1) {
-            return $products[0];
-        }
-
+        
         foreach ($products as $product) {
             if ($product instanceof Product) {
                 if (strlen($name) < 80 ) {
