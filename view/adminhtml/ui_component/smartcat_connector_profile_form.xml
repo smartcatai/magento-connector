@@ -128,8 +128,8 @@
 			</argument>
 			<settings>
 				<dataType>text</dataType>
-				<label translate="true">Project ID</label>
-				<notice translate="true">Define a project id if you want send all products in one project</notice>
+				<label translate="true">Smartcat Project ID</label>
+				<notice translate="true"><![CDATA[Enter here a Smartcat project ID to send all ongiong tasks to one specific project. <a href="https://help.smartcat.ai/hc/en-us/articles/115002522912">Learn more</a> where to get the ID.]]></notice>
 				<dataScope>project_id</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">false</rule>

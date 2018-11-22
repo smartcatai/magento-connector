@@ -2,7 +2,6 @@
   "name": "smartcat/magento-connector",
   "description": "Magento Connector for SmartCat.ai",
   "require": {
-    "php": "~7.0.13|~7.1.0",
     "ext-json": "*",
     "ext-zip": "*",
     "ext-fileinfo": "*",
