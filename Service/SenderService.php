@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Service;
 
 use Magento\Catalog\Model\Product;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use SmartCat\Client\Model\BilingualFileImportSettingsModel;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Client\Model\CreateProjectModel;
@@ -41,6 +42,7 @@ class SenderService
     private $projectRepository;
     private $projectProductRepository;
     private $errorHandler;
+    private $searchCriteriaBuilder;
 
     private $excludedAttributes = [
         'required_options',
@@ -52,6 +54,7 @@ class SenderService
         ConnectorService $connectorService,
         FileService $fileService,
         ProjectRepository $projectRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
         ProjectProductRepository $projectProductRepository,
         ErrorHandler $errorHandler
     ) {
@@ -60,6 +63,7 @@ class SenderService
         $this->projectRepository = $projectRepository;
         $this->projectProductRepository = $projectProductRepository;
         $this->errorHandler = $errorHandler;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -78,26 +82,45 @@ class SenderService
             ->setDescription('Magento SmartCat Connector. Product: ' . md5($name))
             ->setSourceLanguage($profile->getSourceLang())
             ->setTargetLanguages($profile->getTargetLangArray())
-            ->setUseMT(false)
-            ->setPretranslate(false)
             ->setWorkflowStages($profile->getStagesArray())
             ->setAssignToVendor(false);
 
         try {
-            $projectModel = $projectManager->projectCreateProject($newProjectModel);
+            if ($profile->getProjectId()) {
+                $projectModel = $projectManager->projectGet($profile->getProjectId());
+            } else {
+                $projectModel = $projectManager->projectCreateProject($newProjectModel);
+            }
         } catch (Throwable $e) {
             $message = $this->errorHandler->handleError($e, "SmartCat create project error");
             throw new SmartCatHttpException($message, $e->getCode(), $e->getPrevious());
         }
 
-        $project = $this->projectRepository->create();
-        $project
-            ->setGuid($projectModel->getId())
-            ->setProfileId($profile->getProfileId())
-            ->setStatus($projectModel->getStatus())
-            ->setElement($name)
-            ->setTranslate($profile->getSourceLang() . ' -> ' . $profile->getTargetLang())
-            ->setDeadline($projectModel->getDeadline());
+        $projects = [];
+
+        try {
+            if ($profile->getProjectId()) {
+                $criteria = $this->searchCriteriaBuilder->addFilter(Profile::PROJECT_ID, $profile->getProjectId());
+                $projects = $this->projectRepository->getList($criteria->create())->getItems();
+            }
+        } catch (Throwable $e) {
+            $message = $this->errorHandler->handleError($e, "SmartCat get list error");
+            throw new SmartCatHttpException($message, $e->getCode(), $e->getPrevious());
+        }
+
+        if (count($projects) == 0) {
+            $project = $this->projectRepository->create();
+            $project
+                ->setGuid($projectModel->getId())
+                ->setProfileId($profile->getProfileId())
+                ->setElement($name)
+                ->setTranslate($profile->getSourceLang() . ' -> ' . $profile->getTargetLang())
+                ->setDeadline($projectModel->getDeadline());
+        } else {
+            $project = $projects[0];
+        }
+
+        $project->setStatus($projectModel->getStatus());
 
         try {
             $this->projectRepository->save($project);

@@ -6,7 +6,7 @@
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
                         <item name="type" xsi:type="string">localize_products</item>
-                        <item name="label" xsi:type="string" translate="true">Localize Products</item>
+                        <item name="label" xsi:type="string" translate="true">Submit for translation</item>
                     </item>
                 </argument>
                 <argument name="actions" xsi:type="configurableObject">
@@ -15,8 +15,8 @@
                         <item name="url" xsi:type="string">smartcat_connector/profile/localize</item>
                         <item name="paramName" xsi:type="string">profile_id</item>
                         <item name="confirm" xsi:type="array">
-                            <item name="title" xsi:type="string" translate="true">Localize Products</item>
-                            <item name="message" xsi:type="string" translate="true">Are you sure to localize selected products?</item>
+                            <item name="title" xsi:type="string" translate="true">Are you sure?</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure to translate selected products?</item>
                         </item>
                     </argument>
                 </argument>

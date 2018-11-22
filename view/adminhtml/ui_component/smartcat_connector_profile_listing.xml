@@ -14,7 +14,7 @@
 			<button name="add">
 				<url path="*/*/new"/>
 				<class>primary</class>
-				<label translate="true">Add new Profile</label>
+				<label translate="true">New Profile</label>
 			</button>
 		</buttons>
 	</settings>
@@ -55,7 +55,7 @@
 		<column name="vendor" class="SmartCat\Connector\Ui\Component\Listing\Column\VendorColumn">
 			<settings>
 				<filter>text</filter>
-				<label translate="true">Vendor</label>
+				<label translate="true">Translation agency</label>
 				<editor>
 					<editorType>text</editorType>
 					<validation>
@@ -91,7 +91,7 @@
 		<column name="stages" class="SmartCat\Connector\Ui\Component\Listing\Column\WorkFlowColumn">
 			<settings>
 				<filter>text</filter>
-				<label translate="true">Stages</label>
+				<label translate="true">Workflow</label>
 				<editor>
 					<editorType>text</editorType>
 					<validation>
@@ -135,7 +135,7 @@
 		<column name="auto_send_save" component="Magento_Ui/js/grid/columns/select">
 			<settings>
 				<filter>select</filter>
-				<label translate="true">Auto Send Save</label>
+				<label translate="true">Auto Send Updated</label>
 				<options class="SmartCat\Connector\Model\Config\Source\YesNoOption"/>
 				<dataType>select</dataType>
 			</settings>

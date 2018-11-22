@@ -91,7 +91,7 @@ class VendorColumn extends Column
                     if ($vendorId !== false) {
                         $item[$this->getData('name')] = $vendors[$vendorId]['name'];
                     } else {
-                        $item[$this->getData('name')] = __('Vendor is not assigned');
+                        $item[$this->getData('name')] = __('Translate internally');
                     }
                 }
             }

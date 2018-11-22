@@ -92,7 +92,7 @@ class Save extends \Magento\Backend\App\Action
             $model->setData($data);
 
             if (!trim($model->getName())) {
-                $model->setName(__('Translate:') . ' ' . $data['source_lang'] . ' -> ' . $data['target_lang']);
+                $model->setName(__('Languages:') . ' ' . $data['source_lang'] . ' -> ' . $data['target_lang']);
             }
         
             try {

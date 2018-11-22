@@ -284,6 +284,14 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Profile Name',
             ],
+            'project_id' => [
+                'type' => Table::TYPE_TEXT,
+                'size' => 255,
+                'options' => [
+                    'nullable' => true,
+                ],
+                'comment' => 'Project id to send in',
+            ],
             'auto_send_new' => [
                 'type' => Table::TYPE_BOOLEAN,
                 'size' => null,
