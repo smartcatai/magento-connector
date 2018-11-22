@@ -40,7 +40,7 @@
 		<settings>
 			<label/>
 		</settings>
-		<field formElement="input" name="name" sortOrder="60">
+		<field formElement="input" name="name" sortOrder="10">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
 					<item name="source" xsi:type="string">Profile</item>

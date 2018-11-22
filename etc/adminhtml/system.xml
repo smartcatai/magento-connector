@@ -23,8 +23,9 @@
 					<source_model>SmartCat\Connector\Model\Config\Source\ServerList</source_model>
 					<comment>Choose SmartCat.ai server</comment>
 				</field>
-				<field id="custom_text" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label><a href="https://help.smartcat.ai/hc/en-us/articles/115002475012">Learn more</a> how to get Smartcat API credentials.</label>
+				<field id="test" translate="label" type="label" sortOrder="999" showInDefault="1" showInStore="0" showInWebsite="0">
+					<label>Note:</label>
+					<comment><![CDATA[<a href="https://help.smartcat.ai/hc/en-us/articles/115002475012">Learn more</a> how to get Smartcat API credentials.]]></comment>
 				</field>
 			</group>
 		</section>
