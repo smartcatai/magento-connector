@@ -36,6 +36,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     const AUTO_SEND_SAVE = 'auto_send_save';
     const EXCLUDED_ATTRIBUTES = 'excluded_attributes';
     const BATCH_SEND = 'batch_send';
+    const PROJECT_ID = 'project_id';
 
     /**
      * Get profile_id
@@ -127,6 +128,19 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
      * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setName($name);
+
+    /**
+     * Get project id
+     * @return string|null
+     */
+    public function getProjectId();
+
+    /**
+     * Set project id
+     * @param string $projecyId
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
+     */
+    public function setProjectId($projectId);
 
     /**
      * Get auto send

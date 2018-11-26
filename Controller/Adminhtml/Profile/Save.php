@@ -87,12 +87,15 @@ class Save extends \Magento\Backend\App\Action
 
             $data['target_lang'] = implode(',', $data['target_lang']);
             $data['stages'] = implode(',', $data['stages']);
-            $data['excluded_attributes'] = implode(',', $data['excluded_attributes']);
+
+            if (isset($data['excluded_attributes'])) {
+                $data['excluded_attributes'] = implode(',', $data['excluded_attributes']);
+            }
 
             $model->setData($data);
 
             if (!trim($model->getName())) {
-                $model->setName(__('Translate:') . ' ' . $data['source_lang'] . ' -> ' . $data['target_lang']);
+                $model->setName(__('Languages:') . ' ' . $data['source_lang'] . ' -> ' . $data['target_lang']);
             }
         
             try {

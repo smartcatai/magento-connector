@@ -40,6 +40,22 @@
 		<settings>
 			<label/>
 		</settings>
+		<field formElement="input" name="name" sortOrder="10">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="source" xsi:type="string">Profile</item>
+				</item>
+			</argument>
+			<settings>
+				<dataType>text</dataType>
+				<label translate="true">Name</label>
+				<notice translate="true">Leave this field blank for automatic name generation</notice>
+				<dataScope>name</dataScope>
+				<validation>
+					<rule name="required-entry" xsi:type="boolean">false</rule>
+				</validation>
+			</settings>
+		</field>
 		<field formElement="select" name="vendor" sortOrder="20">
 			<argument name="data" xsi:type="array">
 				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\VendorList</item>
@@ -49,7 +65,7 @@
 			</argument>
 			<settings>
 				<dataType>text</dataType>
-				<label translate="true">Vendor</label>
+				<label translate="true">Translation agency</label>
 				<dataScope>vendor</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">false</rule>
@@ -97,14 +113,14 @@
 			</argument>
 			<settings>
 				<dataType>text</dataType>
-				<label translate="true">Stages</label>
+				<label translate="true">Workflow</label>
 				<dataScope>stages</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">true</rule>
 				</validation>
 			</settings>
 		</field>
-		<field formElement="input" name="name" sortOrder="60">
+		<field formElement="input" name="project_id" sortOrder="60">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
 					<item name="source" xsi:type="string">Profile</item>
@@ -112,8 +128,9 @@
 			</argument>
 			<settings>
 				<dataType>text</dataType>
-				<label translate="true">Name</label>
-				<dataScope>name</dataScope>
+				<label translate="true">Smartcat Project ID</label>
+				<notice translate="true"><![CDATA[Enter here a Smartcat project ID to send all ongiong tasks to one specific project. <a href="https://help.smartcat.ai/hc/en-us/articles/115002522912">Learn more</a> where to get the ID.]]></notice>
+				<dataScope>project_id</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">false</rule>
 				</validation>
@@ -147,7 +164,7 @@
 			</argument>
 			<settings>
 				<dataType>boolean</dataType>
-				<label translate="true">Auto send after creating product</label>
+				<label translate="true">Automatically send new products for translation</label>
 				<dataScope>auto_send_new</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">false</rule>
@@ -166,7 +183,7 @@
 			</argument>
 			<settings>
 				<dataType>boolean</dataType>
-				<label translate="true">Auto send after every save product (exclude creating)</label>
+				<label translate="true">Automatically send each product update for translation</label>
 				<dataScope>auto_send_save</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">false</rule>
@@ -185,7 +202,7 @@
 			</argument>
 			<settings>
 				<dataType>boolean</dataType>
-				<label translate="true">Products batch send</label>
+				<label translate="true">Send all products in one batch</label>
 				<dataScope>batch_send</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">false</rule>

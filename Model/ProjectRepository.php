@@ -34,6 +34,7 @@ use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
 use SmartCat\Connector\Api\Data\ProjectInterfaceFactory;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\DataObjectHelper;
+use SmartCat\Connector\Module;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -127,11 +128,9 @@ class ProjectRepository implements ProjectRepositoryInterface
         \Magento\Framework\Api\SearchCriteriaInterface $criteria
     ) {
         $collection = $this->projectCollectionFactory->create();
-        
-        //$this->extensionAttributesJoinProcessor->process(
-        //    $collection,
-        //    \SmartCat\Connector\Api\Data\ProjectInterface::class
-        //);
+
+        //$condition = sprintf("%s.%s = %s.%s", Module::PROJECT_TABLE_NAME, Project::PROFILE_ID, Module::PROFILE_TABLE_NAME, Profile::PROFILE_ID);
+        //$collection->join(Module::PROFILE_TABLE_NAME, $condition);
         
         $this->collectionProcessor->process($criteria, $collection);
         

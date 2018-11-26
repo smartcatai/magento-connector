@@ -9,19 +9,23 @@
 			<tab>localization</tab>
 			<resource>SmartCat_Connector::config</resource>
 			<group id="smartcat_localization" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
-				<label>SmartCat Localization</label>
+				<label>Smartcat Translation Manager</label>
 				<field id="token" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="text">
-					<label>API Token</label>
-					<comment>Enter API Token from SmartCat.ai</comment>
+					<label>API Key</label>
+					<comment>Insert Smartcat API Key</comment>
 				</field>
 				<field id="application_id" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="text">
-					<label>Application ID</label>
-					<comment>Enter Apication ID from SmartCat.ai</comment>
+					<label>Smartcat Account ID</label>
+					<comment>Enter your Smartcat account ID</comment>
 				</field>
 				<field id="server" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Server</label>
 					<source_model>SmartCat\Connector\Model\Config\Source\ServerList</source_model>
-					<comment>Choose SmartCat.ai server</comment>
+					<comment>Choose Smartcat server</comment>
+				</field>
+				<field id="test" translate="label" type="label" sortOrder="999" showInDefault="1" showInStore="0" showInWebsite="0">
+					<label>Note:</label>
+					<comment><![CDATA[<a href="https://help.smartcat.ai/hc/en-us/articles/115002475012">Learn more</a> how to get Smartcat API credentials.]]></comment>
 				</field>
 			</group>
 		</section>

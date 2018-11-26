@@ -210,6 +210,27 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
     }
 
     /**
+     * Get project id
+     * @return string|null
+     */
+    public function getProjectId()
+    {
+        return $this->getData(self::PROJECT_ID);
+
+    }
+
+    /**
+     * Set project id
+     * @param string $projecyId
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
+     */
+    public function setProjectId($projectId)
+    {
+        return $this->setData(self::PROJECT_ID, $projectId);
+
+    }
+
+    /**
      * Get auto send new
      * @return string|null
      */

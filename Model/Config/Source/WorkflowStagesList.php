@@ -31,7 +31,7 @@ class WorkflowStagesList implements ArrayInterface
             ['value' => 'translation','label' => __('Translation')],
             ['value' => 'editing','label' => __('Editing')],
             ['value' => 'proofreading','label' => __('Proofreading')],
-            ['value' => 'postreading','label' => __('Postreading')],
+            ['value' => 'postreading','label' => __('Post-Editing')],
         ];
     }
 }
