@@ -48,7 +48,7 @@ class Index extends \Magento\Backend\App\Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-            $resultPage->getConfig()->getTitle()->prepend(__("Profile"));
+            $resultPage->getConfig()->getTitle()->prepend(__("Profiles"));
             return $resultPage;
     }
 }
