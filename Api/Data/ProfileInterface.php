@@ -23,20 +23,19 @@ namespace SmartCat\Connector\Api\Data;
 
 interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterface
 {
-
+    const ID = 'id';
     const CREATED_AT = 'created_at';
     const STAGES = 'stages';
     const SOURCE_LANG = 'source_lang';
     const UPDATED_AT = 'updated_at';
     const VENDOR = 'vendor';
     const NAME = 'name';
-    const PROFILE_ID = 'profile_id';
     const TARGET_LANG = 'target_lang';
     const AUTO_SEND_NEW = 'auto_send_new';
     const AUTO_SEND_SAVE = 'auto_send_save';
     const EXCLUDED_ATTRIBUTES = 'excluded_attributes';
     const BATCH_SEND = 'batch_send';
-    const PROJECT_ID = 'project_id';
+    const PROJECT_GUID = 'project_guid';
 
     /**
      * Get profile_id
@@ -130,17 +129,17 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     public function setName($name);
 
     /**
-     * Get project id
+     * Get project guid
      * @return string|null
      */
-    public function getProjectId();
+    public function getProjectGuid();
 
     /**
-     * Set project id
-     * @param string $projecyId
+     * Set project guid
+     * @param string $projecyGuid
      * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
-    public function setProjectId($projectId);
+    public function setProjectGuid($projectGuid);
 
     /**
      * Get auto send

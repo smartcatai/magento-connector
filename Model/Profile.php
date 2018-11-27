@@ -26,7 +26,6 @@ use \DateTime;
 
 class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileInterface
 {
-
     protected $_eventPrefix = 'smartcat_connector_profile';
 
     /**
@@ -43,7 +42,7 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
      */
     public function getProfileId()
     {
-        return $this->getData(self::PROFILE_ID);
+        return $this->getData(self::ID);
     }
 
     /**
@@ -169,7 +168,7 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
 
     /**
      * Get stages array
-     * @return string
+     * @return string[]
      */
     public function getStagesArray()
     {
@@ -213,20 +212,20 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
      * Get project id
      * @return string|null
      */
-    public function getProjectId()
+    public function getProjectGuid()
     {
-        return $this->getData(self::PROJECT_ID);
+        return $this->getData(self::PROJECT_GUID);
 
     }
 
     /**
-     * Set project id
-     * @param string $projecyId
+     * Set project guid
+     * @param string $projectGuid
      * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
-    public function setProjectId($projectId)
+    public function setProjectGuid($projectGuid)
     {
-        return $this->setData(self::PROJECT_ID, $projectId);
+        return $this->setData(self::PROJECT_GUID, $projectGuid);
 
     }
 

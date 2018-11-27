@@ -30,7 +30,7 @@ use Magento\Framework\Exception\LocalizedException;
 use SmartCat\Connector\Exception\SmartCatHttpException;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\ProfileRepository;
-use SmartCat\Connector\Service\SenderService;
+use SmartCat\Connector\Service\ProjectService;
 
 class AddProductObserver implements ObserverInterface
 {
@@ -39,7 +39,7 @@ class AddProductObserver implements ObserverInterface
     private $searchCriteriaBuilder;
 
     public function __construct(
-        SenderService $senderService,
+        ProjectService $senderService,
         ProfileRepository $profileRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
@@ -70,7 +70,7 @@ class AddProductObserver implements ObserverInterface
         /** @var Profile $profile */
         foreach ($profiles as $profile) {
             try {
-                $this->senderService->sendProduct([$product], $profile);
+                $this->senderService->create([$product], $profile);
             } catch (SmartCatHttpException $e) {}
         }
     }

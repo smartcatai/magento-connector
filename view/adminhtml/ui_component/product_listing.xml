@@ -13,7 +13,7 @@
                     <argument name="class" xsi:type="string">SmartCat\Connector\Ui\Component\MassAction\Localize</argument>
                     <argument name="data" xsi:type="array">
                         <item name="url" xsi:type="string">smartcat_connector/profile/localize</item>
-                        <item name="paramName" xsi:type="string">profile_id</item>
+                        <item name="paramName" xsi:type="string">id</item>
                         <item name="confirm" xsi:type="array">
                             <item name="title" xsi:type="string" translate="true">Are you sure?</item>
                             <item name="message" xsi:type="string" translate="true">Are you sure to translate selected products?</item>

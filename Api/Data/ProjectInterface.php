@@ -23,12 +23,12 @@ namespace SmartCat\Connector\Api\Data;
 
 interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterface
 {
+    const ID = 'id';
     const TRANSLATE = 'translate';
     const DEADLINE = 'deadline';
     const COMMENT = 'comment';
     const IS_STATS_BUILDED = 'is_stats_builded';
     const CREATED_AT = 'created_at';
-    const PROJECT_ID = 'project_id';
     const UPDATED_AT = 'updated_at';
     const ELEMENT = 'element';
     const PRICE = 'price';
@@ -37,11 +37,13 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     const PROFILE_ID = 'profile_id';
     const GUID = 'guid';
 
+    const STATUS_WAITING = 'waiting';
     const STATUS_CREATED = 'created';
     const STATUS_IN_PROGRESS = 'inProgress';
     const STATUS_COMPLETED = 'completed';
     const STATUS_REJECTED = 'rejected';
     const STATUS_CANCELED = 'canceled';
+    const STATUS_FAILED = 'failed';
 
     /**
      * Get project_id

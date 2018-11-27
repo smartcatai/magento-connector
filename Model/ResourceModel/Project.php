@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Model\ResourceModel;
 
 use SmartCat\Connector\Module;
+use SmartCat\Connector\Model\Project as ProjectModel;
 
 class Project extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
@@ -32,6 +33,6 @@ class Project extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected function _construct()
     {
-        $this->_init(Module::PROJECT_TABLE_NAME, 'project_id');
+        $this->_init(Module::PROJECT_TABLE_NAME, ProjectModel::ID);
     }
 }

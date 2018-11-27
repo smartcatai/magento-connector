@@ -22,19 +22,24 @@
 namespace SmartCat\Connector\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
-use SmartCat\Connector\Service\ConnectorService;
+use SmartCat\Connector\Helper\SmartCatFacade;
 use Magento\Framework\Message\ManagerInterface;
 
 class VendorList implements ArrayInterface
 {
-    private $connectorService;
+    private $smartCatService;
     private $messageManager;
 
+    /**
+     * VendorList constructor.
+     * @param SmartCatFacade $smartCatService
+     * @param ManagerInterface $messageManager
+     */
     public function __construct(
-        ConnectorService $connectorService,
+        SmartCatFacade $smartCatService,
         ManagerInterface $messageManager
     ) {
-        $this->connectorService = $connectorService;
+        $this->smartCatService = $smartCatService;
         $this->messageManager = $messageManager;
     }
 
@@ -45,8 +50,8 @@ class VendorList implements ArrayInterface
         ];
 
         try {
-            $vendorsList = $this->connectorService->getService()
-                ->getDirectoriesManager()->directoriesGet(['type' => 'vendor'])
+            $vendorsList = $this->smartCatService->getDirectoriesManager()
+                ->directoriesGet(['type' => 'vendor'])
                 ->getItems();
 
         } catch (\Throwable $e) {

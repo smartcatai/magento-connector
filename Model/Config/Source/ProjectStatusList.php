@@ -29,11 +29,13 @@ class ProjectStatusList implements ArrayInterface
     public function toOptionArray()
     {
         return [
+            ['value' => Project::STATUS_WAITING,'label' => __('Waiting')],
             ['value' => Project::STATUS_CREATED,'label' => __('Created')],
             ['value' => Project::STATUS_IN_PROGRESS,'label' => __('In Progress')],
             ['value' => Project::STATUS_COMPLETED,'label' => __('Completed')],
             ['value' => Project::STATUS_REJECTED,'label' => __('Rejected')],
             ['value' => Project::STATUS_CANCELED,'label' => __('Canceled')],
+            ['value' => Project::STATUS_FAILED,'label' => __('Failed')],
         ];
     }
 }

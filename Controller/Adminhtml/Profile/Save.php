@@ -26,13 +26,13 @@ use SmartCat\Connector\Model\Profile;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use SmartCat\Connector\Model\ProfileRepository;
+use SmartCat\Connector\Service\ProfileService;
 use SmartCat\Connector\Service\StoreService;
 
 class Save extends \Magento\Backend\App\Action
 {
     protected $dataPersistor;
-    protected $profileRepository;
-    protected $storeService;
+    protected $profileService;
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
@@ -41,12 +41,10 @@ class Save extends \Magento\Backend\App\Action
     public function __construct(
         Context $context,
         DataPersistorInterface $dataPersistor,
-        ProfileRepository $profileRepository,
-        StoreService $storeService
+        ProfileService $profileService
     ) {
         $this->dataPersistor = $dataPersistor;
-        $this->profileRepository = $profileRepository;
-        $this->storeService = $storeService;
+        $this->profileService = $profileService;
         parent::__construct($context);
     }
 
@@ -62,49 +60,13 @@ class Save extends \Magento\Backend\App\Action
         $data = $this->getRequest()->getParams();
 
         if ($data) {
-            $id = $this->getRequest()->getParam('profile_id');
-
-            /** @var Profile $model */
-            $model = $this->profileRepository->getModelById($id);
-
-            if ($id && !$model->getId()) {
-                $this->messageManager->addErrorMessage(__('This Profile no longer exists.'));
-                return $resultRedirect->setPath('*/*/');
-            }
-
-            if (in_array($data['source_lang'], $data['target_lang'])) {
-                $this->messageManager->addErrorMessage(__('Source Language and Target Language are identical'));
-                return $resultRedirect->setPath('*/*/');
-            }
-
-            foreach ($data['target_lang'] as $language) {
-                try {
-                    $this->storeService->createStoreByCode($language);
-                } catch (\Exception $e) {
-                    $this->messageManager->addErrorMessage(__('Something went wrong while creating store. Error: ' . $e->getMessage()));
-                }
-            }
-
-            $data['target_lang'] = implode(',', $data['target_lang']);
-            $data['stages'] = implode(',', $data['stages']);
-
-            if (!empty($data['excluded_attributes'])) {
-                $data['excluded_attributes'] = implode(',', $data['excluded_attributes']);
-            }
-
-            $model->setData($data);
-
-            if (!trim($model->getName())) {
-                $model->setName(__('Languages:') . ' ' . $data['source_lang'] . ' -> ' . $data['target_lang']);
-            }
-        
             try {
-                $this->profileRepository->save($model);
-                $this->messageManager->addSuccessMessage(__('You saved the Profile.'));
+                $modelId = $this->profileService->createFromData($data);
+                $this->messageManager->addSuccessMessage(__('You successfully saved the Profile.'));
                 $this->dataPersistor->clear('smartcat_connector_profile');
         
                 if ($this->getRequest()->getParam('back')) {
-                    return $resultRedirect->setPath('*/*/edit', ['profile_id' => $model->getId()]);
+                    return $resultRedirect->setPath('*/*/edit', [Profile::ID => $modelId]);
                 }
                 return $resultRedirect->setPath('*/*/');
             } catch (LocalizedException $e) {
@@ -114,7 +76,7 @@ class Save extends \Magento\Backend\App\Action
             }
         
             $this->dataPersistor->set('smartcat_connector_profile', $data);
-            return $resultRedirect->setPath('*/*/edit', ['profile_id' => $this->getRequest()->getParam('profile_id')]);
+            return $resultRedirect->setPath('*/*/edit', [Profile::ID => $this->getRequest()->getParam(Profile::ID)]);
         }
         return $resultRedirect->setPath('*/*/');
     }

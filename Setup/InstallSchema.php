@@ -26,6 +26,8 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Module;
 
 class InstallSchema implements InstallSchemaInterface
@@ -45,9 +47,9 @@ class InstallSchema implements InstallSchemaInterface
         $this->setForeignKey(
             $installer,
             Module::PROJECT_TABLE_NAME,
-            'profile_id',
+            Project::PROFILE_ID,
             Module::PROFILE_TABLE_NAME,
-            'profile_id'
+            Profile::ID
         );
 
         $this->setForeignKey(
@@ -63,7 +65,18 @@ class InstallSchema implements InstallSchemaInterface
             Module::PROJECT_PRODUCT_TABLE_NAME,
             'project_id',
             Module::PROJECT_TABLE_NAME,
-            'project_id'
+            Project::ID
+        );
+
+        $installer->getConnection()->addIndex(
+            $installer->getTable(Module::PROJECT_PRODUCT_TABLE_NAME),
+            $installer->getIdxName(
+                $installer->getTable(Module::PROJECT_PRODUCT_TABLE_NAME),
+                ['project_id', 'product_id'],
+                AdapterInterface::INDEX_TYPE_UNIQUE
+            ),
+            ['project_id', 'product_id'],
+            AdapterInterface::INDEX_TYPE_UNIQUE
         );
 
         $installer->endSetup();
@@ -126,7 +139,7 @@ class InstallSchema implements InstallSchemaInterface
     private function getProjectColumns()
     {
         return [
-            'project_id' => [
+            Project::ID => [
                 'type' => Table::TYPE_INTEGER,
                 'size' => null,
                 'options' => [
@@ -137,7 +150,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Project ID',
             ],
-            'guid' => [
+            Project::GUID => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 40,
                 'options' => [
@@ -145,7 +158,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Project GUID',
             ],
-            'element' => [
+            Project::ELEMENT => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -153,7 +166,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Element',
             ],
-            'profile_id' => [
+            Project::PROFILE_ID => [
                 'type' => Table::TYPE_INTEGER,
                 'size' => null,
                 'options' => [
@@ -162,7 +175,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Profile',
             ],
-            'translate' => [
+            Project::TRANSLATE => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -170,7 +183,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Translate',
             ],
-            'status' => [
+            Project::STATUS => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 15,
                 'options' => [
@@ -178,13 +191,13 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Status',
             ],
-            'price' => [
+            Project::PRICE => [
                 'type' => Table::TYPE_FLOAT,
                 'size' => null,
                 'options' => [],
                 'comment' => 'Price',
             ],
-            'deadline' => [
+            Project::DEADLINE => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [
@@ -192,13 +205,13 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Deadline Date',
             ],
-            'comment' => [
+            Project::COMMENT => [
                 'type' => Table::TYPE_TEXT,
                 'size' => null,
                 'options' => [],
                 'comment' => 'Comment',
             ],
-            'is_stats_builded' => [
+            Project::IS_STATS_BUILDED => [
                 'type' => Table::TYPE_BOOLEAN,
                 'size' => null,
                 'options' => [
@@ -206,7 +219,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Is Statistics Builded',
             ],
-            'created_at' => [
+            Project::CREATED_AT => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [
@@ -215,7 +228,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Created At',
             ],
-            'updated_at' => [
+            Project::UPDATED_AT => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [
@@ -233,7 +246,7 @@ class InstallSchema implements InstallSchemaInterface
     private function getProfileColumns()
     {
         return [
-            'profile_id' => [
+            Profile::ID => [
                 'type' => Table::TYPE_INTEGER,
                 'size' => null,
                 'options' => [
@@ -244,7 +257,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Profile ID',
             ],
-            'vendor' => [
+            Profile::VENDOR => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -252,7 +265,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Vendor',
             ],
-            'stages' => [
+            Profile::STAGES => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -260,7 +273,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Stages',
             ],
-            'source_lang' => [
+            Profile::SOURCE_LANG => [
                 'type' => Table::TYPE_TEXT,
                 'size' => null,
                 'options' => [
@@ -268,7 +281,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Source Language',
             ],
-            'target_lang' => [
+            Profile::TARGET_LANG => [
                 'type' => Table::TYPE_TEXT,
                 'size' => null,
                 'options' => [
@@ -276,7 +289,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Target Language',
             ],
-            'name' => [
+            Profile::NAME => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -284,7 +297,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Profile Name',
             ],
-            'project_id' => [
+            Profile::PROJECT_GUID => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -292,7 +305,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Project id to send in',
             ],
-            'auto_send_new' => [
+            Profile::AUTO_SEND_NEW => [
                 'type' => Table::TYPE_BOOLEAN,
                 'size' => null,
                 'options' => [
@@ -301,7 +314,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Auto Send New',
             ],
-            'auto_send_save' => [
+            Profile::AUTO_SEND_SAVE => [
                 'type' => Table::TYPE_BOOLEAN,
                 'size' => null,
                 'options' => [
@@ -310,7 +323,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Auto Send Save',
             ],
-            'batch_send' => [
+            Profile::BATCH_SEND => [
                 'type' => Table::TYPE_BOOLEAN,
                 'size' => null,
                 'options' => [
@@ -319,7 +332,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Auto Send Save',
             ],
-            'excluded_attributes' => [
+            Profile::EXCLUDED_ATTRIBUTES => [
                 'type' => Table::TYPE_TEXT,
                 'size' => null,
                 'options' => [
@@ -327,7 +340,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Excluded attributes',
             ],
-            'created_at' => [
+            Profile::CREATED_AT => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [
@@ -336,7 +349,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Created At',
             ],
-            'updated_at' => [
+            Profile::UPDATED_AT => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [

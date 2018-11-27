@@ -8,7 +8,7 @@ class Interceptor extends \SmartCat\Connector\Controller\Adminhtml\Profile\Local
 {
     use \Magento\Framework\Interception\Interceptor;
 
-    public function __construct(\Magento\Backend\App\Action\Context $context, \SmartCat\Connector\Service\SenderService $senderService, \SmartCat\Connector\Api\ProfileRepositoryInterface $profileRepository = null, \Magento\Catalog\Api\ProductRepositoryInterface $productRepository = null)
+    public function __construct(\Magento\Backend\App\Action\Context $context, \SmartCat\Connector\Service\ProjectService $senderService, \SmartCat\Connector\Api\ProfileRepositoryInterface $profileRepository = null, \Magento\Catalog\Api\ProductRepositoryInterface $productRepository = null)
     {
         $this->___init();
         parent::__construct($context, $senderService, $profileRepository, $productRepository);

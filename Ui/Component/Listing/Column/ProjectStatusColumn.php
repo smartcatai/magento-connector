@@ -60,16 +60,18 @@ class ProjectStatusColumn extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
+        $statusList = $this->statusList->toOptionArray();
+
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
                 if($this->getData('name') == 'status'){
                     try {
                         $index = array_search(
                             $item[$this->getData('name')],
-                            array_column($this->statusList->toOptionArray(), 'value')
+                            array_column($statusList, 'value')
                         );
 
-                        $item[$this->getData('name')] = $this->statusList->toOptionArray()[$index]['label'];
+                        $item[$this->getData('name')] = $statusList[$index]['label'];
                     } catch (NoSuchEntityException $e) {
                         continue;
                     }

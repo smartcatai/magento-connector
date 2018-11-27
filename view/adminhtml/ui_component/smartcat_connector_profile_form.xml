@@ -31,8 +31,8 @@
 		</settings>
 		<dataProvider class="SmartCat\Connector\Model\Profile\DataProvider" name="profile_form_data_source">
 			<settings>
-				<requestFieldName>profile_id</requestFieldName>
-				<primaryFieldName>profile_id</primaryFieldName>
+				<requestFieldName>id</requestFieldName>
+				<primaryFieldName>id</primaryFieldName>
 			</settings>
 		</dataProvider>
 	</dataSource>
@@ -129,8 +129,8 @@
 			<settings>
 				<dataType>text</dataType>
 				<label translate="true">Smartcat Project ID</label>
-				<notice translate="true"><![CDATA[Enter here a Smartcat project ID to send all ongiong tasks to one specific project. <a href="https://help.smartcat.ai/hc/en-us/articles/115002522912">Learn more</a> where to get the ID.]]></notice>
-				<dataScope>project_id</dataScope>
+				<notice translate="true">Enter here a Smartcat project ID to send all ongiong tasks to one specific project.</notice>
+				<dataScope>project_guid</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">false</rule>
 				</validation>
