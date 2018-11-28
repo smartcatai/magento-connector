@@ -24,29 +24,36 @@ namespace SmartCat\Connector\Magento\Ui\Component\Listing\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
+<<<<<<< HEAD
 use SmartCat\Connector\Magento\Helper\SmartCatFacade;
+=======
+use SmartCat\Connector\Service\ConnectorService;
+>>>>>>> parent of 06302bf... Refactoring
 
 class VendorColumn extends Column
 {
-    protected $smartCatService;
+    /**
+     * @var ConnectorService
+     */
+    protected $connectorService;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param SmartCatFacade  $smartCatService
+     * @param ConnectorService  $connectorService
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        SmartCatFacade $smartCatService,
+        ConnectorService $connectorService,
         array $components = [],
         array $data = []
     ) {
-        $this->smartCatService = $smartCatService;
+        $this->connectorService = $connectorService;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -63,8 +70,8 @@ class VendorColumn extends Column
 
         if (isset($dataSource['data']['items'])) {
             try {
-                $vendorsList = $this->smartCatService->getDirectoriesManager()
-                    ->directoriesGet(['type' => 'vendor'])
+                $vendorsList = $this->connectorService->getService()
+                    ->getDirectoriesManager()->directoriesGet(['type' => 'vendor'])
                     ->getItems();
 
                 foreach ($vendorsList as $vendor) {

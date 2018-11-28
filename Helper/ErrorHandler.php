@@ -60,7 +60,7 @@ class ErrorHandler
         }
 
         $project
-            ->setStatus(Project::STATUS_FAILED)
+            ->setStatus(Project::STATUS_REJECTED)
             ->setComment($message);
 
         try {

@@ -22,25 +22,25 @@
 namespace SmartCat\Connector\Magento\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
+<<<<<<< HEAD
 use SmartCat\Connector\Magento\Helper\LanguageDictionary;
 use SmartCat\Connector\Magento\Helper\SmartCatFacade;
+=======
+use SmartCat\Connector\Helper\LanguageDictionary;
+use SmartCat\Connector\Service\ConnectorService;
+>>>>>>> parent of 06302bf... Refactoring
 use Magento\Framework\Message\ManagerInterface;
 
 class LanguagesList implements ArrayInterface
 {
-    private $smartCatService;
+    private $connectorService;
     private $messageManager;
 
-    /**
-     * LanguagesList constructor.
-     * @param SmartCatFacade $smartCatService
-     * @param ManagerInterface $messageManager
-     */
     public function __construct(
-        SmartCatFacade $smartCatService,
+        ConnectorService $connectorService,
         ManagerInterface $messageManager
     ) {
-        $this->smartCatService = $smartCatService;
+        $this->connectorService = $connectorService;
         $this->messageManager = $messageManager;
     }
 
@@ -49,12 +49,12 @@ class LanguagesList implements ArrayInterface
         $stores = [];
 
         try {
-            $languageList = $this->smartCatService->getDirectoriesManager()
-                ->directoriesGet(['type' => 'language'])
+            $languageList = $this->connectorService->getService()
+                ->getDirectoriesManager()->directoriesGet(['type' => 'language'])
                 ->getItems();
 
         } catch (\Throwable $e) {
-            $this->messageManager->addErrorMessage(__('SmartCat API error occurred: ') . $e->getMessage());
+            $this->messageManager->addErrorMessage(__('SmartCat API error ocurred: ') . $e->getMessage());
             return $stores;
         }
 

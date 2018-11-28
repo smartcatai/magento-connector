@@ -27,7 +27,6 @@ class ProjectProduct extends \Magento\Framework\Model\AbstractModel
     const PROJECT_ID = 'project_id';
     const PRODUCT_ID = 'product_id';
     const ID = 'id';
-
     /**
      * @return void
      */

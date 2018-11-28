@@ -21,8 +21,11 @@
 
 namespace SmartCat\Connector\Magento\Ui\Component\Listing\Column;
 
+<<<<<<< HEAD
 use SmartCat\Connector\Magento\Model\Profile;
 
+=======
+>>>>>>> parent of 06302bf... Refactoring
 class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
 {
 
@@ -59,13 +62,13 @@ class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
-                if (isset($item[Profile::ID])) {
+                if (isset($item['profile_id'])) {
                     $item[$this->getData('name')] = [
                         'edit' => [
                             'href' => $this->urlBuilder->getUrl(
                                 static::URL_PATH_EDIT,
                                 [
-                                    Profile::ID => $item[Profile::ID]
+                                    'profile_id' => $item['profile_id']
                                 ]
                             ),
                             'label' => __('Edit')
@@ -74,7 +77,7 @@ class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
                             'href' => $this->urlBuilder->getUrl(
                                 static::URL_PATH_DELETE,
                                 [
-                                    Profile::ID => $item[Profile::ID]
+                                    'profile_id' => $item['profile_id']
                                 ]
                             ),
                             'label' => __('Delete'),

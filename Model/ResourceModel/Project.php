@@ -21,8 +21,12 @@
 
 namespace SmartCat\Connector\Magento\Model\ResourceModel;
 
+<<<<<<< HEAD
 use SmartCat\Connector\Magento\Module;
 use SmartCat\Connector\Magento\Model\Project as ProjectModel;
+=======
+use SmartCat\Connector\Module;
+>>>>>>> parent of 06302bf... Refactoring
 
 class Project extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
@@ -33,6 +37,6 @@ class Project extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected function _construct()
     {
-        $this->_init(Module::PROJECT_TABLE_NAME, ProjectModel::ID);
+        $this->_init(Module::PROJECT_TABLE_NAME, 'project_id');
     }
 }

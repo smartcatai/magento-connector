@@ -21,11 +21,16 @@
 
 namespace SmartCat\Connector\Magento\Model\ResourceModel;
 
+<<<<<<< HEAD
 use SmartCat\Connector\Magento\Module;
 use SmartCat\Connector\Magento\Model\Profile as ProfileModel;
+=======
+use SmartCat\Connector\Module;
+>>>>>>> parent of 06302bf... Refactoring
 
 class Profile extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
+
     /**
      * Define resource model
      *
@@ -33,6 +38,6 @@ class Profile extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected function _construct()
     {
-        $this->_init(Module::PROFILE_TABLE_NAME, ProfileModel::ID);
+        $this->_init(Module::PROFILE_TABLE_NAME, 'profile_id');
     }
 }

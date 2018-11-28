@@ -37,17 +37,26 @@ use SmartCat\Connector\Magento\Api\Data\ProfileInterfaceFactory;
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
+
     protected $extensionAttributesJoinProcessor;
-    protected $profileCollectionFactory;
-    protected $dataObjectHelper;
-    protected $dataProfileFactory;
-    protected $searchResultsFactory;
-    protected $dataObjectProcessor;
-    protected $resource;
-    protected $profileFactory;
 
     private $storeManager;
+
+    protected $profileCollectionFactory;
+
+    protected $dataObjectHelper;
+
+    protected $dataProfileFactory;
+
+    protected $searchResultsFactory;
+
     private $collectionProcessor;
+    protected $dataObjectProcessor;
+
+    protected $resource;
+
+    protected $profileFactory;
+
 
     /**
      * @param ResourceProfile $resource
@@ -116,6 +125,14 @@ class ProfileRepository implements ProfileRepositoryInterface
         if (!$profile->getId()) {
             throw new NoSuchEntityException(__('Profile with id "%1" does not exist.', $profileId));
         }
+        return $profile;
+    }
+
+    public function getModelById($profileId)
+    {
+        $profile = $this->profileFactory->create();
+        $this->resource->load($profile, $profileId);
+
         return $profile;
     }
 

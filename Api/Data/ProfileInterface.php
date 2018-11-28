@@ -23,19 +23,20 @@ namespace SmartCat\Connector\Magento\Api\Data;
 
 interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterface
 {
-    const ID = 'id';
+
     const CREATED_AT = 'created_at';
     const STAGES = 'stages';
     const SOURCE_LANG = 'source_lang';
     const UPDATED_AT = 'updated_at';
     const VENDOR = 'vendor';
     const NAME = 'name';
+    const PROFILE_ID = 'profile_id';
     const TARGET_LANG = 'target_lang';
     const AUTO_SEND_NEW = 'auto_send_new';
     const AUTO_SEND_SAVE = 'auto_send_save';
     const EXCLUDED_ATTRIBUTES = 'excluded_attributes';
     const BATCH_SEND = 'batch_send';
-    const PROJECT_GUID = 'project_guid';
+    const PROJECT_ID = 'project_id';
 
     /**
      * Get profile_id
@@ -129,17 +130,23 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     public function setName($name);
 
     /**
-     * Get project guid
+     * Get project id
      * @return string|null
      */
-    public function getProjectGuid();
+    public function getProjectId();
 
     /**
+<<<<<<< HEAD
      * Set project guid
      * @param string $projecyGuid
      * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+=======
+     * Set project id
+     * @param string $projecyId
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
+>>>>>>> parent of 06302bf... Refactoring
      */
-    public function setProjectGuid($projectGuid);
+    public function setProjectId($projectId);
 
     /**
      * Get auto send

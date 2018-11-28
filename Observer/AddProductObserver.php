@@ -27,10 +27,17 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\LocalizedException;
+<<<<<<< HEAD
 use SmartCat\Connector\Magento\Exception\SmartCatHttpException;
 use SmartCat\Connector\Magento\Model\Profile;
 use SmartCat\Connector\Magento\Model\ProfileRepository;
 use SmartCat\Connector\Magento\Service\ProjectService;
+=======
+use SmartCat\Connector\Exception\SmartCatHttpException;
+use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Model\ProfileRepository;
+use SmartCat\Connector\Service\SenderService;
+>>>>>>> parent of 06302bf... Refactoring
 
 class AddProductObserver implements ObserverInterface
 {
@@ -45,7 +52,7 @@ class AddProductObserver implements ObserverInterface
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
     public function __construct(
-        ProjectService $senderService,
+        SenderService $senderService,
         ProfileRepository $profileRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
@@ -79,7 +86,7 @@ class AddProductObserver implements ObserverInterface
         /** @var Profile $profile */
         foreach ($profiles as $profile) {
             try {
-                $this->senderService->create([$product], $profile);
+                $this->senderService->sendProduct([$product], $profile);
             } catch (SmartCatHttpException $e) {}
         }
     }

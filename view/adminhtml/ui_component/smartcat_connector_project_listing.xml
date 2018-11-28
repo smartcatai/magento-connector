@@ -19,7 +19,7 @@
 		<dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="smartcat_connector_project_listing_data_source">
 			<settings>
 				<requestFieldName>id</requestFieldName>
-				<primaryFieldName>id</primaryFieldName>
+				<primaryFieldName>project_id</primaryFieldName>
 			</settings>
 		</dataProvider>
 	</dataSource>
@@ -35,47 +35,55 @@
 	<columns name="smartcat_connector_project_columns">
 		<selectionsColumn name="ids">
 			<settings>
-				<indexField>id</indexField>
+				<indexField>project_id</indexField>
 			</settings>
 		</selectionsColumn>
-		<column name="id" sortOrder="10">
+		<column name="project_id">
 			<settings>
 				<filter>integer</filter>
 				<sorting>desc</sorting>
 				<label translate="true">ID</label>
 			</settings>
 		</column>
-		<column name="element" sortOrder="20">
+		<column name="element">
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Element</label>
 			</settings>
 		</column>
+<<<<<<< HEAD
 		<column name="profile_id" class="SmartCat\Connector\Magento\Ui\Component\Listing\Column\ProjectProfile" sortOrder="30">
+=======
+		<column name="profile_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectProfile">
+>>>>>>> parent of 06302bf... Refactoring
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Profile</label>
 			</settings>
 		</column>
-		<column name="translate" sortOrder="40">
+		<column name="translate">
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Translate</label>
 			</settings>
 		</column>
+<<<<<<< HEAD
 		<column name="status" class="SmartCat\Connector\Magento\Ui\Component\Listing\Column\ProjectStatusColumn" sortOrder="50">
+=======
+		<column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectStatusColumn">
+>>>>>>> parent of 06302bf... Refactoring
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Status</label>
 			</settings>
 		</column>
-		<column name="deadline" sortOrder="60">
+		<column name="deadline">
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Deadline</label>
 			</settings>
 		</column>
-		<column name="comment" sortOrder="70">
+		<column name="comment">
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Comment</label>

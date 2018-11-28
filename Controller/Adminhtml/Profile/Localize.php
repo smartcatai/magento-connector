@@ -31,23 +31,32 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\App\ObjectManager;
+<<<<<<< HEAD
 use SmartCat\Connector\Magento\Service\ProjectService;
+=======
+use SmartCat\Connector\Service\SenderService;
+>>>>>>> parent of 06302bf... Refactoring
 
 class Localize extends \Magento\Backend\App\Action
 {
+    /** @var ProductRepositoryInterface */
     private $productRepository;
+
+    /**  @var ProfileRepositoryInterface */
     private $profileRepository;
-    private $projectService;
+
+    /** @var SenderService */
+    private $senderService;
 
     /**
      * @param Context $context
-     * @param ProjectService $senderService
+     * @param SenderService $senderService
      * @param ProfileRepositoryInterface|null $profileRepository
      * @param ProductRepositoryInterface $productRepository
      */
     public function __construct(
         Context $context,
-        ProjectService $projectService,
+        SenderService $senderService,
         ProfileRepositoryInterface $profileRepository = null,
         ProductRepositoryInterface $productRepository = null
     ) {
@@ -55,7 +64,7 @@ class Localize extends \Magento\Backend\App\Action
             ?: ObjectManager::getInstance()->create(ProductRepositoryInterface::class);
         $this->profileRepository = $profileRepository
             ?: ObjectManager::getInstance()->create(ProfileRepositoryInterface::class);
-        $this->projectService = $projectService;
+        $this->senderService = $senderService;
         parent::__construct($context);
     }
 
@@ -83,12 +92,12 @@ class Localize extends \Magento\Backend\App\Action
         }
 
         $productsIds = $request->getParam('selected');
-        $profileId = $request->getParam(Profile::ID);
+        $profileId = $request->getParam('profile_id');
 
         /** @var Profile $profile */
-        try {
-            $profile = $this->profileRepository->getById($profileId);
-        } catch (\Throwable $e) {
+        $profile = $this->profileRepository->getById($profileId);
+
+        if (!($profile instanceof Profile)) {
             $this->messageManager->addErrorMessage(__('Profile not found'));
 
             return $resultFactory->setPath('catalog/product/index');
@@ -103,10 +112,10 @@ class Localize extends \Magento\Backend\App\Action
 
         try {
             if ($profile->getBatchSend()) {
-                $this->projectService->create($products, $profile);
+                $this->senderService->sendProduct($products, $profile);
             } else {
                 foreach ($products as $product) {
-                    $this->projectService->create([$product], $profile);
+                    $this->senderService->sendProduct([$product], $profile);
                 }
             }
         } catch (SmartCatHttpException $e) {

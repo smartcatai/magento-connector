@@ -23,13 +23,22 @@ namespace SmartCat\Connector\Magento\Cron;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\LocalizedException;
+<<<<<<< HEAD
 use SmartCat\Connector\Magento\Helper\ErrorHandler;
 use SmartCat\Connector\Magento\Helper\SmartCatFacade;
 use SmartCat\Connector\Magento\Model\Project;
 use SmartCat\Connector\Magento\Model\ProjectRepository;
+=======
+use SmartCat\Client\SmartCat;
+use SmartCat\Connector\Helper\ErrorHandler;
+use SmartCat\Connector\Model\Project;
+use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Service\ConnectorService;
+>>>>>>> parent of 06302bf... Refactoring
 
 class BuildStatistics
 {
+    /** @var SmartCat */
     private $smartCatService;
     private $projectRepository;
     private $searchCriteriaBuilder;
@@ -46,10 +55,10 @@ class BuildStatistics
         ErrorHandler $errorHandler,
         ProjectRepository $projectRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        SmartCatFacade $smartCatService
+        ConnectorService $connectorService
     ) {
         $this->errorHandler = $errorHandler;
-        $this->smartCatService = $smartCatService;
+        $this->smartCatService = $connectorService->getService();
         $this->projectRepository = $projectRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }

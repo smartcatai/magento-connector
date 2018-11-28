@@ -41,7 +41,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
      */
     public function getProjectId()
     {
-        return $this->getData(self::ID);
+        return $this->getData(self::PROJECT_ID);
     }
 
     /**
@@ -52,14 +52,6 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     public function setProjectId($projectId)
     {
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUniqueId()
-    {
-        return md5($this->getData(self::ID));
     }
 
     /**

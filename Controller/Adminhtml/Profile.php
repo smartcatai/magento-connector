@@ -49,7 +49,7 @@ abstract class Profile extends \Magento\Backend\App\Action
     {
         $resultPage->setActiveMenu(self::ADMIN_RESOURCE)
             ->addBreadcrumb(__('SmartCat'), __('SmartCat'))
-            ->addBreadcrumb(__('Dashboard'), __('Dashboard'));
+            ->addBreadcrumb(__('Profile'), __('Profile'));
         return $resultPage;
     }
 }

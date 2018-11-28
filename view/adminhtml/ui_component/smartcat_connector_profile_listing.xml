@@ -26,7 +26,7 @@
 		<dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="smartcat_connector_profile_listing_data_source">
 			<settings>
 				<requestFieldName>id</requestFieldName>
-				<primaryFieldName>id</primaryFieldName>
+				<primaryFieldName>profile_id</primaryFieldName>
 			</settings>
 		</dataProvider>
 	</dataSource>
@@ -42,17 +42,21 @@
 	<columns name="smartcat_connector_profile_columns">
 		<selectionsColumn name="ids">
 			<settings>
-				<indexField>id</indexField>
+				<indexField>profile_id</indexField>
 			</settings>
 		</selectionsColumn>
-		<column name="id" sortOrder="10">
+		<column name="profile_id" sortOrder="10">
 			<settings>
 				<filter>text</filter>
 				<sorting>asc</sorting>
 				<label translate="true">ID</label>
 			</settings>
 		</column>
+<<<<<<< HEAD
 		<column name="vendor" class="SmartCat\Connector\Magento\Ui\Component\Listing\Column\VendorColumn" sortOrder="15">
+=======
+		<column name="vendor" class="SmartCat\Connector\Ui\Component\Listing\Column\VendorColumn" sortOrder="20">
+>>>>>>> parent of 06302bf... Refactoring
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Translation agency</label>
@@ -150,7 +154,7 @@
 		</column>
 		<actionsColumn class="SmartCat\Connector\Magento\Ui\Component\Listing\Column\ProfileActions" name="actions" sortOrder="999">
 			<settings>
-				<indexField>id</indexField>
+				<indexField>profile_id</indexField>
 				<resizeEnabled>false</resizeEnabled>
 				<resizeDefaultWidth>107</resizeDefaultWidth>
 			</settings>

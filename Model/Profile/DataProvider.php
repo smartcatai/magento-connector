@@ -26,8 +26,11 @@ use Magento\Framework\App\Request\DataPersistorInterface;
 
 class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
+
     protected $collection;
+
     protected $dataPersistor;
+
     protected $loadedData;
 
     /**
