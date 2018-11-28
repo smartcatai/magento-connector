@@ -90,10 +90,11 @@ class ProjectsSending
 
         $newProjectModel = (new CreateProjectModel())
             ->setName($project->getElement())
-            ->setDescription('Magento SmartCat Connector. Product: ' . md5($project->getElement()))
+            ->setDescription('Magento SmartCat Connector. Product: ' . $project->getUniqueId())
             ->setSourceLanguage($profile->getSourceLang())
             ->setTargetLanguages($profile->getTargetLangArray())
             ->setWorkflowStages($profile->getStagesArray())
+            ->setExternalTag('source:Magento')
             ->setAssignToVendor(false);
 
         try {
