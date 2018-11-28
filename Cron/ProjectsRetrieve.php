@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Cron;
+namespace SmartCat\Connector\Magento\Cron;
 
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -27,16 +27,16 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManager;
 use SmartCat\Client\Model\ProjectModel;
-use SmartCat\Connector\Api\Data\ProjectInterface;
-use SmartCat\Connector\Helper\ErrorHandler;
-use SmartCat\Connector\Helper\SmartCatFacade;
-use SmartCat\Connector\Model\ProfileRepository;
-use SmartCat\Connector\Model\Project;
-use SmartCat\Connector\Model\ProjectRepository;
-use SmartCat\Connector\Module;
+use SmartCat\Connector\Magento\Api\Data\ProjectInterface;
+use SmartCat\Connector\Magento\Helper\ErrorHandler;
+use SmartCat\Connector\Magento\Helper\SmartCatFacade;
+use SmartCat\Connector\Magento\Model\ProfileRepository;
+use SmartCat\Connector\Magento\Model\Project;
+use SmartCat\Connector\Magento\Model\ProjectRepository;
+use SmartCat\Connector\Magento\Module;
 use Magento\Catalog\Model\ProductRepository;
-use SmartCat\Connector\Model\ProjectProductRepository;
-use SmartCat\Connector\Service\FileService;
+use SmartCat\Connector\Magento\Model\ProjectProductRepository;
+use SmartCat\Connector\Magento\Service\FileService;
 use \Throwable;
 
 class ProjectsRetrieve

@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Observer;
+namespace SmartCat\Connector\Magento\Observer;
 
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product;
@@ -27,10 +27,10 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\LocalizedException;
-use SmartCat\Connector\Exception\SmartCatHttpException;
-use SmartCat\Connector\Model\Profile;
-use SmartCat\Connector\Model\ProfileRepository;
-use SmartCat\Connector\Service\ProjectService;
+use SmartCat\Connector\Magento\Exception\SmartCatHttpException;
+use SmartCat\Connector\Magento\Model\Profile;
+use SmartCat\Connector\Magento\Model\ProfileRepository;
+use SmartCat\Connector\Magento\Service\ProjectService;
 
 class AddProductObserver implements ObserverInterface
 {
@@ -38,6 +38,12 @@ class AddProductObserver implements ObserverInterface
     private $profileRepository;
     private $searchCriteriaBuilder;
 
+    /**
+     * AddProductObserver constructor.
+     * @param ProjectService $senderService
+     * @param ProfileRepository $profileRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     */
     public function __construct(
         ProjectService $senderService,
         ProfileRepository $profileRepository,
@@ -48,6 +54,9 @@ class AddProductObserver implements ObserverInterface
         $this->profileRepository = $profileRepository;
     }
 
+    /**
+     * @param Observer $observer
+     */
     public function execute(Observer $observer)
     {
         /** @var Product $product */

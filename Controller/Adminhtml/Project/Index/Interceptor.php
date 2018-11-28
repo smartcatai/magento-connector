@@ -1,10 +1,10 @@
 <?php
-namespace SmartCat\Connector\Controller\Adminhtml\Project\Index;
+namespace SmartCat\Connector\Magento\Controller\Adminhtml\Project\Index;
 
 /**
- * Interceptor class for @see \SmartCat\Connector\Controller\Adminhtml\Project\Index
+ * Interceptor class for @see \SmartCat\Connector\Magento\Controller\Adminhtml\Project\Index
  */
-class Interceptor extends \SmartCat\Connector\Controller\Adminhtml\Project\Index implements \Magento\Framework\Interception\InterceptorInterface
+class Interceptor extends \SmartCat\Connector\Magento\Controller\Adminhtml\Project\Index implements \Magento\Framework\Interception\InterceptorInterface
 {
     use \Magento\Framework\Interception\Interceptor;
 

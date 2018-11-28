@@ -19,9 +19,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model;
+namespace SmartCat\Connector\Magento\Model;
 
-use SmartCat\Connector\Api\Data\ProjectInterface;
+use SmartCat\Connector\Magento\Api\Data\ProjectInterface;
 
 class Project extends \Magento\Framework\Model\AbstractModel implements ProjectInterface
 {
@@ -32,7 +32,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
      */
     protected function _construct()
     {
-        $this->_init(\SmartCat\Connector\Model\ResourceModel\Project::class);
+        $this->_init(\SmartCat\Connector\Magento\Model\ResourceModel\Project::class);
     }
 
     /**
@@ -47,7 +47,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set project_id
      * @param string $projectId
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setProjectId($projectId)
     {
@@ -74,7 +74,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set guid
      * @param string $guid
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setGuid($guid)
     {
@@ -93,7 +93,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set element
      * @param string $element
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setElement($element)
     {
@@ -112,7 +112,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set profile_id
      * @param string $profileId
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setProfileId($profileId)
     {
@@ -131,7 +131,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set translate
      * @param string $translate
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setTranslate($translate)
     {
@@ -150,7 +150,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set status
      * @param string $status
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setStatus($status)
     {
@@ -169,7 +169,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set price
      * @param string $price
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setPrice($price)
     {
@@ -188,7 +188,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set deadline
      * @param string $deadline
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setDeadline($deadline)
     {
@@ -207,7 +207,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set comment
      * @param string $comment
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setComment($comment)
     {
@@ -226,7 +226,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set builded statistics
      * @param bool $isStatsBuilded
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setIsStatisticsBuilded($isStatsBuilded)
     {
@@ -245,7 +245,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set created_at
      * @param string $createdAt
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setCreatedAt($createdAt)
     {
@@ -264,7 +264,7 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     /**
      * Set updated_at
      * @param string $updatedAt
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
      */
     public function setUpdatedAt($updatedAt)
     {

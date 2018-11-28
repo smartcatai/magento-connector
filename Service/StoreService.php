@@ -19,14 +19,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Service;
-
+namespace SmartCat\Connector\Magento\Service;
 
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Store\Model\ResourceModel\Store;
 use Magento\Store\Model\StoreFactory;
 use Psr\Log\LoggerInterface;
-use SmartCat\Connector\Helper\LanguageDictionary;
+use SmartCat\Connector\Magento\Helper\LanguageDictionary;
 
 class StoreService
 {
@@ -34,6 +33,12 @@ class StoreService
     private $storeFactory;
     private $logger;
 
+    /**
+     * StoreService constructor.
+     * @param StoreFactory $storeFactory
+     * @param Store $storeResourceModel
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         StoreFactory $storeFactory,
         Store $storeResourceModel,

@@ -19,10 +19,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model\ResourceModel;
+namespace SmartCat\Connector\Magento\Model\ResourceModel;
 
-use SmartCat\Connector\Module;
-use SmartCat\Connector\Model\Profile as ProfileModel;
+use SmartCat\Connector\Magento\Module;
+use SmartCat\Connector\Magento\Model\Profile as ProfileModel;
 
 class Profile extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {

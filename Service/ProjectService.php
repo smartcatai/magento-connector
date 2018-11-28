@@ -19,19 +19,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Service;
+namespace SmartCat\Connector\Magento\Service;
 
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Exception\CouldNotSaveException;
 use SmartCat\Client\Model\BilingualFileImportSettingsModel;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
-use SmartCat\Connector\Exception\SmartCatHttpException;
-use SmartCat\Connector\Helper\ErrorHandler;
-use SmartCat\Connector\Model\Profile;
-use SmartCat\Connector\Model\ProfileRepository;
-use SmartCat\Connector\Model\Project;
-use SmartCat\Connector\Model\ProjectProductRepository;
-use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Magento\Exception\SmartCatHttpException;
+use SmartCat\Connector\Magento\Helper\ErrorHandler;
+use SmartCat\Connector\Magento\Model\Profile;
+use SmartCat\Connector\Magento\Model\ProfileRepository;
+use SmartCat\Connector\Magento\Model\Project;
+use SmartCat\Connector\Magento\Model\ProjectProductRepository;
+use SmartCat\Connector\Magento\Model\ProjectRepository;
 use \Throwable;
 
 class ProjectService
@@ -117,7 +117,7 @@ class ProjectService
 
     /**
      * @param Project $project
-     * @return \SmartCat\Connector\Api\Data\ProfileInterface|Profile
+     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface|Profile
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getProjectProfile(Project $project)

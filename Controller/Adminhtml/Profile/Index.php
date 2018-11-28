@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml\Profile;
+namespace SmartCat\Connector\Magento\Controller\Adminhtml\Profile;
 
 class Index extends \Magento\Backend\App\Action
 {

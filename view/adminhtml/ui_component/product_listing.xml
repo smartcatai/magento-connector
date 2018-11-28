@@ -10,7 +10,7 @@
                     </item>
                 </argument>
                 <argument name="actions" xsi:type="configurableObject">
-                    <argument name="class" xsi:type="string">SmartCat\Connector\Ui\Component\MassAction\Localize</argument>
+                    <argument name="class" xsi:type="string">SmartCat\Connector\Magento\Ui\Component\MassAction\Localize</argument>
                     <argument name="data" xsi:type="array">
                         <item name="url" xsi:type="string">smartcat_connector/profile/localize</item>
                         <item name="paramName" xsi:type="string">id</item>

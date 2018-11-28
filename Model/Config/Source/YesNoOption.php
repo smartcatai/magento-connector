@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model\Config\Source;
+namespace SmartCat\Connector\Magento\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
 

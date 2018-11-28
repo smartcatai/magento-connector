@@ -19,10 +19,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Api\Data;
+namespace SmartCat\Connector\Magento\Api\Data;
 
 /**
- * Factory class for @see \SmartCat\Connector\Api\Data\ProjectSearchResultsInterface
+ * Factory class for @see \SmartCat\Connector\Magento\Api\Data\ProjectSearchResultsInterface
  */
 class ProjectSearchResultsInterfaceFactory
 {
@@ -46,7 +46,7 @@ class ProjectSearchResultsInterfaceFactory
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param string $instanceName
      */
-    public function __construct(\Magento\Framework\ObjectManagerInterface $objectManager, $instanceName = '\\SmartCat\\Connector\\Api\\Data\\ProjectSearchResultsInterface')
+    public function __construct(\Magento\Framework\ObjectManagerInterface $objectManager, $instanceName = '\\SmartCat\\Connector\Magento\\Api\\Data\\ProjectSearchResultsInterface')
     {
         $this->_objectManager = $objectManager;
         $this->_instanceName = $instanceName;
@@ -56,7 +56,7 @@ class ProjectSearchResultsInterfaceFactory
      * Create class instance with specified parameters
      *
      * @param array $data
-     * @return \SmartCat\Connector\Api\Data\ProjectSearchResultsInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProjectSearchResultsInterface
      */
     public function create(array $data = array())
     {

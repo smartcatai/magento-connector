@@ -19,9 +19,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Ui\Component\Listing\Column;
+namespace SmartCat\Connector\Magento\Ui\Component\Listing\Column;
 
-use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Magento\Model\Profile;
 
 class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
 {

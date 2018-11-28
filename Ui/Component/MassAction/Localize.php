@@ -19,12 +19,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Ui\Component\MassAction;
+namespace SmartCat\Connector\Magento\Ui\Component\MassAction;
 
 use Magento\Framework\UrlInterface;
-use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Magento\Model\Profile;
 use Zend\Stdlib\JsonSerializable;
-use SmartCat\Connector\Model\ResourceModel\Profile\CollectionFactory;
+use SmartCat\Connector\Magento\Model\ResourceModel\Profile\CollectionFactory;
 
 /**
  * Class Options

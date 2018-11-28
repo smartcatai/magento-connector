@@ -19,14 +19,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Cron;
+namespace SmartCat\Connector\Magento\Cron;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\LocalizedException;
-use SmartCat\Connector\Helper\ErrorHandler;
-use SmartCat\Connector\Helper\SmartCatFacade;
-use SmartCat\Connector\Model\Project;
-use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Magento\Helper\ErrorHandler;
+use SmartCat\Connector\Magento\Helper\SmartCatFacade;
+use SmartCat\Connector\Magento\Model\Project;
+use SmartCat\Connector\Magento\Model\ProjectRepository;
 
 class BuildStatistics
 {
@@ -35,6 +35,13 @@ class BuildStatistics
     private $searchCriteriaBuilder;
     private $errorHandler;
 
+    /**
+     * BuildStatistics constructor.
+     * @param ErrorHandler $errorHandler
+     * @param ProjectRepository $projectRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param SmartCatFacade $smartCatService
+     */
     public function __construct(
         ErrorHandler $errorHandler,
         ProjectRepository $projectRepository,

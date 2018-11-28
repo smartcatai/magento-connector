@@ -1,14 +1,14 @@
 <?php
-namespace SmartCat\Connector\Controller\Adminhtml\Profile\Save;
+namespace SmartCat\Connector\Magento\Controller\Adminhtml\Profile\Save;
 
 /**
- * Interceptor class for @see \SmartCat\Connector\Controller\Adminhtml\Profile\Save
+ * Interceptor class for @see \SmartCat\Connector\Magento\Controller\Adminhtml\Profile\Save
  */
-class Interceptor extends \SmartCat\Connector\Controller\Adminhtml\Profile\Save implements \Magento\Framework\Interception\InterceptorInterface
+class Interceptor extends \SmartCat\Connector\Magento\Controller\Adminhtml\Profile\Save implements \Magento\Framework\Interception\InterceptorInterface
 {
     use \Magento\Framework\Interception\Interceptor;
 
-    public function __construct(\Magento\Backend\App\Action\Context $context, \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor, \SmartCat\Connector\Service\ProfileService $profileService)
+    public function __construct(\Magento\Backend\App\Action\Context $context, \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor, \SmartCat\Connector\Magento\Service\ProfileService $profileService)
     {
         $this->___init();
         parent::__construct($context, $dataPersistor, $profileService);

@@ -19,11 +19,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model\ResourceModel\ProjectProduct;
+namespace SmartCat\Connector\Magento\Model\ResourceModel\ProjectProduct;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
-use SmartCat\Connector\Model\ResourceModel\ProjectProduct as ProjectProductResourceModel;
-use SmartCat\Connector\Model\ProjectProduct;
+use SmartCat\Connector\Magento\Model\ResourceModel\ProjectProduct as ProjectProductResourceModel;
+use SmartCat\Connector\Magento\Model\ProjectProduct;
 
 
 class Collection extends AbstractCollection

@@ -16,7 +16,7 @@
       "registration.php"
     ],
     "psr-4": {
-      "SmartCat\\Connector\\": ""
+      "SmartCat\\Connector\\Magento\\": ""
     }
   }
 }

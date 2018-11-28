@@ -19,21 +19,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model;
+namespace SmartCat\Connector\Magento\Model;
 
 use Magento\Framework\Exception\NoSuchEntityException;
-use SmartCat\Connector\Model\ResourceModel\Profile\CollectionFactory as ProfileCollectionFactory;
+use SmartCat\Connector\Magento\Model\ResourceModel\Profile\CollectionFactory as ProfileCollectionFactory;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\CouldNotDeleteException;
-use SmartCat\Connector\Api\ProfileRepositoryInterface;
+use SmartCat\Connector\Magento\Api\ProfileRepositoryInterface;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Store\Model\StoreManagerInterface;
-use SmartCat\Connector\Api\Data\ProfileSearchResultsInterfaceFactory;
+use SmartCat\Connector\Magento\Api\Data\ProfileSearchResultsInterfaceFactory;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
-use SmartCat\Connector\Model\ResourceModel\Profile as ResourceProfile;
+use SmartCat\Connector\Magento\Model\ResourceModel\Profile as ResourceProfile;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\DataObjectHelper;
-use SmartCat\Connector\Api\Data\ProfileInterfaceFactory;
+use SmartCat\Connector\Magento\Api\Data\ProfileInterfaceFactory;
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
@@ -89,7 +89,7 @@ class ProfileRepository implements ProfileRepositoryInterface
      * {@inheritdoc}
      */
     public function save(
-        \SmartCat\Connector\Api\Data\ProfileInterface $profile
+        \SmartCat\Connector\Magento\Api\Data\ProfileInterface $profile
     ) {
         /* if (empty($profile->getStoreId())) {
             $storeId = $this->storeManager->getStore()->getId();
@@ -129,7 +129,7 @@ class ProfileRepository implements ProfileRepositoryInterface
         
         //$this->extensionAttributesJoinProcessor->process(
         //    $collection,
-        //    \SmartCat\Connector\Api\Data\ProfileInterface::class
+        //    \SmartCat\Connector\Magento\Api\Data\ProfileInterface::class
         //);
         
         $this->collectionProcessor->process($criteria, $collection);
@@ -145,7 +145,7 @@ class ProfileRepository implements ProfileRepositoryInterface
      * {@inheritdoc}
      */
     public function delete(
-        \SmartCat\Connector\Api\Data\ProfileInterface $profile
+        \SmartCat\Connector\Magento\Api\Data\ProfileInterface $profile
     ) {
         try {
             $this->resource->delete($profile);

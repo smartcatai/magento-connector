@@ -19,16 +19,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Setup;
+namespace SmartCat\Connector\Magento\Setup;
 
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\DB\Adapter\AdapterInterface;
-use SmartCat\Connector\Model\Profile;
-use SmartCat\Connector\Model\Project;
-use SmartCat\Connector\Module;
+use SmartCat\Connector\Magento\Model\Profile;
+use SmartCat\Connector\Magento\Model\Project;
+use SmartCat\Connector\Magento\Module;
 
 class InstallSchema implements InstallSchemaInterface
 {

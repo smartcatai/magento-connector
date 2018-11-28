@@ -19,15 +19,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml\Profile;
+namespace SmartCat\Connector\Magento\Controller\Adminhtml\Profile;
 
 use Magento\Framework\Exception\LocalizedException;
-use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Magento\Model\Profile;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\DataPersistorInterface;
-use SmartCat\Connector\Model\ProfileRepository;
-use SmartCat\Connector\Service\ProfileService;
-use SmartCat\Connector\Service\StoreService;
+use SmartCat\Connector\Magento\Model\ProfileRepository;
+use SmartCat\Connector\Magento\Service\ProfileService;
+use SmartCat\Connector\Magento\Service\StoreService;
 
 class Save extends \Magento\Backend\App\Action
 {

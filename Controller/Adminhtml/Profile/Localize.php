@@ -19,19 +19,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml\Profile;
+namespace SmartCat\Connector\Magento\Controller\Adminhtml\Profile;
 
 use Http\Client\Common\Exception\ClientErrorException;
 use Http\Client\Common\Exception\ServerErrorException;
-use SmartCat\Connector\Api\ProfileRepositoryInterface;
+use SmartCat\Connector\Magento\Api\ProfileRepositoryInterface;
 use Magento\Backend\App\Action\Context;
-use SmartCat\Connector\Exception\SmartCatHttpException;
-use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Magento\Exception\SmartCatHttpException;
+use SmartCat\Connector\Magento\Model\Profile;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\App\ObjectManager;
-use SmartCat\Connector\Service\ProjectService;
+use SmartCat\Connector\Magento\Service\ProjectService;
 
 class Localize extends \Magento\Backend\App\Action
 {

@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
 	<group id="default">
-		<job instance="SmartCat\Connector\Cron\ProjectsRetrieve" method="execute" name="smartcat_connector_projects_retrieve">
+		<job instance="SmartCat\Connector\Magento\Cron\ProjectsRetrieve" method="execute" name="smartcat_connector_projects_retrieve">
 			<schedule>*/7 * * * *</schedule>
 		</job>
-		<job instance="SmartCat\Connector\Cron\BuildStatistics" method="execute" name="smartcat_connector_build_statistics">
+		<job instance="SmartCat\Connector\Magento\Cron\BuildStatistics" method="execute" name="smartcat_connector_build_statistics">
 			<schedule>*/1 * * * *</schedule>
 		</job>
-		<job instance="SmartCat\Connector\Cron\ProjectsSending" method="execute" name="smartcat_connector_projects_sending">
+		<job instance="SmartCat\Connector\Magento\Cron\ProjectsSending" method="execute" name="smartcat_connector_projects_sending">
 			<schedule>*/5 * * * *</schedule>
 		</job>
 	</group>

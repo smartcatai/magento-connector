@@ -19,19 +19,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Api\Data;
+namespace SmartCat\Connector\Magento\Api\Data;
 
 interface ProfileSearchResultsInterface extends \Magento\Framework\Api\SearchResultsInterface
 {
     /**
      * Get Profile list.
-     * @return \SmartCat\Connector\Api\Data\ProfileInterface[]
+     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface[]
      */
     public function getItems();
 
     /**
      * Set profile_id list.
-     * @param \SmartCat\Connector\Api\Data\ProfileInterface[] $items
+     * @param \SmartCat\Connector\Magento\Api\Data\ProfileInterface[] $items
      * @return $this
      */
     public function setItems(array $items);

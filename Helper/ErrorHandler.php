@@ -19,14 +19,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Helper;
+namespace SmartCat\Connector\Magento\Helper;
 
 use Http\Client\Common\Exception\ClientErrorException;
 use Http\Client\Common\Exception\ServerErrorException;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
-use SmartCat\Connector\Model\Project;
-use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Magento\Model\Project;
+use SmartCat\Connector\Magento\Model\ProjectRepository;
 use \Throwable;
 
 class ErrorHandler

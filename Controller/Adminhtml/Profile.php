@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml;
+namespace SmartCat\Connector\Magento\Controller\Adminhtml;
 
 abstract class Profile extends \Magento\Backend\App\Action
 {

@@ -6,13 +6,13 @@
  * Time: 10:48
  */
 
-namespace SmartCat\Connector\Ui\Component\Listing\Column;
+namespace SmartCat\Connector\Magento\Ui\Component\Listing\Column;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\Config\Source\WorkflowStagesList;
+use SmartCat\Connector\Magento\Model\Config\Source\WorkflowStagesList;
 
 class WorkFlowColumn extends Column
 {

@@ -19,10 +19,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Api\Data;
+namespace SmartCat\Connector\Magento\Api\Data;
 
 /**
- * Factory class for @see \SmartCat\Connector\Api\Data\ProfileInterface
+ * Factory class for @see \SmartCat\Connector\Magento\Api\Data\ProfileInterface
  */
 class ProfileInterfaceFactory
 {
@@ -46,7 +46,7 @@ class ProfileInterfaceFactory
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param string $instanceName
      */
-    public function __construct(\Magento\Framework\ObjectManagerInterface $objectManager, $instanceName = '\\SmartCat\\Connector\\Api\\Data\\ProfileInterface')
+    public function __construct(\Magento\Framework\ObjectManagerInterface $objectManager, $instanceName = '\\SmartCat\\Connector\Magento\\Api\\Data\\ProfileInterface')
     {
         $this->_objectManager = $objectManager;
         $this->_instanceName = $instanceName;
@@ -56,7 +56,7 @@ class ProfileInterfaceFactory
      * Create class instance with specified parameters
      *
      * @param array $data
-     * @return \SmartCat\Connector\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
      */
     public function create(array $data = array())
     {

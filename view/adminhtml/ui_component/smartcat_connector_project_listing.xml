@@ -51,7 +51,7 @@
 				<label translate="true">Element</label>
 			</settings>
 		</column>
-		<column name="profile_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectProfile" sortOrder="30">
+		<column name="profile_id" class="SmartCat\Connector\Magento\Ui\Component\Listing\Column\ProjectProfile" sortOrder="30">
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Profile</label>
@@ -63,7 +63,7 @@
 				<label translate="true">Translate</label>
 			</settings>
 		</column>
-		<column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectStatusColumn" sortOrder="50">
+		<column name="status" class="SmartCat\Connector\Magento\Ui\Component\Listing\Column\ProjectStatusColumn" sortOrder="50">
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Status</label>

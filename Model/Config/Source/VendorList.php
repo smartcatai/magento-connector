@@ -19,10 +19,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model\Config\Source;
+namespace SmartCat\Connector\Magento\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
-use SmartCat\Connector\Helper\SmartCatFacade;
+use SmartCat\Connector\Magento\Helper\SmartCatFacade;
 use Magento\Framework\Message\ManagerInterface;
 
 class VendorList implements ArrayInterface

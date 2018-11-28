@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Exception;
+namespace SmartCat\Connector\Magento\Exception;
 
 class SmartCatHttpException extends \Exception
 {

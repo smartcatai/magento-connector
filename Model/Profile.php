@@ -19,9 +19,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model;
+namespace SmartCat\Connector\Magento\Model;
 
-use SmartCat\Connector\Api\Data\ProfileInterface;
+use SmartCat\Connector\Magento\Api\Data\ProfileInterface;
 use \DateTime;
 
 class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileInterface
@@ -33,7 +33,7 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
      */
     protected function _construct()
     {
-        $this->_init(\SmartCat\Connector\Model\ResourceModel\Profile::class);
+        $this->_init(\SmartCat\Connector\Magento\Model\ResourceModel\Profile::class);
     }
 
     /**
@@ -221,7 +221,7 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
     /**
      * Set project guid
      * @param string $projectGuid
-     * @return \SmartCat\Connector\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
      */
     public function setProjectGuid($projectGuid)
     {

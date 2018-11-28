@@ -19,13 +19,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Helper;
+namespace SmartCat\Connector\Magento\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use SmartCat\Client\SmartCat;
 
 class SmartCatFacade extends SmartCat
 {
+    /**
+     * SmartCatFacade constructor.
+     * @param ScopeConfigInterface $scopeConfig
+     */
     public function __construct(ScopeConfigInterface $scopeConfig)
     {
         $apiToken = $scopeConfig->getValue('general/smartcat_localization/token');
