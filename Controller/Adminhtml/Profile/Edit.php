@@ -21,6 +21,8 @@
 
 namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
+use SmartCat\Connector\Model\Profile;
+
 class Edit extends \SmartCat\Connector\Controller\Adminhtml\Profile
 {
 
@@ -48,7 +50,7 @@ class Edit extends \SmartCat\Connector\Controller\Adminhtml\Profile
     public function execute()
     {
         // 1. Get ID and create model
-        $id = $this->getRequest()->getParam('profile_id');
+        $id = $this->getRequest()->getParam(Profile::ID);
         $model = $this->_objectManager->create(\SmartCat\Connector\Model\Profile::class);
         
         // 2. Initial checking

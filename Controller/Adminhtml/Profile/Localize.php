@@ -96,7 +96,11 @@ class Localize extends \Magento\Backend\App\Action
 
         $products = [];
 
-        /** @var \Magento\Catalog\Model\Product $product */
+        if (empty($productsIds)) {
+            $this->messageManager->addErrorMessage(__('Not found selected products'));
+            return $resultFactory->setPath('catalog/product/index');
+        }
+
         foreach ($productsIds as $productId) {
             $products[] = $this->productRepository->getById($productId, false, 1);
         }

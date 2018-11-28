@@ -37,6 +37,7 @@ use SmartCat\Connector\Module;
 use Magento\Catalog\Model\ProductRepository;
 use SmartCat\Connector\Model\ProjectProductRepository;
 use SmartCat\Connector\Service\FileService;
+use SmartCat\Connector\Service\StoreService;
 use \Throwable;
 
 class ProjectsRetrieve
@@ -138,7 +139,7 @@ class ProjectsRetrieve
                             $product = $this->productRepository->getById(
                                 $projectProduct->getProductId(),
                                 false,
-                                $stores[$targetLanguage]->getId()
+                                $stores[StoreService::getStoreCode($targetLanguage)]->getId()
                             );
                             $this->setAttributes($product, $project, $targetLanguage);
                             $this->productRepository->save($product);

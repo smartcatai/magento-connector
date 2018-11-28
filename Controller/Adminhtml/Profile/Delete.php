@@ -21,6 +21,8 @@
 
 namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
+use SmartCat\Connector\Model\Profile;
+
 class Delete extends \SmartCat\Connector\Controller\Adminhtml\Profile
 {
 
@@ -34,7 +36,7 @@ class Delete extends \SmartCat\Connector\Controller\Adminhtml\Profile
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         // check if we know what should be deleted
-        $id = $this->getRequest()->getParam('profile_id');
+        $id = $this->getRequest()->getParam(Profile::ID);
         if ($id) {
             try {
                 // init model and delete
@@ -49,7 +51,7 @@ class Delete extends \SmartCat\Connector\Controller\Adminhtml\Profile
                 // display error message
                 $this->messageManager->addErrorMessage($e->getMessage());
                 // go back to edit form
-                return $resultRedirect->setPath('*/*/edit', ['profile_id' => $id]);
+                return $resultRedirect->setPath('*/*/edit', [Profile::ID => $id]);
             }
         }
         // display error message

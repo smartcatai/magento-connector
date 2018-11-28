@@ -34,6 +34,8 @@ class StoreService
     private $storeFactory;
     private $logger;
 
+    const BAD_SYMBOLS = ['*', '|', '\\', ':', '"', '<', '>', '?', '/', '-'];
+
     public function __construct(
         StoreFactory $storeFactory,
         Store $storeResourceModel,
@@ -53,7 +55,7 @@ class StoreService
         $name = LanguageDictionary::getNameByCode($languageCode);
 
         $store
-            ->setCode($languageCode)
+            ->setCode($this->getStoreCode($languageCode))
             ->setIsActive(true)
             ->setWebsiteId(1)
             ->setGroupId(1)
@@ -65,5 +67,10 @@ class StoreService
         } catch (\Exception $e) {
             $this->logger->error("SmartCat Store Service error: {$e->getMessage()}");
         }
+    }
+
+    public static function getStoreCode($languageCode)
+    {
+        return strtolower(str_replace(self::BAD_SYMBOLS, '_', $languageCode));
     }
 }

@@ -224,7 +224,13 @@ class ProjectService
             }
         }
 
-        return substr($name, 0, -2);
+        if (strlen($name) > 99) {
+            $name = substr($name, 0, 99);
+        } else {
+            $name = substr($name, 0, -2);
+        }
+
+        return str_replace (['*', '|', '\\', ':', '"', '<', '>', '?', '/'], ' ', $name);
     }
 
     /**
