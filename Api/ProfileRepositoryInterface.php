@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Api;
+namespace SmartCat\Connector\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
 
@@ -28,18 +28,18 @@ interface ProfileRepositoryInterface
 
     /**
      * Save Profile
-     * @param \SmartCat\Connector\Magento\Api\Data\ProfileInterface $profile
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @param \SmartCat\Connector\Api\Data\ProfileInterface $profile
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function save(
-        \SmartCat\Connector\Magento\Api\Data\ProfileInterface $profile
+        \SmartCat\Connector\Api\Data\ProfileInterface $profile
     );
 
     /**
      * Retrieve Profile
      * @param string $profileId
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getById($profileId);
@@ -47,7 +47,7 @@ interface ProfileRepositoryInterface
     /**
      * Retrieve Profile matching the specified criteria.
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileSearchResultsInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileSearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getList(
@@ -56,12 +56,12 @@ interface ProfileRepositoryInterface
 
     /**
      * Delete Profile
-     * @param \SmartCat\Connector\Magento\Api\Data\ProfileInterface $profile
+     * @param \SmartCat\Connector\Api\Data\ProfileInterface $profile
      * @return bool true on success
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function delete(
-        \SmartCat\Connector\Magento\Api\Data\ProfileInterface $profile
+        \SmartCat\Connector\Api\Data\ProfileInterface $profile
     );
 
     /**

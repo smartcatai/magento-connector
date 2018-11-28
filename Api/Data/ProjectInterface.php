@@ -19,16 +19,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Api\Data;
+namespace SmartCat\Connector\Api\Data;
 
 interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterface
 {
+    const ID = 'id';
     const TRANSLATE = 'translate';
     const DEADLINE = 'deadline';
     const COMMENT = 'comment';
     const IS_STATS_BUILDED = 'is_stats_builded';
     const CREATED_AT = 'created_at';
-    const PROJECT_ID = 'project_id';
     const UPDATED_AT = 'updated_at';
     const ELEMENT = 'element';
     const PRICE = 'price';
@@ -37,11 +37,13 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     const PROFILE_ID = 'profile_id';
     const GUID = 'guid';
 
+    const STATUS_WAITING = 'waiting';
     const STATUS_CREATED = 'created';
     const STATUS_IN_PROGRESS = 'inProgress';
     const STATUS_COMPLETED = 'completed';
     const STATUS_REJECTED = 'rejected';
     const STATUS_CANCELED = 'canceled';
+    const STATUS_FAILED = 'failed';
 
     /**
      * Get project_id
@@ -52,7 +54,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set project_id
      * @param string $projectId
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setProjectId($projectId);
 
@@ -65,7 +67,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set element
      * @param string $element
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setElement($element);
 
@@ -78,7 +80,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set GUID
      * @param string $guid
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setGuid($guid);
 
@@ -91,7 +93,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set profile_id
      * @param string $profileId
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setProfileId($profileId);
 
@@ -104,7 +106,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set translate
      * @param string $translate
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setTranslate($translate);
 
@@ -117,7 +119,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set status
      * @param string $status
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setStatus($status);
 
@@ -130,7 +132,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set price
      * @param string $price
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setPrice($price);
 
@@ -143,7 +145,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set deadline
      * @param string $deadline
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setDeadline($deadline);
 
@@ -156,7 +158,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set comment
      * @param string $comment
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setComment($comment);
 
@@ -169,7 +171,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set builded statistics
      * @param bool $isStatsBuilded
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setIsStatisticsBuilded($isStatsBuilded);
 
@@ -182,7 +184,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set created_at
      * @param string $createdAt
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setCreatedAt($createdAt);
 
@@ -195,7 +197,7 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set updated_at
      * @param string $updatedAt
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setUpdatedAt($updatedAt);
 }

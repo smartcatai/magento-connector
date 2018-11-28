@@ -19,13 +19,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Ui\Component\Listing\Column;
+namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Magento\Model\Config\Source\ProjectStatusList;
+use SmartCat\Connector\Model\Config\Source\ProjectStatusList;
 
 class ProjectStatusColumn extends Column
 {
@@ -60,16 +60,18 @@ class ProjectStatusColumn extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
+        $statusList = $this->statusList->toOptionArray();
+
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
                 if($this->getData('name') == 'status'){
                     try {
                         $index = array_search(
                             $item[$this->getData('name')],
-                            array_column($this->statusList->toOptionArray(), 'value')
+                            array_column($statusList, 'value')
                         );
 
-                        $item[$this->getData('name')] = $this->statusList->toOptionArray()[$index]['label'];
+                        $item[$this->getData('name')] = $statusList[$index]['label'];
                     } catch (NoSuchEntityException $e) {
                         continue;
                     }

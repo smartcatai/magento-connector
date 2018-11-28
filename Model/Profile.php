@@ -19,14 +19,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model;
+namespace SmartCat\Connector\Model;
 
-use SmartCat\Connector\Magento\Api\Data\ProfileInterface;
+use SmartCat\Connector\Api\Data\ProfileInterface;
 use \DateTime;
 
 class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileInterface
 {
-
     protected $_eventPrefix = 'smartcat_connector_profile';
 
     /**
@@ -34,7 +33,7 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
      */
     protected function _construct()
     {
-        $this->_init(\SmartCat\Connector\Magento\Model\ResourceModel\Profile::class);
+        $this->_init(\SmartCat\Connector\Model\ResourceModel\Profile::class);
     }
 
     /**
@@ -43,7 +42,7 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
      */
     public function getProfileId()
     {
-        return $this->getData(self::PROFILE_ID);
+        return $this->getData(self::ID);
     }
 
     /**
@@ -169,7 +168,7 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
 
     /**
      * Get stages array
-     * @return string
+     * @return string[]
      */
     public function getStagesArray()
     {
@@ -213,26 +212,20 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
      * Get project id
      * @return string|null
      */
-    public function getProjectId()
+    public function getProjectGuid()
     {
-        return $this->getData(self::PROJECT_ID);
+        return $this->getData(self::PROJECT_GUID);
 
     }
 
     /**
-<<<<<<< HEAD
      * Set project guid
      * @param string $projectGuid
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
-=======
-     * Set project id
-     * @param string $projecyId
      * @return \SmartCat\Connector\Api\Data\ProfileInterface
->>>>>>> parent of 06302bf... Refactoring
      */
-    public function setProjectId($projectId)
+    public function setProjectGuid($projectGuid)
     {
-        return $this->setData(self::PROJECT_ID, $projectId);
+        return $this->setData(self::PROJECT_GUID, $projectGuid);
 
     }
 

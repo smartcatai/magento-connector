@@ -19,10 +19,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model;
+namespace SmartCat\Connector\Model;
 
 /**
- * Factory class for @see \SmartCat\Connector\Magento\Model\Project
+ * Factory class for @see \SmartCat\Connector\Model\Project
  */
 class ProjectFactory
 {
@@ -46,7 +46,7 @@ class ProjectFactory
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param string $instanceName
      */
-    public function __construct(\Magento\Framework\ObjectManagerInterface $objectManager, $instanceName = '\\SmartCat\\Connector\Magento\\Model\\Project')
+    public function __construct(\Magento\Framework\ObjectManagerInterface $objectManager, $instanceName = '\\SmartCat\\Connector\\Model\\Project')
     {
         $this->_objectManager = $objectManager;
         $this->_instanceName = $instanceName;
@@ -56,7 +56,7 @@ class ProjectFactory
      * Create class instance with specified parameters
      *
      * @param array $data
-     * @return \SmartCat\Connector\Magento\Model\Project
+     * @return \SmartCat\Connector\Model\Project
      */
     public function create(array $data = array())
     {

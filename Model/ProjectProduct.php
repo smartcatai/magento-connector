@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model;
+namespace SmartCat\Connector\Model;
 
 
 class ProjectProduct extends \Magento\Framework\Model\AbstractModel
@@ -27,12 +27,13 @@ class ProjectProduct extends \Magento\Framework\Model\AbstractModel
     const PROJECT_ID = 'project_id';
     const PRODUCT_ID = 'product_id';
     const ID = 'id';
+
     /**
      * @return void
      */
     protected function _construct()
     {
-        $this->_init(\SmartCat\Connector\Magento\Model\ResourceModel\ProjectProduct::class);
+        $this->_init(\SmartCat\Connector\Model\ResourceModel\ProjectProduct::class);
     }
 
     /**

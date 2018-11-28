@@ -19,42 +19,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-<<<<<<< HEAD:Helper/SmartCatFacade.php
-namespace SmartCat\Connector\Magento\Helper;
-=======
-namespace SmartCat\Connector\Service;
->>>>>>> parent of 06302bf... Refactoring:Service/ConnectorService.php
+namespace SmartCat\Connector\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use SmartCat\Client\SmartCat;
 
-class ConnectorService
+class SmartCatFacade extends SmartCat
 {
-<<<<<<< HEAD:Helper/SmartCatFacade.php
-    /**
-     * SmartCatFacade constructor.
-     * @param ScopeConfigInterface $scopeConfig
-     */
-=======
-    /** @var SmartCat */
-    protected $connectorService;
-
-    /** @var ScopeConfigInterface */
-    private $scopeConfig;
-
->>>>>>> parent of 06302bf... Refactoring:Service/ConnectorService.php
     public function __construct(ScopeConfigInterface $scopeConfig)
     {
-        $this->scopeConfig = $scopeConfig;
-        $this->init();
-    }
+        $apiToken = $scopeConfig->getValue('general/smartcat_localization/token');
+        $applicationId = $scopeConfig->getValue('general/smartcat_localization/application_id');
 
-    private function init()
-    {
-        $apiToken = $this->scopeConfig->getValue('general/smartcat_localization/token');
-        $applicationId = $this->scopeConfig->getValue('general/smartcat_localization/application_id');
-
-        switch ($this->scopeConfig->getValue('general/smartcat_localization/server')) {
+        switch ($scopeConfig->getValue('general/smartcat_localization/server')) {
             case 'usa':
                 $host = SmartCat::SC_USA;
                 break;
@@ -66,11 +43,6 @@ class ConnectorService
                 break;
         }
 
-        $this->connectorService = new SmartCat($applicationId, $apiToken, $host);
-    }
-
-    public function getService()
-    {
-        return $this->connectorService;
+        parent::__construct($applicationId, $apiToken, $host);
     }
 }

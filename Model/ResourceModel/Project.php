@@ -19,14 +19,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model\ResourceModel;
+namespace SmartCat\Connector\Model\ResourceModel;
 
-<<<<<<< HEAD
-use SmartCat\Connector\Magento\Module;
-use SmartCat\Connector\Magento\Model\Project as ProjectModel;
-=======
 use SmartCat\Connector\Module;
->>>>>>> parent of 06302bf... Refactoring
+use SmartCat\Connector\Model\Project as ProjectModel;
 
 class Project extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
@@ -37,6 +33,6 @@ class Project extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected function _construct()
     {
-        $this->_init(Module::PROJECT_TABLE_NAME, 'project_id');
+        $this->_init(Module::PROJECT_TABLE_NAME, ProjectModel::ID);
     }
 }

@@ -19,10 +19,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model\ResourceModel;
+namespace SmartCat\Connector\Model\ResourceModel;
 
 
-use SmartCat\Connector\Magento\Module;
+use SmartCat\Connector\Module;
 
 class ProjectProduct extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {

@@ -19,12 +19,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model\ResourceModel\ProjectProduct;
+namespace SmartCat\Connector\Model\ResourceModel\ProjectProduct;
 
 use Magento\Framework\ObjectManagerInterface;
 
 /**
- * Factory class for @see \SmartCat\Connector\Magento\Model\ResourceModel\ProjectProduct\Collection
+ * Factory class for @see \SmartCat\Connector\Model\ResourceModel\ProjectProduct\Collection
  */
 class CollectionFactory
 {
@@ -60,7 +60,7 @@ class CollectionFactory
      * Create class instance with specified parameters
      *
      * @param array $data
-     * @return \SmartCat\Connector\Magento\Model\ResourceModel\ProjectProduct\Collection
+     * @return \SmartCat\Connector\Model\ResourceModel\ProjectProduct\Collection
      */
     public function create(array $data = array())
     {

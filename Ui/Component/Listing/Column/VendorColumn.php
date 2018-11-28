@@ -19,41 +19,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Ui\Component\Listing\Column;
+namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-<<<<<<< HEAD
-use SmartCat\Connector\Magento\Helper\SmartCatFacade;
-=======
-use SmartCat\Connector\Service\ConnectorService;
->>>>>>> parent of 06302bf... Refactoring
+use SmartCat\Connector\Helper\SmartCatFacade;
 
 class VendorColumn extends Column
 {
-    /**
-     * @var ConnectorService
-     */
-    protected $connectorService;
+    protected $smartCatService;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param ConnectorService  $connectorService
+     * @param SmartCatFacade  $smartCatService
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        ConnectorService $connectorService,
+        SmartCatFacade $smartCatService,
         array $components = [],
         array $data = []
     ) {
-        $this->connectorService = $connectorService;
+        $this->smartCatService = $smartCatService;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -70,8 +63,8 @@ class VendorColumn extends Column
 
         if (isset($dataSource['data']['items'])) {
             try {
-                $vendorsList = $this->connectorService->getService()
-                    ->getDirectoriesManager()->directoriesGet(['type' => 'vendor'])
+                $vendorsList = $this->smartCatService->getDirectoriesManager()
+                    ->directoriesGet(['type' => 'vendor'])
                     ->getItems();
 
                 foreach ($vendorsList as $vendor) {

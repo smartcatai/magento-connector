@@ -19,24 +19,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Api\Data;
+namespace SmartCat\Connector\Api\Data;
 
 interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterface
 {
-
+    const ID = 'id';
     const CREATED_AT = 'created_at';
     const STAGES = 'stages';
     const SOURCE_LANG = 'source_lang';
     const UPDATED_AT = 'updated_at';
     const VENDOR = 'vendor';
     const NAME = 'name';
-    const PROFILE_ID = 'profile_id';
     const TARGET_LANG = 'target_lang';
     const AUTO_SEND_NEW = 'auto_send_new';
     const AUTO_SEND_SAVE = 'auto_send_save';
     const EXCLUDED_ATTRIBUTES = 'excluded_attributes';
     const BATCH_SEND = 'batch_send';
-    const PROJECT_ID = 'project_id';
+    const PROJECT_GUID = 'project_guid';
 
     /**
      * Get profile_id
@@ -47,7 +46,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set profile_id
      * @param string $profileId
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setProfileId($profileId);
 
@@ -60,7 +59,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set vendor
      * @param string $vendor
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setVendor($vendor);
 
@@ -73,7 +72,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set source_lang
      * @param string $sourceLang
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setSourceLang($sourceLang);
 
@@ -86,7 +85,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set excluded attributes
      * @param string $excludedAttributes
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setExcludedAttributes($excludedAttributes);
 
@@ -99,7 +98,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set target_lang
      * @param string $targetLang
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setTargetLang($targetLang);
 
@@ -112,7 +111,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set stages
      * @param string $stages
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setStages($stages);
 
@@ -125,28 +124,22 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set name
      * @param string $name
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setName($name);
 
     /**
-     * Get project id
+     * Get project guid
      * @return string|null
      */
-    public function getProjectId();
+    public function getProjectGuid();
 
     /**
-<<<<<<< HEAD
      * Set project guid
      * @param string $projecyGuid
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
-=======
-     * Set project id
-     * @param string $projecyId
      * @return \SmartCat\Connector\Api\Data\ProfileInterface
->>>>>>> parent of 06302bf... Refactoring
      */
-    public function setProjectId($projectId);
+    public function setProjectGuid($projectGuid);
 
     /**
      * Get auto send
@@ -157,7 +150,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set auto send new
      * @param string $autoSendNew
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setAutoSendNew($autoSendNew);
 
@@ -170,7 +163,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set batch send
      * @param string $batchSend
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setBatchSend($batchSend);
 
@@ -183,7 +176,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set auto send new
      * @param string $autoSendNew
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setAutoSendSave($autoSendNew);
 
@@ -196,7 +189,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set created_at
      * @param string $createdAt
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setCreatedAt($createdAt);
 
@@ -209,7 +202,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     /**
      * Set updated_at
      * @param string $updatedAt
-     * @return \SmartCat\Connector\Magento\Api\Data\ProfileInterface
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setUpdatedAt($updatedAt);
 }

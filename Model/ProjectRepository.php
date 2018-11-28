@@ -19,22 +19,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model;
+namespace SmartCat\Connector\Model;
 
-use SmartCat\Connector\Magento\Api\Data\ProjectSearchResultsInterfaceFactory;
+use SmartCat\Connector\Api\Data\ProjectSearchResultsInterfaceFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
-use SmartCat\Connector\Magento\Model\ResourceModel\Project as ResourceProject;
+use SmartCat\Connector\Model\ResourceModel\Project as ResourceProject;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\CouldNotDeleteException;
-use SmartCat\Connector\Magento\Model\ResourceModel\Project\CollectionFactory as ProjectCollectionFactory;
+use SmartCat\Connector\Model\ResourceModel\Project\CollectionFactory as ProjectCollectionFactory;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Store\Model\StoreManagerInterface;
-use SmartCat\Connector\Magento\Api\ProjectRepositoryInterface;
+use SmartCat\Connector\Api\ProjectRepositoryInterface;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
-use SmartCat\Connector\Magento\Api\Data\ProjectInterfaceFactory;
+use SmartCat\Connector\Api\Data\ProjectInterfaceFactory;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\DataObjectHelper;
-use SmartCat\Connector\Magento\Module;
+use SmartCat\Connector\Module;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -91,7 +91,7 @@ class ProjectRepository implements ProjectRepositoryInterface
      * {@inheritdoc}
      */
     public function save(
-        \SmartCat\Connector\Magento\Api\Data\ProjectInterface $project
+        \SmartCat\Connector\Api\Data\ProjectInterface $project
     ) {
         /* if (empty($project->getStoreId())) {
             $storeId = $this->storeManager->getStore()->getId();
@@ -145,7 +145,7 @@ class ProjectRepository implements ProjectRepositoryInterface
      * {@inheritdoc}
      */
     public function delete(
-        \SmartCat\Connector\Magento\Api\Data\ProjectInterface $project
+        \SmartCat\Connector\Api\Data\ProjectInterface $project
     ) {
         try {
             $this->resource->delete($project);

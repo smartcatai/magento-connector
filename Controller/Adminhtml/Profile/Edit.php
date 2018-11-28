@@ -19,9 +19,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Controller\Adminhtml\Profile;
+namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
-class Edit extends \SmartCat\Connector\Magento\Controller\Adminhtml\Profile
+class Edit extends \SmartCat\Connector\Controller\Adminhtml\Profile
 {
 
     protected $resultPageFactory;
@@ -49,7 +49,7 @@ class Edit extends \SmartCat\Connector\Magento\Controller\Adminhtml\Profile
     {
         // 1. Get ID and create model
         $id = $this->getRequest()->getParam('profile_id');
-        $model = $this->_objectManager->create(\SmartCat\Connector\Magento\Model\Profile::class);
+        $model = $this->_objectManager->create(\SmartCat\Connector\Model\Profile::class);
         
         // 2. Initial checking
         if ($id) {

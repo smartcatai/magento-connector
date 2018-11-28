@@ -19,14 +19,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Helper;
+namespace SmartCat\Connector\Helper;
 
 use Http\Client\Common\Exception\ClientErrorException;
 use Http\Client\Common\Exception\ServerErrorException;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
-use SmartCat\Connector\Magento\Model\Project;
-use SmartCat\Connector\Magento\Model\ProjectRepository;
+use SmartCat\Connector\Model\Project;
+use SmartCat\Connector\Model\ProjectRepository;
 use \Throwable;
 
 class ErrorHandler
@@ -60,7 +60,7 @@ class ErrorHandler
         }
 
         $project
-            ->setStatus(Project::STATUS_REJECTED)
+            ->setStatus(Project::STATUS_FAILED)
             ->setComment($message);
 
         try {

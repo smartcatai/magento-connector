@@ -1,10 +1,10 @@
 <?php
-namespace SmartCat\Connector\Magento\Controller\Adminhtml\Profile\Edit;
+namespace SmartCat\Connector\Controller\Adminhtml\Profile\Edit;
 
 /**
- * Interceptor class for @see \SmartCat\Connector\Magento\Controller\Adminhtml\Profile\Edit
+ * Interceptor class for @see \SmartCat\Connector\Controller\Adminhtml\Profile\Edit
  */
-class Interceptor extends \SmartCat\Connector\Magento\Controller\Adminhtml\Profile\Edit implements \Magento\Framework\Interception\InterceptorInterface
+class Interceptor extends \SmartCat\Connector\Controller\Adminhtml\Profile\Edit implements \Magento\Framework\Interception\InterceptorInterface
 {
     use \Magento\Framework\Interception\Interceptor;
 

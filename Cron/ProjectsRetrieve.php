@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Cron;
+namespace SmartCat\Connector\Cron;
 
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -27,32 +27,20 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManager;
 use SmartCat\Client\Model\ProjectModel;
-<<<<<<< HEAD
-use SmartCat\Connector\Magento\Api\Data\ProjectInterface;
-use SmartCat\Connector\Magento\Helper\ErrorHandler;
-use SmartCat\Connector\Magento\Helper\SmartCatFacade;
-use SmartCat\Connector\Magento\Model\ProfileRepository;
-use SmartCat\Connector\Magento\Model\Project;
-use SmartCat\Connector\Magento\Model\ProjectRepository;
-use SmartCat\Connector\Magento\Module;
-=======
-use SmartCat\Client\SmartCat;
 use SmartCat\Connector\Api\Data\ProjectInterface;
 use SmartCat\Connector\Helper\ErrorHandler;
+use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\ProfileRepository;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectRepository;
 use SmartCat\Connector\Module;
-use SmartCat\Connector\Service\ConnectorService;
->>>>>>> parent of 06302bf... Refactoring
 use Magento\Catalog\Model\ProductRepository;
-use SmartCat\Connector\Magento\Model\ProjectProductRepository;
-use SmartCat\Connector\Magento\Service\FileService;
+use SmartCat\Connector\Model\ProjectProductRepository;
+use SmartCat\Connector\Service\FileService;
 use \Throwable;
 
 class ProjectsRetrieve
 {
-    /** @var SmartCat */
     private $smartCatService;
     private $profileRepository;
     private $projectRepository;
@@ -70,12 +58,12 @@ class ProjectsRetrieve
         ProductRepository $productRepository,
         ProjectProductRepository $projectProductRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        ConnectorService $connectorService,
+        SmartCatFacade $smartCatService,
         StoreManager $storeManager,
         FileService $fileService
     ) {
         $this->errorHandler = $errorHandler;
-        $this->smartCatService = $connectorService->getService();
+        $this->smartCatService = $smartCatService;
         $this->projectRepository = $projectRepository;
         $this->profileRepository = $profileRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -124,7 +112,7 @@ class ProjectsRetrieve
                         continue;
                     }
                     
-                    $this->extractDocuments($project->getGuid(), $zipPath);
+                    $this->extractDocuments($project->getUniqueId(), $zipPath);
                 } catch (Throwable $e) {
                     $this->errorHandler->handleProjectError($e, $project,"SmartCat API Error");
                     continue;
@@ -140,7 +128,7 @@ class ProjectsRetrieve
                     }
 
                     $projectProductSearchCriteria = $this->searchCriteriaBuilder
-                        ->addFilter(Project::PROJECT_ID, $project->getProjectId())
+                        ->addFilter(Project::ID, $project->getProjectId())
                         ->create();
 
                     $projectProducts = $this->projectProductRepository->getList($projectProductSearchCriteria)->getItems();
@@ -162,7 +150,12 @@ class ProjectsRetrieve
                 }
             }
 
-            $project->setStatus($smartCatProject->getStatus());
+            $project
+                ->setStatus($smartCatProject->getStatus());
+
+            if ($smartCatProject->getDeadline()) {
+                $project->setDeadline($smartCatProject->getDeadline()->format('U'));
+            }
 
             try {
                 $this->projectRepository->save($project);
@@ -220,7 +213,7 @@ class ProjectsRetrieve
 
                 return $this->saveDocuments($taskId, $project, ++$attempt);
             case 200:
-                $fileName = "{$project->getGuid()}/zip/file_" . uniqid() . uniqid() . ".zip";
+                $fileName = "{$project->getUniqueId()}/zip/file_" . uniqid() . uniqid() . ".zip";
 
                 if (in_array($response->getHeaderLine('Content-Type'), Module::TEXT_MIME_TYPES)) {
                     $matches = [];
@@ -230,7 +223,7 @@ class ProjectsRetrieve
                         $response->getHeaderLine('Content-Disposition'),
                         $matches
                     );
-                    $fileName = "{$project->getGuid()}/completed/{$matches['languageCode']}/{$matches['sku']}/{$matches['attribute']}";
+                    $fileName = "{$project->getUniqueId()}/completed/{$matches['languageCode']}/{$matches['sku']}/{$matches['attribute']}";
                 }
                 $this->fileService->writeFile($fileName, $response->getBody()->getContents());
 
@@ -290,14 +283,14 @@ class ProjectsRetrieve
 
     /**
      * @param Product $product
-     * @param ProjectInterface $project
+     * @param ProjectInterface|Project $project
      * @param $languageCode
      * @throws \Magento\Framework\Exception\FileSystemException
      */
     private function setAttributes(Product &$product, ProjectInterface $project, $languageCode)
     {
         $completedPath = $this->fileService->getAbsolutePath(
-            "{$project->getGuid()}/completed/{$languageCode}/{$product->getSku()}/"
+            "{$project->getUniqueId()}/completed/{$languageCode}/{$product->getSku()}/"
         );
         $files = $this->fileService->getDirectoryFiles($completedPath);
 

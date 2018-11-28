@@ -19,23 +19,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Service;
+namespace SmartCat\Connector\Service;
 
 
-use SmartCat\Connector\Magento\Exception\ProfileServiceException;
-use SmartCat\Connector\Magento\Model\Profile;
-use SmartCat\Connector\Magento\Model\ProfileRepository;
+use SmartCat\Connector\Exception\ProfileServiceException;
+use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Model\ProfileRepository;
 
 class ProfileService
 {
     private $profileRepository;
     private $storeService;
 
-    /**
-     * ProfileService constructor.
-     * @param ProfileRepository $profileRepository
-     * @param StoreService $storeService
-     */
     public function __construct(
         ProfileRepository $profileRepository,
         StoreService $storeService

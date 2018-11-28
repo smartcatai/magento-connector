@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Controller\Adminhtml\Profile;
+namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
 class InlineEdit extends \Magento\Backend\App\Action
 {
@@ -57,8 +57,8 @@ class InlineEdit extends \Magento\Backend\App\Action
                 $error = true;
             } else {
                 foreach (array_keys($postItems) as $modelid) {
-                    /** @var \SmartCat\Connector\Magento\Model\Profile $model */
-                    $model = $this->_objectManager->create(\SmartCat\Connector\Magento\Model\Profile::class)->load($modelid);
+                    /** @var \SmartCat\Connector\Model\Profile $model */
+                    $model = $this->_objectManager->create(\SmartCat\Connector\Model\Profile::class)->load($modelid);
                     try {
                         $model->setData(array_merge($model->getData(), $postItems[$modelid]));
                         $model->save();

@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Api\Data;
+namespace SmartCat\Connector\Api\Data;
 
 use Magento\Framework\ObjectManagerInterface;
 
@@ -55,7 +55,7 @@ class ProjectProductSearchResultsFactory
      * Create class instance with specified parameters
      *
      * @param array $data
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectProductSearchResultsInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectProductSearchResultsInterface
      */
     public function create(array $data = array())
     {

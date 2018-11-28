@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Api;
+namespace SmartCat\Connector\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
 
@@ -28,18 +28,18 @@ interface ProjectRepositoryInterface
 
     /**
      * Save Project
-     * @param \SmartCat\Connector\Magento\Api\Data\ProjectInterface $project
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @param \SmartCat\Connector\Api\Data\ProjectInterface $project
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function save(
-        \SmartCat\Connector\Magento\Api\Data\ProjectInterface $project
+        \SmartCat\Connector\Api\Data\ProjectInterface $project
     );
 
     /**
      * Retrieve Project
      * @param string $projectId
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getById($projectId);
@@ -47,7 +47,7 @@ interface ProjectRepositoryInterface
     /**
      * Retrieve Project matching the specified criteria.
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectSearchResultsInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectSearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getList(
@@ -56,12 +56,12 @@ interface ProjectRepositoryInterface
 
     /**
      * Delete Project
-     * @param \SmartCat\Connector\Magento\Api\Data\ProjectInterface $project
+     * @param \SmartCat\Connector\Api\Data\ProjectInterface $project
      * @return bool true on success
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function delete(
-        \SmartCat\Connector\Magento\Api\Data\ProjectInterface $project
+        \SmartCat\Connector\Api\Data\ProjectInterface $project
     );
 
     /**

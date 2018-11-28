@@ -19,18 +19,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model\Profile;
+namespace SmartCat\Connector\Model\Profile;
 
-use SmartCat\Connector\Magento\Model\ResourceModel\Profile\CollectionFactory;
+use SmartCat\Connector\Model\ResourceModel\Profile\CollectionFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
 
 class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
-
     protected $collection;
-
     protected $dataPersistor;
-
     protected $loadedData;
 
     /**

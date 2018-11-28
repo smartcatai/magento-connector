@@ -19,26 +19,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model\Config\Source;
+namespace SmartCat\Connector\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
-<<<<<<< HEAD
-use SmartCat\Connector\Magento\Helper\SmartCatFacade;
-=======
-use SmartCat\Connector\Service\ConnectorService;
->>>>>>> parent of 06302bf... Refactoring
+use SmartCat\Connector\Helper\SmartCatFacade;
 use Magento\Framework\Message\ManagerInterface;
 
 class VendorList implements ArrayInterface
 {
-    private $connectorService;
+    private $smartCatService;
     private $messageManager;
 
+    /**
+     * VendorList constructor.
+     * @param SmartCatFacade $smartCatService
+     * @param ManagerInterface $messageManager
+     */
     public function __construct(
-        ConnectorService $connectorService,
+        SmartCatFacade $smartCatService,
         ManagerInterface $messageManager
     ) {
-        $this->connectorService = $connectorService;
+        $this->smartCatService = $smartCatService;
         $this->messageManager = $messageManager;
     }
 
@@ -49,8 +50,8 @@ class VendorList implements ArrayInterface
         ];
 
         try {
-            $vendorsList = $this->connectorService->getService()
-                ->getDirectoriesManager()->directoriesGet(['type' => 'vendor'])
+            $vendorsList = $this->smartCatService->getDirectoriesManager()
+                ->directoriesGet(['type' => 'vendor'])
                 ->getItems();
 
         } catch (\Throwable $e) {

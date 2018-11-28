@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Controller\Adminhtml;
+namespace SmartCat\Connector\Controller\Adminhtml;
 
 abstract class Profile extends \Magento\Backend\App\Action
 {
@@ -49,7 +49,7 @@ abstract class Profile extends \Magento\Backend\App\Action
     {
         $resultPage->setActiveMenu(self::ADMIN_RESOURCE)
             ->addBreadcrumb(__('SmartCat'), __('SmartCat'))
-            ->addBreadcrumb(__('Profile'), __('Profile'));
+            ->addBreadcrumb(__('Dashboard'), __('Dashboard'));
         return $resultPage;
     }
 }

@@ -19,9 +19,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Controller\Adminhtml\Profile;
+namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
-class NewAction extends \SmartCat\Connector\Magento\Controller\Adminhtml\Profile
+class NewAction extends \SmartCat\Connector\Controller\Adminhtml\Profile
 {
 
     protected $resultForwardFactory;

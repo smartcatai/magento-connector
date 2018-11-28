@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Cron;
+namespace SmartCat\Connector\Cron;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\LocalizedException;
@@ -27,12 +27,12 @@ use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Client\Model\CreateProjectModel;
 use SmartCat\Client\Model\DocumentModel;
 use SmartCat\Client\Model\ProjectChangesModel;
-use SmartCat\Connector\Magento\Helper\ErrorHandler;
-use SmartCat\Connector\Magento\Helper\SmartCatFacade;
-use SmartCat\Connector\Magento\Model\Profile;
-use SmartCat\Connector\Magento\Model\Project;
-use SmartCat\Connector\Magento\Model\ProjectRepository;
-use SmartCat\Connector\Magento\Service\ProjectService;
+use SmartCat\Connector\Helper\ErrorHandler;
+use SmartCat\Connector\Helper\SmartCatFacade;
+use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Model\Project;
+use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Service\ProjectService;
 use \Throwable;
 
 class ProjectsSending
@@ -43,14 +43,6 @@ class ProjectsSending
     private $searchCriteriaBuilder;
     private $projectRepository;
 
-    /**
-     * ProjectsSending constructor.
-     * @param SmartCatFacade $smartCatService
-     * @param ProjectService $projectService
-     * @param ProjectRepository $projectRepository
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param ErrorHandler $errorHandler
-     */
     public function __construct(
         SmartCatFacade $smartCatService,
         ProjectService $projectService,
@@ -65,11 +57,6 @@ class ProjectsSending
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
-    /**
-     * Execute the cron
-     *
-     * @return void
-     */
     public function execute()
     {
         $criteria = $this->searchCriteriaBuilder->addFilter(Project::STATUS, Project::STATUS_WAITING)->create();
@@ -97,21 +84,16 @@ class ProjectsSending
         }
     }
 
-    /**
-     * @param Project $project
-     * @param Profile $profile
-     */
     private function createProject(Project $project, Profile $profile) {
         // Create and send project model to smartcat api
         $projectManager = $this->smartCatService->getProjectManager();
 
         $newProjectModel = (new CreateProjectModel())
             ->setName($project->getElement())
-            ->setDescription('Magento SmartCat Connector. Project: ' . $project->getUniqueId())
+            ->setDescription('Magento SmartCat Connector. Product: ' . md5($project->getElement()))
             ->setSourceLanguage($profile->getSourceLang())
             ->setTargetLanguages($profile->getTargetLangArray())
             ->setWorkflowStages($profile->getStagesArray())
-            ->setExternalTag('source:Magento')
             ->setAssignToVendor(false);
 
         try {
@@ -150,10 +132,6 @@ class ProjectsSending
         }
     }
 
-    /**
-     * @param Project $project
-     * @param Profile $profile
-     */
     private function updateProject(Project $project, Profile $profile) {
         $projectManager = $this->smartCatService->getProjectManager();
         $documentManager = $this->smartCatService->getDocumentManager();

@@ -9,10 +9,10 @@
 	</argument>
 	<settings>
 		<buttons>
-			<button class="SmartCat\Connector\Magento\Block\Adminhtml\Profile\Edit\BackButton" name="back"/>
-			<button class="SmartCat\Connector\Magento\Block\Adminhtml\Profile\Edit\DeleteButton" name="delete"/>
-			<button class="SmartCat\Connector\Magento\Block\Adminhtml\Profile\Edit\SaveButton" name="save"/>
-			<button class="SmartCat\Connector\Magento\Block\Adminhtml\Profile\Edit\SaveAndContinueButton" name="save_and_continue"/>
+			<button class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\BackButton" name="back"/>
+			<button class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\DeleteButton" name="delete"/>
+			<button class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\SaveButton" name="save"/>
+			<button class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\SaveAndContinueButton" name="save_and_continue"/>
 		</buttons>
 		<namespace>smartcat_connector_profile_form</namespace>
 		<dataScope>data</dataScope>
@@ -29,10 +29,10 @@
 		<settings>
 			<submitUrl path="*/*/save"/>
 		</settings>
-		<dataProvider class="SmartCat\Connector\Magento\Model\Profile\DataProvider" name="profile_form_data_source">
+		<dataProvider class="SmartCat\Connector\Model\Profile\DataProvider" name="profile_form_data_source">
 			<settings>
-				<requestFieldName>profile_id</requestFieldName>
-				<primaryFieldName>profile_id</primaryFieldName>
+				<requestFieldName>id</requestFieldName>
+				<primaryFieldName>id</primaryFieldName>
 			</settings>
 		</dataProvider>
 	</dataSource>
@@ -58,7 +58,7 @@
 		</field>
 		<field formElement="select" name="vendor" sortOrder="20">
 			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">SmartCat\Connector\Magento\Model\Config\Source\VendorList</item>
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\VendorList</item>
 				<item name="config" xsi:type="array">
 					<item name="source" xsi:type="string">Profile</item>
 				</item>
@@ -74,7 +74,7 @@
 		</field>
 		<field formElement="select" name="source_lang" sortOrder="30">
 			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">SmartCat\Connector\Magento\Model\Config\Source\LanguagesList</item>
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\LanguagesList</item>
 				<item name="config" xsi:type="array">
 					<item name="source" xsi:type="string">Profile</item>
 				</item>
@@ -90,7 +90,7 @@
 		</field>
 		<field formElement="multiselect" name="target_lang" sortOrder="40">
 			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">SmartCat\Connector\Magento\Model\Config\Source\LanguagesList</item>
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\LanguagesList</item>
 				<item name="config" xsi:type="array">
 					<item name="source" xsi:type="string">Profile</item>
 				</item>
@@ -106,7 +106,7 @@
 		</field>
 		<field formElement="multiselect" name="stages" sortOrder="50">
 			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">SmartCat\Connector\Magento\Model\Config\Source\WorkflowStagesList</item>
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\WorkflowStagesList</item>
 				<item name="config" xsi:type="array">
 					<item name="source" xsi:type="string">Profile</item>
 				</item>
@@ -129,8 +129,8 @@
 			<settings>
 				<dataType>text</dataType>
 				<label translate="true">Smartcat Project ID</label>
-				<notice translate="true"><![CDATA[Enter here a Smartcat project ID to send all ongiong tasks to one specific project. <a href="https://help.smartcat.ai/hc/en-us/articles/115002522912">Learn more</a> where to get the ID.]]></notice>
-				<dataScope>project_id</dataScope>
+				<notice translate="true">Enter here a Smartcat project ID to send all ongiong tasks to one specific project.</notice>
+				<dataScope>project_guid</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">false</rule>
 				</validation>
@@ -138,7 +138,7 @@
 		</field>
 		<field formElement="multiselect" name="excluded_attributes" sortOrder="65">
 			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">SmartCat\Connector\Magento\Model\Config\Source\AttributesList</item>
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\AttributesList</item>
 				<item name="config" xsi:type="array">
 					<item name="source" xsi:type="string">Profile</item>
 				</item>

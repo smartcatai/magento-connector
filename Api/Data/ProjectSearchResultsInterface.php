@@ -19,19 +19,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Api\Data;
+namespace SmartCat\Connector\Api\Data;
 
 interface ProjectSearchResultsInterface extends \Magento\Framework\Api\SearchResultsInterface
 {
     /**
      * Get Project list.
-     * @return \SmartCat\Connector\Magento\Api\Data\ProjectInterface[]
+     * @return \SmartCat\Connector\Api\Data\ProjectInterface[]
      */
     public function getItems();
 
     /**
      * Set project_id list.
-     * @param \SmartCat\Connector\Magento\Api\Data\ProjectInterface[] $items
+     * @param \SmartCat\Connector\Api\Data\ProjectInterface[] $items
      * @return $this
      */
     public function setItems(array $items);

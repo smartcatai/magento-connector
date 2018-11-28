@@ -6,23 +6,20 @@
  * Time: 19:00
  */
 
-namespace SmartCat\Connector\Magento\Service;
+namespace SmartCat\Connector\Service;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
 use \FilesystemIterator;
-use SmartCat\Connector\Magento\Module;
+use SmartCat\Connector\Module;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use \ZipArchive;
 
 class FileService
 {
+    /** @var Filesystem $filesystem */
     private $filesystem;
 
-    /**
-     * FileService constructor.
-     * @param Filesystem $filesystem
-     */
     public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;

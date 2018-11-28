@@ -19,11 +19,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Magento\Model\ResourceModel\Profile;
+namespace SmartCat\Connector\Model\ResourceModel\Profile;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
-use SmartCat\Connector\Magento\Model\ResourceModel\Profile as ProfileResourceModel;
-use SmartCat\Connector\Magento\Model\Profile;
+use SmartCat\Connector\Model\ResourceModel\Profile as ProfileResourceModel;
+use SmartCat\Connector\Model\Profile;
 
 class Collection extends AbstractCollection
 {
