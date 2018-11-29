@@ -21,7 +21,6 @@
 
 namespace SmartCat\Connector;
 
-
 class Module
 {
     const MANUFACTURER = 'smartcat_connector';

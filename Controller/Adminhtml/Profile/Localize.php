@@ -21,8 +21,7 @@
 
 namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
-use Http\Client\Common\Exception\ClientErrorException;
-use Http\Client\Common\Exception\ServerErrorException;
+use Magento\Catalog\Ui\DataProvider\Product\ProductCollectionFactory;
 use SmartCat\Connector\Api\ProfileRepositoryInterface;
 use Magento\Backend\App\Action\Context;
 use SmartCat\Connector\Exception\SmartCatHttpException;
@@ -32,12 +31,15 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\App\ObjectManager;
 use SmartCat\Connector\Service\ProjectService;
+use Magento\Ui\Component\MassAction\Filter;
 
 class Localize extends \Magento\Backend\App\Action
 {
     private $productRepository;
     private $profileRepository;
+    private $productCollectionFactory;
     private $projectService;
+    private $filter;
 
     /**
      * @param Context $context
@@ -47,7 +49,9 @@ class Localize extends \Magento\Backend\App\Action
      */
     public function __construct(
         Context $context,
+        Filter $filter,
         ProjectService $projectService,
+        ProductCollectionFactory $productCollectionFactory,
         ProfileRepositoryInterface $profileRepository = null,
         ProductRepositoryInterface $productRepository = null
     ) {
@@ -56,6 +60,8 @@ class Localize extends \Magento\Backend\App\Action
         $this->profileRepository = $profileRepository
             ?: ObjectManager::getInstance()->create(ProfileRepositoryInterface::class);
         $this->projectService = $projectService;
+        $this->productCollectionFactory = $productCollectionFactory;
+        $this->filter = $filter;
         parent::__construct($context);
     }
 
@@ -74,6 +80,7 @@ class Localize extends \Magento\Backend\App\Action
     {
         /** @var \Magento\Framework\App\Request\Http $request */
         $request = $this->getRequest();
+        $products = $this->filter->getCollection($this->productCollectionFactory->create());
 
         /** @var \Magento\Backend\Model\View\Result\Redirect\Interceptor $resultFactory */
         $resultFactory = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
@@ -82,7 +89,6 @@ class Localize extends \Magento\Backend\App\Action
             throw new NotFoundException(__('Page not found'));
         }
 
-        $productsIds = $request->getParam('selected');
         $profileId = $request->getParam(Profile::ID);
 
         /** @var Profile $profile */
@@ -94,20 +100,14 @@ class Localize extends \Magento\Backend\App\Action
             return $resultFactory->setPath('catalog/product/index');
         }
 
-        $products = [];
-
-        if (empty($productsIds)) {
+        if ($products->getSize() == 0) {
             $this->messageManager->addErrorMessage(__('Not found selected products'));
             return $resultFactory->setPath('catalog/product/index');
         }
 
-        foreach ($productsIds as $productId) {
-            $products[] = $this->productRepository->getById($productId, false, 1);
-        }
-
         try {
             if ($profile->getBatchSend()) {
-                $this->projectService->create($products, $profile);
+                $this->projectService->create($products->getItems(), $profile);
             } else {
                 foreach ($products as $product) {
                     $this->projectService->create([$product], $profile);

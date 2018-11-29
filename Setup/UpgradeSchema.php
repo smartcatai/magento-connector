@@ -24,10 +24,13 @@ namespace SmartCat\Connector\Setup;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Framework\DB\Ddl\Table;
+use SmartCat\Connector\Module;
+use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Model\Project;
 
 class UpgradeSchema implements UpgradeSchemaInterface
 {
-
     /**
      * {@inheritdoc}
      */
@@ -35,8 +38,34 @@ class UpgradeSchema implements UpgradeSchemaInterface
         SchemaSetupInterface $setup,
         ModuleContextInterface $context
     ) {
-        if (version_compare($context->getVersion(), "1.0.0", "<")) {
-            //Your upgrade script
+        if (version_compare($context->getVersion(), "1.0.2", "<")) {
+            $this->ver102($setup);
         }
+    }
+
+    private function ver102(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->dropForeignKey(
+            $setup->getTable(Module::PROJECT_TABLE_NAME),
+            $setup->getFkName(
+                Module::PROJECT_TABLE_NAME,
+                Project::PROFILE_ID,
+                Module::PROFILE_TABLE_NAME,
+                Profile::ID)
+        );
+
+        $setup->getConnection()->addForeignKey(
+            $setup->getFkName(
+                Module::PROJECT_TABLE_NAME,
+                Project::PROFILE_ID,
+                Module::PROFILE_TABLE_NAME,
+                Profile::ID
+            ),
+            $setup->getTable(Module::PROJECT_TABLE_NAME),
+            Project::PROFILE_ID,
+            $setup->getTable(Module::PROFILE_TABLE_NAME),
+            Profile::ID,
+            Table::ACTION_CASCADE
+        );
     }
 }

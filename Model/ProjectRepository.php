@@ -148,6 +148,7 @@ class ProjectRepository implements ProjectRepositoryInterface
         \SmartCat\Connector\Api\Data\ProjectInterface $project
     ) {
         try {
+            // TODO add removing directories of this project
             $this->resource->delete($project);
         } catch (\Exception $exception) {
             throw new CouldNotDeleteException(__(
