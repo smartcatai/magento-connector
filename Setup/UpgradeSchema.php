@@ -28,9 +28,21 @@ use Magento\Framework\DB\Ddl\Table;
 use SmartCat\Connector\Module;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
+use SmartCat\Сonnector\Helper\SetupHelper;
 
 class UpgradeSchema implements UpgradeSchemaInterface
 {
+    private $helper;
+
+    /**
+     * InstallSchema constructor.
+     * @param SetupHelper $helper
+     */
+    public function __construct(SetupHelper $helper)
+    {
+        $this->helper = $helper;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -54,17 +66,30 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 Profile::ID)
         );
 
-        $setup->getConnection()->addForeignKey(
-            $setup->getFkName(
-                Module::PROJECT_TABLE_NAME,
-                Project::PROFILE_ID,
-                Module::PROFILE_TABLE_NAME,
-                Profile::ID
-            ),
-            $setup->getTable(Module::PROJECT_TABLE_NAME),
+        $this->helper->setForeignKey(
+            $setup,
+            Module::PROJECT_TABLE_NAME,
             Project::PROFILE_ID,
-            $setup->getTable(Module::PROFILE_TABLE_NAME),
+            Module::PROFILE_TABLE_NAME,
             Profile::ID,
+            Table::ACTION_CASCADE
+        );
+
+        $setup->getConnection()->dropForeignKey(
+            $setup->getTable(Module::PROJECT_PRODUCT_TABLE_NAME),
+            $setup->getFkName(
+                Module::PROJECT_PRODUCT_TABLE_NAME,
+                'project_id',
+                Module::PROJECT_TABLE_NAME,
+                Project::ID)
+        );
+
+        $this->helper->setForeignKey(
+            $setup,
+            Module::PROJECT_PRODUCT_TABLE_NAME,
+            'project_id',
+            Module::PROJECT_TABLE_NAME,
+            Project::ID,
             Table::ACTION_CASCADE
         );
     }

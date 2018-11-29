@@ -21,7 +21,7 @@
 
 namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
-use Magento\Catalog\Ui\DataProvider\Product\ProductCollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use SmartCat\Connector\Api\ProfileRepositoryInterface;
 use Magento\Backend\App\Action\Context;
 use SmartCat\Connector\Exception\SmartCatHttpException;
