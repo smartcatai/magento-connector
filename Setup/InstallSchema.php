@@ -29,21 +29,9 @@ use Magento\Framework\DB\Adapter\AdapterInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Module;
-use SmartCat\Сonnector\Helper\SetupHelper;
 
 class InstallSchema implements InstallSchemaInterface
 {
-    private $helper;
-
-    /**
-     * InstallSchema constructor.
-     * @param SetupHelper $helper
-     */
-    public function __construct(SetupHelper $helper)
-    {
-        $this->helper = $helper;
-    }
-
     /**
      * @param SchemaSetupInterface $installer
      * @param ModuleContextInterface $context
@@ -52,11 +40,11 @@ class InstallSchema implements InstallSchemaInterface
     public function install(SchemaSetupInterface $installer, ModuleContextInterface $context)
     {
         $installer->startSetup();
-        $this->helper->initTable($installer, Module::PROJECT_TABLE_NAME, $this->getProjectColumns());
-        $this->helper->initTable($installer, Module::PROFILE_TABLE_NAME, $this->getProfileColumns());
-        $this->helper->initTable($installer, Module::PROJECT_PRODUCT_TABLE_NAME, $this->getProjectProductColumns());
+        $this->initTable($installer, Module::PROJECT_TABLE_NAME, $this->getProjectColumns());
+        $this->initTable($installer, Module::PROFILE_TABLE_NAME, $this->getProfileColumns());
+        $this->initTable($installer, Module::PROJECT_PRODUCT_TABLE_NAME, $this->getProjectProductColumns());
 
-        $this->helper->setForeignKey(
+        $this->setForeignKey(
             $installer,
             Module::PROJECT_TABLE_NAME,
             Project::PROFILE_ID,
@@ -64,7 +52,7 @@ class InstallSchema implements InstallSchemaInterface
             Profile::ID
         );
 
-        $this->helper->setForeignKey(
+        $this->setForeignKey(
             $installer,
             Module::PROJECT_PRODUCT_TABLE_NAME,
             'product_id',
@@ -72,7 +60,7 @@ class InstallSchema implements InstallSchemaInterface
             'entity_id'
         );
 
-        $this->helper->setForeignKey(
+        $this->setForeignKey(
             $installer,
             Module::PROJECT_PRODUCT_TABLE_NAME,
             'project_id',
@@ -358,5 +346,70 @@ class InstallSchema implements InstallSchemaInterface
                 'comment' => 'Project ID',
             ],
         ];
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     * @param ModuleContextInterface $context
+     * @param $tableName
+     * @param array $columns
+     * @throws \Zend_Db_Exception
+     */
+    private function initTable(SchemaSetupInterface $setup, $tableName, array $columns)
+    {
+        $connection = $setup->getConnection();
+
+        if (!$setup->tableExists($tableName)) {
+            $localTableName = $setup->getTable($tableName);
+
+            $table = $connection->newTable($localTableName);
+
+            foreach ($columns as $name => $values) {
+                $table->addColumn(
+                    $name,
+                    $values['type'],
+                    $values['size'],
+                    $values['options'],
+                    $values['comment']
+                );
+            }
+
+            $indexesArray = array_keys(array_filter($columns, function($val) {
+                return $val['type'] == Table::TYPE_TEXT;
+            }));
+
+            $connection->createTable($table);
+
+            if (count($indexesArray) > 0) {
+                $indexName = $setup->getIdxName($localTableName, $indexesArray, AdapterInterface::INDEX_TYPE_FULLTEXT);
+                $connection->addIndex($localTableName, $indexName, $indexesArray, AdapterInterface::INDEX_TYPE_FULLTEXT);
+            }
+        }
+    }
+
+    /**
+     * @param SchemaSetupInterface $installer
+     * @param $priTableName
+     * @param $priColumnName
+     * @param $refTableName
+     * @param $refColumnName
+     * @param string $onDelete
+     */
+    private function setForeignKey(
+        SchemaSetupInterface $installer,
+        $priTableName,
+        $priColumnName,
+        $refTableName,
+        $refColumnName,
+        $onDelete = Table::ACTION_NO_ACTION
+    ) {
+        $installer->getConnection()->addForeignKey(
+            $installer->getFkName($priTableName, $priColumnName, $refTableName, $refColumnName),
+            $installer->getTable($priTableName),
+            $priColumnName,
+            $installer->getTable($refTableName),
+            $refColumnName,
+            $onDelete
+        );
     }
 }

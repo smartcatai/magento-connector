@@ -28,21 +28,9 @@ use Magento\Framework\DB\Ddl\Table;
 use SmartCat\Connector\Module;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
-use SmartCat\Сonnector\Helper\SetupHelper;
 
 class UpgradeSchema implements UpgradeSchemaInterface
 {
-    private $helper;
-
-    /**
-     * InstallSchema constructor.
-     * @param SetupHelper $helper
-     */
-    public function __construct(SetupHelper $helper)
-    {
-        $this->helper = $helper;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -66,7 +54,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 Profile::ID)
         );
 
-        $this->helper->setForeignKey(
+        $this->setForeignKey(
             $setup,
             Module::PROJECT_TABLE_NAME,
             Project::PROFILE_ID,
@@ -84,13 +72,39 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 Project::ID)
         );
 
-        $this->helper->setForeignKey(
+        $this->setForeignKey(
             $setup,
             Module::PROJECT_PRODUCT_TABLE_NAME,
             'project_id',
             Module::PROJECT_TABLE_NAME,
             Project::ID,
             Table::ACTION_CASCADE
+        );
+    }
+
+    /**
+     * @param SchemaSetupInterface $installer
+     * @param $priTableName
+     * @param $priColumnName
+     * @param $refTableName
+     * @param $refColumnName
+     * @param string $onDelete
+     */
+    private function setForeignKey(
+        SchemaSetupInterface $installer,
+        $priTableName,
+        $priColumnName,
+        $refTableName,
+        $refColumnName,
+        $onDelete = Table::ACTION_NO_ACTION
+    ) {
+        $installer->getConnection()->addForeignKey(
+            $installer->getFkName($priTableName, $priColumnName, $refTableName, $refColumnName),
+            $installer->getTable($priTableName),
+            $priColumnName,
+            $installer->getTable($refTableName),
+            $refColumnName,
+            $onDelete
         );
     }
 }
