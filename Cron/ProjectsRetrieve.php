@@ -129,7 +129,7 @@ class ProjectsRetrieve
                     }
 
                     $projectProductSearchCriteria = $this->searchCriteriaBuilder
-                        ->addFilter(Project::ID, $project->getId())
+                        ->addFilter('project_id', $project->getId())
                         ->create();
 
                     $projectProducts = $this->projectProductRepository->getList($projectProductSearchCriteria)->getItems();
