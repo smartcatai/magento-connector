@@ -123,13 +123,13 @@ class ProjectsRetrieve
                 $stores = $this->storeManager->getStores(true, true);
 
                 foreach ($smartCatProject->getTargetLanguages() as $index => $targetLanguage) {
-                    if (!isset($stores[$targetLanguage])) {
+                    if (!isset($stores[StoreService::getStoreCode($targetLanguage)])) {
                         $this->errorHandler->logError("StoreView with code '$targetLanguage' not exists. Continue.");
                         continue;
                     }
 
                     $projectProductSearchCriteria = $this->searchCriteriaBuilder
-                        ->addFilter(Project::ID, $project->getProjectId())
+                        ->addFilter(Project::ID, $project->getId())
                         ->create();
 
                     $projectProducts = $this->projectProductRepository->getList($projectProductSearchCriteria)->getItems();
