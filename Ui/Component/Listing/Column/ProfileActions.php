@@ -60,7 +60,7 @@ class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
                 if (isset($item[Profile::ID])) {
-                    $item[$this->getData('name')] = [
+                    $item[$this->getData(Profile::NAME)] = [
                         'edit' => [
                             'href' => $this->urlBuilder->getUrl(
                                 static::URL_PATH_EDIT,
@@ -79,10 +79,10 @@ class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
                             ),
                             'label' => __('Delete'),
                             'confirm' => [
-                                'title' => __('Delete "${ $.$data.title }"'),
+                                'title' => __('Delete "${ $.$data.'. Profile::NAME .' }"'),
                                 'message' => __(
-                                    'Are you sure you wan\'t to delete a "${ $.$data.title }" record?' .
-                                    "\r\n All projects which used this profile will be deleted!"
+                                    'Are you sure you wan\'t to delete a "${ $.$data.'. Profile::NAME .' }" record?' .
+                                    '<br /> All projects which used this profile will be deleted!'
                                 )
                             ]
                         ]

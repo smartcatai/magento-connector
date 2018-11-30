@@ -43,7 +43,9 @@ class Localize extends \Magento\Backend\App\Action
 
     /**
      * @param Context $context
-     * @param ProjectService $senderService
+     * @param Filter $filter
+     * @param ProjectService $projectService
+     * @param ProductCollectionFactory $productCollectionFactory
      * @param ProfileRepositoryInterface|null $profileRepository
      * @param ProductRepositoryInterface $productRepository
      */
@@ -70,17 +72,13 @@ class Localize extends \Magento\Backend\App\Action
      *
      * @return \Magento\Framework\Controller\ResultInterface
      * @throws NotFoundException
-     * @throws \Http\Client\Exception
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
-     * @throws \Magento\Framework\Exception\FileSystemException
      * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function execute()
     {
         /** @var \Magento\Framework\App\Request\Http $request */
         $request = $this->getRequest();
-        $products = $this->filter->getCollection($this->productCollectionFactory->create());
+        $productsCollection = $this->filter->getCollection($this->productCollectionFactory->create());
 
         /** @var \Magento\Backend\Model\View\Result\Redirect\Interceptor $resultFactory */
         $resultFactory = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
@@ -100,14 +98,20 @@ class Localize extends \Magento\Backend\App\Action
             return $resultFactory->setPath('catalog/product/index');
         }
 
-        if ($products->getSize() == 0) {
+        $products = [];
+
+        if ($productsCollection->getSize() == 0) {
             $this->messageManager->addErrorMessage(__('Not found selected products'));
             return $resultFactory->setPath('catalog/product/index');
+        } else {
+            foreach ($productsCollection as $productFromCollection) {
+                $products[] = $this->productRepository->getById($productFromCollection->getId(), false, 1);
+            }
         }
 
         try {
             if ($profile->getBatchSend()) {
-                $this->projectService->create($products->getItems(), $profile);
+                $this->projectService->create($products, $profile);
             } else {
                 foreach ($products as $product) {
                     $this->projectService->create([$product], $profile);
