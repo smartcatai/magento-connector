@@ -56,6 +56,9 @@ class AttributesList implements ArrayInterface
 
         if (isset($attributesList)) {
             foreach ($attributesList as $attribute) {
+                if ($attribute->getAttributeCode() == 'url_key') {
+                    continue;
+                }
                 if (in_array($attribute->getFrontendInput(), ['text', 'textarea'])) {
                     $attributes[] = [
                         'label' => $attribute->getDefaultFrontendLabel(),

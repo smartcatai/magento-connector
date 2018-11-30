@@ -45,7 +45,8 @@ class ProjectService
     private $excludedAttributes = [
         'required_options',
         'sku',
-        'has_options'
+        'has_options',
+        'url_key'
     ];
 
     /**

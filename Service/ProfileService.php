@@ -47,6 +47,8 @@ class ProfileService
      */
     public function createFromData(array $data)
     {
+        //TODO сheck project id with this profile
+
         if (!empty($data[Profile::ID])) {
             $model = $this->profileRepository->getById($data[Profile::ID]);
         } else {
