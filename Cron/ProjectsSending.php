@@ -123,7 +123,7 @@ class ProjectsSending
             $projectChanges = (new ProjectChangesModel())
                 ->setName($projectModel->getName())
                 ->setDescription($projectModel->getDescription())
-                ->setVendorAccountId($profile->getVendor());
+                ->setVendorAccountIds([$profile->getVendor()]);
             try {
                 $projectManager->projectUpdateProject($projectModel->getId(), $projectChanges);
             } catch (Throwable $e) {
