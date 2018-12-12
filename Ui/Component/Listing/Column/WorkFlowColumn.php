@@ -17,7 +17,7 @@ use SmartCat\Connector\Model\Config\Source\WorkflowStagesList;
 class WorkFlowColumn extends Column
 {
     /** @var WorkflowStagesList */
-    protected $translation;
+    private $translation;
 
     /**
      * Constructor
@@ -49,18 +49,13 @@ class WorkFlowColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if($this->getData('name') =='stages'){
-                    try {
-                        $codes = explode(',', $item[$this->getData('name')]);
-                        foreach ($codes as &$code) {
-                            $index = array_search($code, array_column($this->translation->toOptionArray(), 'value'));
-                            $code = $this->translation->toOptionArray()[$index]['label'];
-                        }
-                        $item[$this->getData('name')] = implode(', ', $codes);
-                    } catch (NoSuchEntityException $e) {
-                        continue;
+                if ($this->getData('name') =='stages') {
+                    $codes = explode(',', $item[$this->getData('name')]);
+                    foreach ($codes as &$code) {
+                        $index = array_search($code, array_column($this->translation->toOptionArray(), 'value'));
+                        $code = $this->translation->toOptionArray()[$index]['label'];
                     }
-
+                    $item[$this->getData('name')] = implode(', ', $codes);
                 }
             }
         }

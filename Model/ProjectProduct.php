@@ -21,7 +21,6 @@
 
 namespace SmartCat\Connector\Model;
 
-
 class ProjectProduct extends \Magento\Framework\Model\AbstractModel
 {
     const PROJECT_ID = 'project_id';
@@ -31,7 +30,7 @@ class ProjectProduct extends \Magento\Framework\Model\AbstractModel
     /**
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         $this->_init(\SmartCat\Connector\Model\ResourceModel\ProjectProduct::class);
     }

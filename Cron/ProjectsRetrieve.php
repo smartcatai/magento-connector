@@ -2,19 +2,19 @@
 /**
  * SmartCat Translate Connector
  * Copyright (C) 2017 SmartCat
- * 
+ *
  * This file is part of SmartCat/Connector.
- * 
+ *
  * SmartCat/Connector is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -100,7 +100,7 @@ class ProjectsRetrieve
             try {
                 $smartCatProject = $projectManager->projectGet($project->getGuid());
             } catch (Throwable $e) {
-                $this->errorHandler->handleProjectError($e, $project,"SmartCat API Error");
+                $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
                 continue;
             }
 
@@ -115,7 +115,7 @@ class ProjectsRetrieve
                     
                     $this->extractDocuments($project->getUniqueId(), $zipPath);
                 } catch (Throwable $e) {
-                    $this->errorHandler->handleProjectError($e, $project,"SmartCat API Error");
+                    $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
                     continue;
                 }
 
@@ -132,7 +132,8 @@ class ProjectsRetrieve
                         ->addFilter('project_id', $project->getId())
                         ->create();
 
-                    $projectProducts = $this->projectProductRepository->getList($projectProductSearchCriteria)->getItems();
+                    $projectProducts = $this->projectProductRepository
+                        ->getList($projectProductSearchCriteria)->getItems();
 
                     foreach ($projectProducts as $projectProduct) {
                         try {
@@ -177,8 +178,7 @@ class ProjectsRetrieve
         $documentIds = [];
         $documents = $model->getDocuments();
 
-        foreach ($documents as $document)
-        {
+        foreach ($documents as $document) {
             $documentIds[] = $document->getId();
         }
 
@@ -194,21 +194,23 @@ class ProjectsRetrieve
      * @return null|string
      * @throws \Magento\Framework\Exception\FileSystemException
      */
-    private function saveDocuments($taskId, Project $project, int $attempt = 1)
+    private function saveDocuments($taskId, Project $project, $attempt = 1)
     {
         try {
             $response = $this->smartCatService
                 ->getDocumentExportManager()
                 ->documentExportDownloadExportResult($taskId);
         } catch (Throwable $e) {
-            $this->errorHandler->handleProjectError($e, $project,"SmartCat API Error");
+            $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
             return null;
         }
 
         switch ($response->getStatusCode()) {
             case 204:
                 if (($attempt % 50) == 0) {
-                    $this->errorHandler->logInfo("$attempt to get documents archive by project id = {$project->getGuid()}");
+                    $this->errorHandler->logInfo(
+                        "$attempt to get documents archive by project id = {$project->getGuid()}"
+                    );
                 }
                 sleep(1);
 
@@ -241,7 +243,7 @@ class ProjectsRetrieve
      */
     private function extractDocuments($projectId, $filePath)
     {
-        if (is_null($filePath)) {
+        if ($filePath === null) {
             throw new \Magento\Framework\Exception\FileSystemException(
                 __('Error is occurred: Zip file not exists')
             );

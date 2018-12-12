@@ -65,7 +65,8 @@ class ErrorHandler
 
         try {
             $this->projectRepository->save($project);
-        } catch (LocalizedException $e) {}
+        } catch (LocalizedException $e) {
+        }
 
         return $message;
     }

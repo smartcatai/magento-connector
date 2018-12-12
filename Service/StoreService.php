@@ -21,7 +21,6 @@
 
 namespace SmartCat\Connector\Service;
 
-
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Store\Model\ResourceModel\Store;
 use Magento\Store\Model\StoreFactory;

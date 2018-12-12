@@ -84,7 +84,8 @@ class ProjectsSending
         }
     }
 
-    private function createProject(Project $project, Profile $profile) {
+    private function createProject(Project $project, Profile $profile)
+    {
         // Create and send project model to smartcat api
         $projectManager = $this->smartCatService->getProjectManager();
 
@@ -133,7 +134,8 @@ class ProjectsSending
         }
     }
 
-    private function updateProject(Project $project, Profile $profile) {
+    private function updateProject(Project $project, Profile $profile)
+    {
         $projectManager = $this->smartCatService->getProjectManager();
         $documentManager = $this->smartCatService->getDocumentManager();
 
@@ -147,7 +149,11 @@ class ProjectsSending
             }, $smartCatDocuments);
 
             foreach ($projectDocuments as $projectDocument) {
-                $index = array_search(str_replace('.html', '', $projectDocument->getFile()['fileName']), $smartCatNameDocuments);
+                $index = array_search(str_replace(
+                    '.html',
+                    '',
+                    $projectDocument->getFile()['fileName']
+                ), $smartCatNameDocuments);
                 if ($index !== false) {
                     $this->waitingCompleteDocumentStatus($smartCatDocuments[$index]->getId());
                     $documentManager->documentUpdate([

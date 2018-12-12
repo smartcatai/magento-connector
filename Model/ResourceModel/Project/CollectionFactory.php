@@ -33,14 +33,14 @@ class CollectionFactory
      *
      * @var \Magento\Framework\ObjectManagerInterface
      */
-    protected $_objectManager = null;
+    private $_objectManager = null;
 
     /**
      * Instance name to create
      *
      * @var string
      */
-    protected $_instanceName = null;
+    private $_instanceName = null;
 
     /**
      * Factory constructor
@@ -62,7 +62,7 @@ class CollectionFactory
      * @param array $data
      * @return \SmartCat\Connector\Model\ResourceModel\Project\Collection
      */
-    public function create(array $data = array())
+    public function create(array $data = [])
     {
         return $this->_objectManager->create($this->_instanceName, $data);
     }

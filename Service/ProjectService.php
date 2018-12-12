@@ -128,9 +128,8 @@ class ProjectService
 
     /**
      * @param Product $product
-     * @param string $projectGuid
-     * @param $sourceLang
-     * @param array $except
+     * @param Project $project
+     * @param Profile $profile
      * @throws \Magento\Framework\Exception\FileSystemException
      */
     private function writeAttributesToFiles(Product $product, Project $project, Profile $profile)
@@ -140,7 +139,8 @@ class ProjectService
         foreach ($product->getAttributes() as $attribute) {
             $attributeCode = $attribute->getAttributeCode();
 
-            if (in_array($attribute->getFrontendInput(), ['text', 'textarea']) && !in_array($attributeCode, $exceptAttributes)) {
+            if (in_array($attribute->getFrontendInput(), ['text', 'textarea'])
+                && !in_array($attributeCode, $exceptAttributes)) {
                 $data = $product->getData($attributeCode);
 
                 if (is_array($data) || !trim($data)) {
@@ -220,7 +220,6 @@ class ProjectService
                 } else {
                     break;
                 }
-
                 $name .= ', ';
             }
         }

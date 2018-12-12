@@ -65,13 +65,15 @@ class AddProductObserver implements ObserverInterface
 
         try {
             $profiles = $this->profileRepository->getList($searchCriteria->create())->getItems();
-        } catch (LocalizedException $e) {}
+        } catch (LocalizedException $e) {
+        }
 
         /** @var Profile $profile */
         foreach ($profiles as $profile) {
             try {
                 $this->senderService->create([$product], $profile);
-            } catch (SmartCatHttpException $e) {}
+            } catch (SmartCatHttpException $e) {
+            }
         }
     }
 }

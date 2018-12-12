@@ -35,14 +35,14 @@ use Magento\Framework\Api\DataObjectHelper;
 
 class ProjectProductRepository
 {
-    protected $extensionAttributesJoinProcessor;
-    protected $projectProductCollectionFactory;
-    protected $dataObjectHelper;
-    protected $dataProjectProductFactory;
-    protected $searchResultsFactory;
-    protected $dataObjectProcessor;
-    protected $resource;
-    protected $projectProductFactory;
+    private $extensionAttributesJoinProcessor;
+    private $projectProductCollectionFactory;
+    private $dataObjectHelper;
+    private $dataProjectProductFactory;
+    private $searchResultsFactory;
+    private $dataObjectProcessor;
+    private $resource;
+    private $projectProductFactory;
 
     private $storeManager;
     private $collectionProcessor;

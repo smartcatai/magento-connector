@@ -28,7 +28,7 @@ use SmartCat\Connector\Helper\SmartCatFacade;
 
 class VendorColumn extends Column
 {
-    protected $smartCatService;
+    private $smartCatService;
 
     /**
      * Constructor
@@ -73,7 +73,6 @@ class VendorColumn extends Column
                         'name' => $vendor->getName()
                     ];
                 }
-
             } catch (\Throwable $e) {
                 return $dataSource;
             }
@@ -83,7 +82,7 @@ class VendorColumn extends Column
             }
 
             foreach ($dataSource['data']['items'] as &$item) {
-                if($this->getData('name') == 'vendor'){
+                if ($this->getData('name') == 'vendor') {
                     $vendorId = array_search($item['vendor'], array_column($vendors, 'id'));
                     if ($vendorId !== false) {
                         $item[$this->getData('name')] = $vendors[$vendorId]['name'];

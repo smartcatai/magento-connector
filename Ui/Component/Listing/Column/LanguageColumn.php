@@ -55,7 +55,7 @@ class LanguageColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if(in_array($this->getData('name'), ['source_lang', 'target_lang'])){
+                if (in_array($this->getData('name'), ['source_lang', 'target_lang'])) {
                     $codes = explode(',', $item[$this->getData('name')]);
                     foreach ($codes as &$code) {
                         $code = LanguageDictionary::getNameByCode($code);
