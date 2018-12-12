@@ -130,18 +130,6 @@ class ProjectProductRepository
     }
 
     /**
-     * @param $projectProductId
-     * @return ProjectProduct
-     */
-    public function getModelById($projectProductId)
-    {
-        $projectProduct = $this->projectProductFactory->create();
-        $this->resource->load($projectProduct, $projectProductId);
-
-        return $projectProduct;
-    }
-
-    /**
      * @param ProjectProduct $projectProduct
      * @return bool
      * @throws CouldNotDeleteException

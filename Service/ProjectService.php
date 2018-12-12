@@ -22,7 +22,10 @@
 namespace SmartCat\Connector\Service;
 
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ProductRepository;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use SmartCat\Client\Model\BilingualFileImportSettingsModel;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Connector\Exception\SmartCatHttpException;
@@ -41,6 +44,8 @@ class ProjectService
     private $profileRepository;
     private $projectProductRepository;
     private $errorHandler;
+    private $productRepository;
+    private $searchCriteriaBuilder;
 
     private $excludedAttributes = [
         'required_options',
@@ -59,7 +64,9 @@ class ProjectService
         FileService $fileService,
         ProjectRepository $projectRepository,
         ProfileRepository $profileRepository,
+        ProductRepository $productRepository,
         ProjectProductRepository $projectProductRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
         ErrorHandler $errorHandler
     ) {
         $this->fileService = $fileService;
@@ -67,6 +74,8 @@ class ProjectService
         $this->profileRepository = $profileRepository;
         $this->projectProductRepository = $projectProductRepository;
         $this->errorHandler = $errorHandler;
+        $this->productRepository = $productRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -90,7 +99,7 @@ class ProjectService
 
         try {
             $this->projectRepository->save($project);
-            $this->attachProducts($products, $project, $profile);
+            $this->attachProducts($products, $project);
         } catch (Throwable $e) {
             $message = $this->errorHandler->handleError($e, "Error save project to db");
             throw new SmartCatHttpException($message, $e->getCode(), $e->getPrevious());
@@ -117,7 +126,27 @@ class ProjectService
     }
 
     /**
-     * @param Project $project
+     * @param int $projectId
+     * @return Product[]
+     */
+    public function getProductsByProjectId(int $projectId)
+    {
+        $products = [];
+
+        $searchCriteria = $this->searchCriteriaBuilder->addFilter(Project::ID, $projectId)->create();
+        $list = $this->projectProductRepository->getList($searchCriteria)->getItems();
+
+        foreach ($list as $item) {
+            try {
+                $products[] =  $this->productRepository->getById($item->getProductId());
+            } catch (NoSuchEntityException $e) {}
+        }
+
+        return $products;
+    }
+
+    /**
+     * @param \SmartCat\Connector\Api\Data\ProjectInterface|Project $project
      * @return \SmartCat\Connector\Api\Data\ProfileInterface|Profile
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -127,53 +156,34 @@ class ProjectService
     }
 
     /**
-     * @param Product $product
-     * @param string $projectGuid
-     * @param $sourceLang
-     * @param array $except
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
-    private function writeAttributesToFiles(Product $product, Project $project, Profile $profile)
-    {
-        $exceptAttributes = array_merge($this->excludedAttributes, $profile->getExcludedAttributesArray());
-
-        foreach ($product->getAttributes() as $attribute) {
-            $attributeCode = $attribute->getAttributeCode();
-
-            if (in_array($attribute->getFrontendInput(), ['text', 'textarea']) && !in_array($attributeCode, $exceptAttributes)) {
-                $data = $product->getData($attributeCode);
-
-                if (is_array($data) || !trim($data)) {
-                    continue;
-                }
-
-                $this->fileService->writeFile(
-                    "{$project->getUniqueId()}/{$profile->getSourceLang()}/{$attributeCode}({$product->getSku()}).html",
-                    $data
-                );
-            }
-        }
-    }
-
-    /**
      * @param Project $project
      * @param Profile $profile
      * @return CreateDocumentPropertyWithFilesModel[]
-     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function getProjectDocumentModels(Project $project, Profile $profile)
     {
         $documentModels = [];
+        $products = $this->getProductsByProjectId($project->getId());
+        $exceptAttributes = array_merge($this->excludedAttributes, $profile->getExcludedAttributesArray());
 
-        $files = $this->fileService->getDirectoryFiles(
-            $this->fileService->getAbsolutePath("{$project->getUniqueId()}/{$profile->getSourceLang()}")
-        );
+        foreach ($products as $product) {
+            foreach ($product->getAttributes() as $attribute) {
+                $attributeCode = $attribute->getAttributeCode();
 
-        foreach ($files as $file) {
-            $documentModels[] = $this->getDocumentModel(
-                $file->getPathname(),
-                $file->getFilename()
-            );
+                if (in_array($attribute->getFrontendInput(), ['text', 'textarea']) && !in_array($attributeCode, $exceptAttributes)) {
+                    $data = $product->getData($attributeCode);
+
+                    if (is_array($data) || !trim($data)) {
+                        continue;
+                    }
+
+                    $fileName = "{$attributeCode}({$product->getSku()}).html";
+                    $file = fopen( "php://temp", "r+" );
+                    fputs($file, $data);
+                    rewind($file);
+                    $documentModels[] = $this->getDocumentModel($file, $fileName);
+                }
+            }
         }
 
         return $documentModels;
@@ -182,14 +192,11 @@ class ProjectService
     /**
      * @param array $products
      * @param Project $project
-     * @param Profile $profile
-     * @throws \Magento\Framework\Exception\FileSystemException
      */
-    public function attachProducts(array $products, Project $project, Profile $profile)
+    public function attachProducts(array $products, Project $project)
     {
         foreach ($products as $product) {
             if ($product instanceof Product) {
-                $this->writeAttributesToFiles($product, $project, $profile);
 
                 $projectProduct = $this->projectProductRepository->create();
                 $projectProduct

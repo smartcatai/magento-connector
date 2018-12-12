@@ -84,6 +84,10 @@ class ProjectsSending
         }
     }
 
+    /**
+     * @param \SmartCat\Connector\Api\Data\ProjectInterface|Project $project
+     * @param Profile $profile
+     */
     private function createProject(Project $project, Profile $profile) {
         // Create and send project model to smartcat api
         $projectManager = $this->smartCatService->getProjectManager();
@@ -133,6 +137,10 @@ class ProjectsSending
         }
     }
 
+    /**
+     * @param \SmartCat\Connector\Api\Data\ProjectInterface|Project $project
+     * @param Profile $profile
+     */
     private function updateProject(Project $project, Profile $profile) {
         $projectManager = $this->smartCatService->getProjectManager();
         $documentManager = $this->smartCatService->getDocumentManager();
