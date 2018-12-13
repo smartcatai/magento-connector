@@ -64,7 +64,7 @@ class AttributesColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if($this->getData('name') == 'excluded_attributes') {
+                if ($this->getData('name') == 'excluded_attributes') {
                     if (!$item[$this->getData('name')]) {
                         $item[$this->getData('name')] = __('No excluded attributes');
                         continue;

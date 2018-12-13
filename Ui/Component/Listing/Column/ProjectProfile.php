@@ -64,7 +64,7 @@ class ProjectProfile extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if($this->getData('name') == 'profile_id'){
+                if ($this->getData('name') == 'profile_id') {
                     $profile = $this->profileRepository->getById($item['profile_id']);
                     $item[$this->getData('name')] = $profile->getName();
                 }

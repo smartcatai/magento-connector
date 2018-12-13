@@ -21,7 +21,6 @@
 
 namespace SmartCat\Connector\Helper;
 
-
 class LanguageDictionary
 {
     /**
@@ -29,7 +28,7 @@ class LanguageDictionary
      */
     private static function getLanguages()
     {
-       return [
+        return [
            ['name' => __('Undefined Language'), 'code' => ''],
            ['name' => __('Abkhaz'), 'code' => 'ab'],
            ['name' => __('Avar'), 'code' => 'av'],
@@ -193,7 +192,7 @@ class LanguageDictionary
            ['name' => __('Estonian'), 'code' => 'et'],
            ['name' => __('Javanese'), 'code' => 'jv'],
            ['name' => __('Japanese'), 'code' => 'ja'],
-       ];
+        ];
     }
 
     /**

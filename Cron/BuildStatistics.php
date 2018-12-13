@@ -72,7 +72,7 @@ class BuildStatistics
             try {
                 $smartCatProject = $projectManager->projectGet($project->getGuid());
             } catch (\Throwable $e) {
-                $this->errorHandler->handleProjectError($e, $project,"SmartCat API Error");
+                $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
             }
 
             if (!$smartCatProject) {
@@ -97,7 +97,7 @@ class BuildStatistics
                         $projectManager->projectBuildStatistics($smartCatProject->getId());
                         $project->setIsStatisticsBuilded(true);
                     } catch (\Throwable $e) {
-                        $this->errorHandler->handleProjectError($e, $project,"SmartCat API Error");
+                        $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
                     }
                 }
             }

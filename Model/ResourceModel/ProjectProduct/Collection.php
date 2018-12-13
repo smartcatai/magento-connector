@@ -25,7 +25,6 @@ use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use SmartCat\Connector\Model\ResourceModel\ProjectProduct as ProjectProductResourceModel;
 use SmartCat\Connector\Model\ProjectProduct;
 
-
 class Collection extends AbstractCollection
 {
     /**
@@ -33,7 +32,7 @@ class Collection extends AbstractCollection
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         $this->_init(ProjectProduct::class, ProjectProductResourceModel::class);
     }

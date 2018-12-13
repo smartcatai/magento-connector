@@ -21,7 +21,6 @@
 
 namespace SmartCat\Connector\Model\ResourceModel;
 
-
 use SmartCat\Connector\Module;
 
 class ProjectProduct extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
@@ -31,7 +30,7 @@ class ProjectProduct extends \Magento\Framework\Model\ResourceModel\Db\AbstractD
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         $this->_init(Module::PROJECT_PRODUCT_TABLE_NAME, 'id');
     }

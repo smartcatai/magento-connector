@@ -30,7 +30,7 @@ use SmartCat\Connector\Model\Config\Source\ProjectStatusList;
 class ProjectStatusColumn extends Column
 {
     /** @var ProjectStatusList */
-    protected $statusList;
+    private $statusList;
 
     /**
      * Constructor
@@ -64,18 +64,12 @@ class ProjectStatusColumn extends Column
 
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if($this->getData('name') == 'status'){
-                    try {
-                        $index = array_search(
-                            $item[$this->getData('name')],
-                            array_column($statusList, 'value')
-                        );
-
-                        $item[$this->getData('name')] = $statusList[$index]['label'];
-                    } catch (NoSuchEntityException $e) {
-                        continue;
-                    }
-
+                if ($this->getData('name') == 'status') {
+                    $index = array_search(
+                        $item[$this->getData('name')],
+                        array_column($statusList, 'value')
+                    );
+                    $item[$this->getData('name')] = $statusList[$index]['label'];
                 }
             }
         }

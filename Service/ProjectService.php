@@ -172,6 +172,9 @@ class ProjectService
 
                 if (in_array($attribute->getFrontendInput(), ['text', 'textarea']) && !in_array($attributeCode, $exceptAttributes)) {
                     $data = $product->getData($attributeCode);
+            if (in_array($attribute->getFrontendInput(), ['text', 'textarea'])
+                && !in_array($attributeCode, $exceptAttributes)) {
+                $data = $product->getData($attributeCode);
 
                     if (is_array($data) || !trim($data)) {
                         continue;
@@ -227,7 +230,6 @@ class ProjectService
                 } else {
                     break;
                 }
-
                 $name .= ', ';
             }
         }

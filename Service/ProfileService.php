@@ -21,7 +21,6 @@
 
 namespace SmartCat\Connector\Service;
 
-
 use SmartCat\Connector\Exception\ProfileServiceException;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\ProfileRepository;
