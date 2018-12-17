@@ -34,45 +34,45 @@ class Localize implements JsonSerializable
     /**
      * @var array
      */
-    private $options;
+    protected $options;
 
     /**
      * @var CollectionFactory
      */
-    private $collectionFactory;
+    protected $collectionFactory;
 
     /**
      * Additional options params
      *
      * @var array
      */
-    private $data;
+    protected $data;
 
     /**
      * @var UrlInterface
      */
-    private $urlBuilder;
+    protected $urlBuilder;
 
     /**
      * Base URL for subactions
      *
      * @var string
      */
-    private $urlPath;
+    protected $urlPath;
 
     /**
      * Param name for subactions
      *
      * @var string
      */
-    private $paramName;
+    protected $paramName;
 
     /**
      * Additional params for subactions
      *
      * @var array
      */
-    private $additionalData = [];
+    protected $additionalData = [];
 
     /**
      * Constructor
@@ -102,7 +102,7 @@ class Localize implements JsonSerializable
         if ($this->options === null) {
             $templateCollection = $this->collectionFactory->create();
 
-            if (!empty($templateCollection)) {
+            if (!count($templateCollection)) {
                 return $this->options;
             }
 
@@ -145,7 +145,7 @@ class Localize implements JsonSerializable
      *
      * @return void
      */
-    private function prepareData()
+    protected function prepareData()
     {
         foreach ($this->data as $key => $value) {
             switch ($key) {

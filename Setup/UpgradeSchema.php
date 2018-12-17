@@ -24,7 +24,9 @@ namespace SmartCat\Connector\Setup;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
+use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Module;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
@@ -41,8 +43,15 @@ class UpgradeSchema implements UpgradeSchemaInterface
         if (version_compare($context->getVersion(), "1.0.2", "<")) {
             $this->ver102($setup);
         }
+
+        if (version_compare($context->getVersion(), "1.1.0", "<")) {
+            $this->ver110($setup);
+        }
     }
 
+    /**
+     * @param SchemaSetupInterface $setup
+     */
     private function ver102(SchemaSetupInterface $setup)
     {
         $setup->getConnection()->dropForeignKey(
@@ -63,25 +72,72 @@ class UpgradeSchema implements UpgradeSchemaInterface
             Profile::ID,
             Table::ACTION_CASCADE
         );
+    }
 
-        $setup->getConnection()->dropForeignKey(
-            $setup->getTable(Module::PROJECT_PRODUCT_TABLE_NAME),
-            $setup->getFkName(
-                Module::PROJECT_PRODUCT_TABLE_NAME,
-                'project_id',
-                Module::PROJECT_TABLE_NAME,
-                Project::ID
-            )
-        );
+    /**
+     * @param SchemaSetupInterface $setup
+     * @throws \Zend_Db_Exception
+     */
+    private function ver110(SchemaSetupInterface $setup)
+    {
+        if ($setup->tableExists(Module::MANUFACTURER . '_project_product')) {
+            $setup->getConnection()->dropTable(Module::MANUFACTURER . '_project_product');
+        }
+
+        $this->initTable($setup, Module::PROJECT_ENTITY_TABLE_NAME, $this->getProjectEntityColumns());
 
         $this->setForeignKey(
             $setup,
-            Module::PROJECT_PRODUCT_TABLE_NAME,
-            'project_id',
+            Module::PROJECT_ENTITY_TABLE_NAME,
+            ProjectEntity::PROJECT_ID,
             Module::PROJECT_TABLE_NAME,
             Project::ID,
             Table::ACTION_CASCADE
         );
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     * @param ModuleContextInterface $context
+     * @param $tableName
+     * @param array $columns
+     * @throws \Zend_Db_Exception
+     */
+    private function initTable(SchemaSetupInterface $setup, $tableName, array $columns)
+    {
+        $connection = $setup->getConnection();
+
+        if (!$setup->tableExists($tableName)) {
+            $localTableName = $setup->getTable($tableName);
+
+            $table = $connection->newTable($localTableName);
+
+            foreach ($columns as $name => $values) {
+                $table->addColumn(
+                    $name,
+                    $values['type'],
+                    $values['size'],
+                    $values['options'],
+                    $values['comment']
+                );
+            }
+
+            $indexesArray = array_keys(array_filter($columns, function ($val) {
+                return $val['type'] == Table::TYPE_TEXT;
+            }));
+
+            $connection->createTable($table);
+
+            if (!empty($indexesArray)) {
+                $indexName = $setup->getIdxName($localTableName, $indexesArray, AdapterInterface::INDEX_TYPE_FULLTEXT);
+                $connection->addIndex(
+                    $localTableName,
+                    $indexName,
+                    $indexesArray,
+                    AdapterInterface::INDEX_TYPE_FULLTEXT
+                );
+            }
+        }
     }
 
     /**
@@ -108,5 +164,75 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $refColumnName,
             $onDelete
         );
+    }
+
+    /**
+     * @return array
+     */
+    private function getProjectEntityColumns()
+    {
+        return [
+            'id' => [
+                'type' => Table::TYPE_INTEGER,
+                'size' => null,
+                'options' => [
+                    'identity' => true,
+                    'nullable' => false,
+                    'primary'  => true,
+                    'unsigned' => true,
+                ],
+                'comment' => 'ID',
+            ],
+            'project_id' => [
+                'type' => Table::TYPE_INTEGER,
+                'size' => null,
+                'options' => [
+                    'unsigned' => true,
+                    'nullable' => false,
+                ],
+                'comment' => 'Project ID',
+            ],
+            'type' => [
+                'type' => Table::TYPE_TEXT,
+                'size' => null,
+                'options' => [
+                    'nullable' => true,
+                ],
+                'comment' => 'Type',
+            ],
+            'entity_id' => [
+                'type' => Table::TYPE_INTEGER,
+                'size' => null,
+                'options' => [
+                    'unsigned' => true,
+                    'nullable' => false,
+                ],
+                'comment' => 'Entity ID',
+            ],
+            'status' => [
+                'type' => Table::TYPE_TEXT,
+                'size' => null,
+                'options' => [
+                    'nullable' => false,
+                ],
+                'comment' => 'Document status',
+            ],
+            'document_id' => [
+                'type' => Table::TYPE_TEXT,
+                'size' => null,
+                'options' => [
+                    'nullable' => false,
+                ],
+                'comment' => 'Smartcat Document ID',
+            ],
+            'task_id' => [
+                'type' => Table::TYPE_TEXT,
+                'size' => null,
+                'options' => [
+                    'nullable' => false,
+                ],
+                'comment' => 'Export Task ID',
+            ],
+        ];
     }
 }

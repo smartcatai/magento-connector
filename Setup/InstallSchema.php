@@ -42,7 +42,7 @@ class InstallSchema implements InstallSchemaInterface
         $installer->startSetup();
         $this->initTable($installer, Module::PROJECT_TABLE_NAME, $this->getProjectColumns());
         $this->initTable($installer, Module::PROFILE_TABLE_NAME, $this->getProfileColumns());
-        $this->initTable($installer, Module::PROJECT_PRODUCT_TABLE_NAME, $this->getProjectProductColumns());
+        //$this->initTable($installer, Module::PROJECT_PRODUCT_TABLE_NAME, $this->getProjectProductColumns());
 
         $this->setForeignKey(
             $installer,
@@ -50,33 +50,6 @@ class InstallSchema implements InstallSchemaInterface
             Project::PROFILE_ID,
             Module::PROFILE_TABLE_NAME,
             Profile::ID
-        );
-
-        $this->setForeignKey(
-            $installer,
-            Module::PROJECT_PRODUCT_TABLE_NAME,
-            'product_id',
-            'catalog_product_entity',
-            'entity_id'
-        );
-
-        $this->setForeignKey(
-            $installer,
-            Module::PROJECT_PRODUCT_TABLE_NAME,
-            'project_id',
-            Module::PROJECT_TABLE_NAME,
-            Project::ID
-        );
-
-        $installer->getConnection()->addIndex(
-            $installer->getTable(Module::PROJECT_PRODUCT_TABLE_NAME),
-            $installer->getIdxName(
-                $installer->getTable(Module::PROJECT_PRODUCT_TABLE_NAME),
-                ['project_id', 'product_id'],
-                AdapterInterface::INDEX_TYPE_UNIQUE
-            ),
-            ['project_id', 'product_id'],
-            AdapterInterface::INDEX_TYPE_UNIQUE
         );
 
         $installer->endSetup();
@@ -306,44 +279,6 @@ class InstallSchema implements InstallSchemaInterface
                     'default' => Table::TIMESTAMP_INIT_UPDATE
                 ],
                 'comment' => 'Updated At',
-            ],
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    private function getProjectProductColumns()
-    {
-        return [
-            'id' => [
-                'type' => Table::TYPE_INTEGER,
-                'size' => null,
-                'options' => [
-                    'identity' => true,
-                    'nullable' => false,
-                    'primary'  => true,
-                    'unsigned' => true,
-                ],
-                'comment' => 'ID',
-            ],
-            'product_id' => [
-                'type' => Table::TYPE_INTEGER,
-                'size' => null,
-                'options' => [
-                    'unsigned' => true,
-                    'nullable' => false,
-                ],
-                'comment' => 'Product ID',
-            ],
-            'project_id' => [
-                'type' => Table::TYPE_INTEGER,
-                'size' => null,
-                'options' => [
-                    'unsigned' => true,
-                    'nullable' => false,
-                ],
-                'comment' => 'Project ID',
             ],
         ];
     }

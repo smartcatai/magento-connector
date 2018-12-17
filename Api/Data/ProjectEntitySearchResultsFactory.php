@@ -23,7 +23,7 @@ namespace SmartCat\Connector\Api\Data;
 
 use Magento\Framework\ObjectManagerInterface;
 
-class ProjectProductSearchResultsFactory
+class ProjectEntitySearchResultsFactory
 {
     /**
      * Object Manager instance
@@ -45,8 +45,10 @@ class ProjectProductSearchResultsFactory
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param string $instanceName
      */
-    public function __construct(ObjectManagerInterface $objectManager, $instanceName = ProjectProductSearchResultsInterface::class)
-    {
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        $instanceName = ProjectEntitySearchResultsInterface::class
+    ) {
         $this->_objectManager = $objectManager;
         $this->_instanceName = $instanceName;
     }
@@ -55,9 +57,9 @@ class ProjectProductSearchResultsFactory
      * Create class instance with specified parameters
      *
      * @param array $data
-     * @return \SmartCat\Connector\Api\Data\ProjectProductSearchResultsInterface
+     * @return \SmartCat\Connector\Api\Data\ProjectEntitySearchResultsInterface
      */
-    public function create(array $data = array())
+    public function create(array $data = [])
     {
         return $this->_objectManager->create($this->_instanceName, $data);
     }

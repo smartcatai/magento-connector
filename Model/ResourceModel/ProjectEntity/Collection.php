@@ -19,11 +19,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model\ResourceModel;
+namespace SmartCat\Connector\Model\ResourceModel\ProjectEntity;
 
-use SmartCat\Connector\Module;
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use SmartCat\Connector\Model\ResourceModel\ProjectEntity as ProjectEntityResourceModel;
+use SmartCat\Connector\Model\ProjectEntity;
 
-class ProjectProduct extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+class Collection extends AbstractCollection
 {
     /**
      * Define resource model
@@ -32,6 +34,6 @@ class ProjectProduct extends \Magento\Framework\Model\ResourceModel\Db\AbstractD
      */
     public function _construct()
     {
-        $this->_init(Module::PROJECT_PRODUCT_TABLE_NAME, 'id');
+        $this->_init(ProjectEntity::class, ProjectEntityResourceModel::class);
     }
 }

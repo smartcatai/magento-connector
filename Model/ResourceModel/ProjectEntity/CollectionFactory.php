@@ -19,28 +19,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model;
+namespace SmartCat\Connector\Model\ResourceModel\ProjectEntity;
 
 use Magento\Framework\ObjectManagerInterface;
 
 /**
- * Factory class for @see \SmartCat\Connector\Model\ProjectProduct
+ * Factory class for @see \SmartCat\Connector\Model\ResourceModel\ProjectEntity\Collection
  */
-class ProjectProductFactory
+class CollectionFactory
 {
     /**
      * Object Manager instance
      *
      * @var \Magento\Framework\ObjectManagerInterface
      */
-    private $_objectManager = null;
+    private $objectManager = null;
 
     /**
      * Instance name to create
      *
      * @var string
      */
-    private $_instanceName = null;
+    private $instanceName = null;
 
     /**
      * Factory constructor
@@ -48,20 +48,20 @@ class ProjectProductFactory
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param string $instanceName
      */
-    public function __construct(ObjectManagerInterface $objectManager, $instanceName = ProjectProduct::class)
+    public function __construct(ObjectManagerInterface $objectManager, $instanceName = Collection::class)
     {
-        $this->_objectManager = $objectManager;
-        $this->_instanceName = $instanceName;
+        $this->objectManager = $objectManager;
+        $this->instanceName = $instanceName;
     }
 
     /**
      * Create class instance with specified parameters
      *
      * @param array $data
-     * @return \SmartCat\Connector\Model\ProjectProduct
+     * @return \SmartCat\Connector\Model\ResourceModel\ProjectEntity\Collection
      */
     public function create(array $data = [])
     {
-        return $this->_objectManager->create($this->_instanceName, $data);
+        return $this->objectManager->create($this->instanceName, $data);
     }
 }

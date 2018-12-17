@@ -23,7 +23,6 @@ namespace SmartCat\Connector\Cron;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\LocalizedException;
-use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Client\Model\CreateProjectModel;
 use SmartCat\Client\Model\DocumentModel;
 use SmartCat\Client\Model\ProjectChangesModel;
@@ -31,6 +30,7 @@ use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
+use SmartCat\Connector\Model\ProjectEntityRepository;
 use SmartCat\Connector\Model\ProjectRepository;
 use SmartCat\Connector\Service\ProjectService;
 use \Throwable;
@@ -42,19 +42,22 @@ class ProjectsSending
     private $errorHandler;
     private $searchCriteriaBuilder;
     private $projectRepository;
+    private $projectEntityRepository;
 
     public function __construct(
         SmartCatFacade $smartCatService,
         ProjectService $projectService,
         ProjectRepository $projectRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        ErrorHandler $errorHandler
+        ErrorHandler $errorHandler,
+        ProjectEntityRepository $projectEntityRepository
     ) {
         $this->smartCatService = $smartCatService;
         $this->errorHandler = $errorHandler;
         $this->projectService = $projectService;
         $this->projectRepository = $projectRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->projectEntityRepository = $projectEntityRepository;
     }
 
     public function execute()
@@ -104,10 +107,18 @@ class ProjectsSending
 
         try {
             $projectModel = $projectManager->projectCreateProject($newProjectModel);
-            $projectManager->projectAddDocument([
+            $smartcatDocuments = $projectManager->projectAddDocument([
                 'projectId' => $projectModel->getId(),
-                'documentModel' => $this->projectService->getProjectDocumentModels($project, $profile)
+                'documentModel' => $this->projectService->getProjectDocumentModels($project)
             ]);
+
+            foreach ($smartcatDocuments as $smartcatDocument) {
+                $projectEntity = $this->projectEntityRepository->getById($smartcatDocument->getExternalId());
+                $projectEntity
+                    ->setStatus($smartcatDocument->getStatus())
+                    ->setDocumentId($smartcatDocument->getId());
+                $this->projectEntityRepository->save($projectEntity);
+            }
         } catch (Throwable $e) {
             $this->errorHandler->handleProjectError($e, $project, "SmartCat create project error");
             return;

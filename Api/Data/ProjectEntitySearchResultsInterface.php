@@ -21,18 +21,17 @@
 
 namespace SmartCat\Connector\Api\Data;
 
-
-interface ProjectProductSearchResultsInterface extends \Magento\Framework\Api\SearchResultsInterface
+interface ProjectEntitySearchResultsInterface extends \Magento\Framework\Api\SearchResultsInterface
 {
     /**
      * Get Project list.
-     * @return \SmartCat\Connector\Model\ProjectProduct[]
+     * @return \SmartCat\Connector\Model\ProjectEntity[]
      */
     public function getItems();
 
     /**
      * Set project_id list.
-     * @param \SmartCat\Connector\Model\ProjectProduct[] $items
+     * @param \SmartCat\Connector\Model\ProjectEntity[] $items
      * @return $this
      */
     public function setItems(array $items);

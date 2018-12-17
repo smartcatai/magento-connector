@@ -32,10 +32,11 @@ use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\ProfileRepository;
 use SmartCat\Connector\Model\Project;
+use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Model\ProjectRepository;
 use SmartCat\Connector\Module;
 use Magento\Catalog\Model\ProductRepository;
-use SmartCat\Connector\Model\ProjectProductRepository;
+use SmartCat\Connector\Model\ProjectEntityRepository;
 use SmartCat\Connector\Service\FileService;
 use SmartCat\Connector\Service\StoreService;
 use \Throwable;
@@ -46,32 +47,32 @@ class ProjectsRetrieve
     private $profileRepository;
     private $projectRepository;
     private $searchCriteriaBuilder;
-    private $fileService;
     private $productRepository;
     private $projectProductRepository;
     private $storeManager;
     private $errorHandler;
+    private $projectEntityRepository;
 
     public function __construct(
         ErrorHandler $errorHandler,
         ProfileRepository $profileRepository,
         ProjectRepository $projectRepository,
         ProductRepository $productRepository,
-        ProjectProductRepository $projectProductRepository,
+        ProjectEntityRepository $projectProductRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         SmartCatFacade $smartCatService,
         StoreManager $storeManager,
-        FileService $fileService
+        ProjectEntityRepository $projectEntityRepository
     ) {
         $this->errorHandler = $errorHandler;
         $this->smartCatService = $smartCatService;
         $this->projectRepository = $projectRepository;
         $this->profileRepository = $profileRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->fileService = $fileService;
         $this->projectProductRepository = $projectProductRepository;
         $this->productRepository = $productRepository;
         $this->storeManager = $storeManager;
+        $this->projectEntityRepository = $projectEntityRepository;
     }
 
     /**
@@ -90,7 +91,7 @@ class ProjectsRetrieve
 
         try {
             $projects = $this->projectRepository->getList($searchCriteria)->getItems();
-        } catch (LocalizedException $e) {
+        } catch (Throwable $e) {
             $this->errorHandler->handleError($e, "Error occurred");
             return;
         }
@@ -104,53 +105,8 @@ class ProjectsRetrieve
                 continue;
             }
 
-            if ($smartCatProject->getStatus() == Project::STATUS_COMPLETED) {
-                try {
-                    $exportDocumentTaskModel = $this->getRequestDocuments($smartCatProject);
-                    $zipPath = $this->saveDocuments($exportDocumentTaskModel->getId(), $project);
-
-                    if (!$zipPath) {
-                        continue;
-                    }
-                    
-                    $this->extractDocuments($project->getUniqueId(), $zipPath);
-                } catch (Throwable $e) {
-                    $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
-                    continue;
-                }
-
-                /** @var StoreInterface[] $stores */
-                $stores = $this->storeManager->getStores(true, true);
-
-                foreach ($smartCatProject->getTargetLanguages() as $index => $targetLanguage) {
-                    if (!isset($stores[StoreService::getStoreCode($targetLanguage)])) {
-                        $this->errorHandler->logError("StoreView with code '$targetLanguage' not exists. Continue.");
-                        continue;
-                    }
-
-                    $projectProductSearchCriteria = $this->searchCriteriaBuilder
-                        ->addFilter('project_id', $project->getId())
-                        ->create();
-
-                    $projectProducts = $this->projectProductRepository
-                        ->getList($projectProductSearchCriteria)->getItems();
-
-                    foreach ($projectProducts as $projectProduct) {
-                        try {
-                            $product = $this->productRepository->getById(
-                                $projectProduct->getProductId(),
-                                false,
-                                $stores[StoreService::getStoreCode($targetLanguage)]->getId()
-                            );
-                            $this->setAttributes($product, $project, $targetLanguage);
-                            $this->productRepository->save($product);
-                        } catch (Throwable $e) {
-                            $this->errorHandler->handleError($e, "SmartCat Product Error");
-                            continue;
-                        }
-                    }
-                }
-            }
+            $this->requestExport($smartCatProject);
+            $this->exportDocuments($smartCatProject);
 
             $project
                 ->setStatus($smartCatProject->getStatus());
@@ -161,7 +117,7 @@ class ProjectsRetrieve
 
             try {
                 $this->projectRepository->save($project);
-            } catch (LocalizedException $e) {
+            } catch (Throwable $e) {
                 $this->errorHandler->handleError($e, "Error occurred");
                 return;
             }
@@ -169,139 +125,96 @@ class ProjectsRetrieve
     }
 
     /**
-     * @param ProjectModel $model
-     * @return \Psr\Http\Message\ResponseInterface|\SmartCat\Client\Model\ExportDocumentTaskModel
-     * @throws \Exception
+     * @param ProjectModel $smartCatProject
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    private function getRequestDocuments(ProjectModel $model)
+    private function requestExport(ProjectModel $smartCatProject)
     {
-        $documentIds = [];
-        $documents = $model->getDocuments();
+        foreach ($smartCatProject->getDocuments() as $document) {
+            $projectEntity = $this->projectEntityRepository->getById($document->getExternalId());
 
-        foreach ($documents as $document) {
-            $documentIds[] = $document->getId();
-        }
-
-        return $this->smartCatService
-            ->getDocumentExportManager()
-            ->documentExportRequestExport(['documentIds' => $documentIds]);
-    }
-
-    /**
-     * @param int $taskId
-     * @param Project $project
-     * @param int $attempt
-     * @return null|string
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
-    private function saveDocuments($taskId, Project $project, $attempt = 1)
-    {
-        try {
-            $response = $this->smartCatService
-                ->getDocumentExportManager()
-                ->documentExportDownloadExportResult($taskId);
-        } catch (Throwable $e) {
-            $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
-            return null;
-        }
-
-        switch ($response->getStatusCode()) {
-            case 204:
-                if (($attempt % 50) == 0) {
-                    $this->errorHandler->logInfo(
-                        "$attempt to get documents archive by project id = {$project->getGuid()}"
-                    );
-                }
-                sleep(1);
-
-                return $this->saveDocuments($taskId, $project, ++$attempt);
-            case 200:
-                $fileName = "{$project->getUniqueId()}/zip/file_" . uniqid() . uniqid() . ".zip";
-
-                if (in_array($response->getHeaderLine('Content-Type'), Module::TEXT_MIME_TYPES)) {
-                    $matches = [];
-
-                    preg_match(
-                        '/filename\s*=\s*"?(?P<attribute>.*?)\((?P<sku>.*?)\)\((?P<languageCode>.*?)\)\.\w+/',
-                        $response->getHeaderLine('Content-Disposition'),
-                        $matches
-                    );
-                    $fileName = "{$project->getUniqueId()}/completed/{$matches['languageCode']}/{$matches['sku']}/{$matches['attribute']}";
-                }
-                $this->fileService->writeFile($fileName, $response->getBody()->getContents());
-
-                return $this->fileService->getAbsolutePath($fileName);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param $projectId
-     * @param $filePath
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
-    private function extractDocuments($projectId, $filePath)
-    {
-        if ($filePath === null) {
-            throw new \Magento\Framework\Exception\FileSystemException(
-                __('Error is occurred: Zip file not exists')
-            );
-        }
-
-        $completedPath = $this->fileService->getAbsolutePath("{$projectId}/completed/");
-
-        if (in_array(mime_content_type($filePath), Module::TEXT_MIME_TYPES)) {
-            return;
-        }
-
-        $result = $this->fileService->unZip($filePath, $completedPath);
-        $files = $this->fileService->getDirectoryFiles($completedPath);
-
-        foreach ($files as $file) {
-            $matches = [];
-
-            preg_match(
-                '/(?P<attribute>.*?)\((?P<sku>.*?)\)\((?P<languageCode>.*?)\)\.\w+/',
-                $file->getFilename(),
-                $matches
-            );
-
-            if (empty($matches) || is_dir($completedPath . $file->getFilename())) {
+            if (in_array($projectEntity->getStatus(), [ProjectEntity::STATUS_EXPORT, ProjectEntity::STATUS_FAILED])) {
                 continue;
             }
 
-            @mkdir($completedPath . $matches['languageCode'] . '/' . $matches['sku'], 0755, true);
-            @rename(
-                $completedPath . $file->getFilename(),
-                "$completedPath{$matches['languageCode']}/{$matches['sku']}/{$matches['attribute']}"
-            );
-            @unlink($file->getPathname());
-        }
+            $projectEntity->setStatus($document->getStatus());
 
-        if ($result) {
-            @unlink($filePath);
+            if ($document->getStatus() == ProjectEntity::STATUS_COMPLETED) {
+                $export = $this->smartCatService
+                    ->getDocumentExportManager()
+                    ->documentExportRequestExport(['documentIds' => [$document->getId()]]);
+                $projectEntity
+                    ->setTaskId($export->getId())
+                    ->setStatus(ProjectEntity::STATUS_EXPORT);
+            }
+            $this->projectEntityRepository->save($projectEntity);
         }
     }
 
     /**
-     * @param Product $product
-     * @param ProjectInterface|Project $project
-     * @param $languageCode
-     * @throws \Magento\Framework\Exception\FileSystemException
+     * @param ProjectModel $smartCatProject
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
-    private function setAttributes(Product &$product, ProjectInterface $project, $languageCode)
+    private function exportDocuments(ProjectModel $smartCatProject)
     {
-        $completedPath = $this->fileService->getAbsolutePath(
-            "{$project->getUniqueId()}/completed/{$languageCode}/{$product->getSku()}/"
-        );
-        $files = $this->fileService->getDirectoryFiles($completedPath);
+        $searchCriteria = $this->searchCriteriaBuilder
+            ->addFilter(ProjectEntity::STATUS, ProjectEntity::STATUS_EXPORT)->create();
+        $entities = $this->projectEntityRepository->getList($searchCriteria)->getItems();
 
-        foreach ($files as $file) {
-            $product->setData(
-                $file->getFilename(),
-                file_get_contents($completedPath . $file->getFilename())
-            );
+        foreach ($entities as $entity) {
+            try {
+                $response = $this->smartCatService
+                    ->getDocumentExportManager()
+                    ->documentExportDownloadExportResult($entity->getTaskId());
+            } catch (Throwable $e) {
+                $this->errorHandler
+                    ->logError("SmartCat API Error: An error occurred on document export " . $e->getMessage());
+                $entity->setStatus(ProjectEntity::STATUS_FAILED);
+                continue;
+            }
+
+            if ($response->getStatusCode() == 200) {
+                $content = $response->getBody()->getContents();
+                $this->setContent($content, $entity, $smartCatProject);
+                $entity
+                    ->setStatus(ProjectEntity::STATUS_SAVED)
+                    ->setTaskId(null);
+            }
+            $this->projectEntityRepository->save($entity);
+        }
+    }
+
+    /**
+     * @param $content
+     * @param ProjectEntity $entity
+     * @param ProjectModel $smartCatProject
+     */
+    private function setContent($content, ProjectEntity $entity, ProjectModel $smartCatProject)
+    {
+        /** @var StoreInterface[] $stores */
+        $stores = $this->storeManager->getStores(true, true);
+
+        foreach ($smartCatProject->getTargetLanguages() as $index => $targetLanguage) {
+            if (!isset($stores[StoreService::getStoreCode($targetLanguage)])) {
+                $this->errorHandler->logError("StoreView with code '$targetLanguage' not exists. Continue.");
+                continue;
+            }
+
+            $entityAttribute = explode('|', $entity->getType());
+
+            try {
+                $product = $this->productRepository->getById(
+                    $entity->getEntityId(),
+                    false,
+                    $stores[StoreService::getStoreCode($targetLanguage)]->getId()
+                );
+                $product->setData($entityAttribute[1], $content);
+                $this->productRepository->save($product);
+            } catch (Throwable $e) {
+                $this->errorHandler->handleError($e, "SmartCat Product Error");
+                continue;
+            }
         }
     }
 }

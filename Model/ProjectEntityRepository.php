@@ -22,18 +22,18 @@
 namespace SmartCat\Connector\Model;
 
 use Magento\Framework\Exception\NoSuchEntityException;
-use SmartCat\Connector\Api\Data\ProjectProductSearchResultsFactory;
-use SmartCat\Connector\Model\ResourceModel\ProjectProduct\CollectionFactory as ProjectProductCollectionFactory;
+use SmartCat\Connector\Api\Data\ProjectEntitySearchResultsFactory;
+use SmartCat\Connector\Model\ResourceModel\ProjectEntity\CollectionFactory as ProjectProductCollectionFactory;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
-use SmartCat\Connector\Model\ResourceModel\ProjectProduct as ResourceProjectProduct;
+use SmartCat\Connector\Model\ResourceModel\ProjectEntity as ResourceProjectProduct;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\DataObjectHelper;
 
-class ProjectProductRepository
+class ProjectEntityRepository
 {
     private $extensionAttributesJoinProcessor;
     private $projectProductCollectionFactory;
@@ -49,7 +49,7 @@ class ProjectProductRepository
 
     /**
      * @param ResourceProjectProduct $resource
-     * @param ProjectProductFactory $projectProductFactory
+     * @param ProjectEntityFactory $projectProductFactory
      * @param ProjectProductCollectionFactory $projectProductCollectionFactory
      * @param DataObjectHelper $dataObjectHelper
      * @param DataObjectProcessor $dataObjectProcessor
@@ -59,14 +59,14 @@ class ProjectProductRepository
      */
     public function __construct(
         ResourceProjectProduct $resource,
-        ProjectProductFactory $projectProductFactory,
+        ProjectEntityFactory $projectProductFactory,
         ProjectProductCollectionFactory $projectProductCollectionFactory,
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
         StoreManagerInterface $storeManager,
         CollectionProcessorInterface $collectionProcessor,
         JoinProcessorInterface $extensionAttributesJoinProcessor,
-        ProjectProductSearchResultsFactory $searchResultsFactory
+        ProjectEntitySearchResultsFactory $searchResultsFactory
     ) {
         $this->resource = $resource;
         $this->projectProductFactory = $projectProductFactory;
@@ -80,17 +80,17 @@ class ProjectProductRepository
     }
 
     /**
-     * @param ProjectProduct $projectProduct
-     * @return ProjectProduct
+     * @param ProjectEntity $projectProduct
+     * @return ProjectEntity
      * @throws CouldNotSaveException
      */
-    public function save(ProjectProduct $projectProduct)
+    public function save(ProjectEntity $projectProduct)
     {
         try {
             $this->resource->save($projectProduct);
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(__(
-                'Could not save the ProjectProduct: %1',
+                'Could not save the ProjectEntity: %1',
                 $exception->getMessage()
             ));
         }
@@ -99,7 +99,7 @@ class ProjectProductRepository
 
     /**
      * @param $projectProductId
-     * @return ProjectProduct
+     * @return ProjectEntity
      * @throws NoSuchEntityException
      */
     public function getById($projectProductId)
@@ -107,7 +107,7 @@ class ProjectProductRepository
         $projectProduct = $this->projectProductFactory->create();
         $this->resource->load($projectProduct, $projectProductId);
         if (!$projectProduct->getId()) {
-            throw new NoSuchEntityException(__('ProjectProduct with id "%1" does not exist.', $projectProductId));
+            throw new NoSuchEntityException(__('ProjectEntity with id "%1" does not exist.', $projectProductId));
         }
         return $projectProduct;
     }
@@ -130,17 +130,17 @@ class ProjectProductRepository
     }
 
     /**
-     * @param ProjectProduct $projectProduct
+     * @param ProjectEntity $projectProduct
      * @return bool
      * @throws CouldNotDeleteException
      */
-    public function delete(ProjectProduct $projectProduct)
+    public function delete(ProjectEntity $projectProduct)
     {
         try {
             $this->resource->delete($projectProduct);
         } catch (\Exception $exception) {
             throw new CouldNotDeleteException(__(
-                'Could not delete the ProjectProduct: %1',
+                'Could not delete the ProjectEntity: %1',
                 $exception->getMessage()
             ));
         }
@@ -160,7 +160,7 @@ class ProjectProductRepository
 
     /**
      * @param array $data
-     * @return ProjectProduct
+     * @return ProjectEntity
      */
     public function create($data = [])
     {

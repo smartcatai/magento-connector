@@ -27,7 +27,7 @@ class Module
 
     const PROJECT_TABLE_NAME = self::MANUFACTURER . '_project';
     const PROFILE_TABLE_NAME = self::MANUFACTURER . '_profile';
-    const PROJECT_PRODUCT_TABLE_NAME = self::MANUFACTURER . '_project_product';
+    const PROJECT_ENTITY_TABLE_NAME = self::MANUFACTURER . '_project_entity';
 
     const MODULE_FOLDER = 'modules/smartcat_connector';
 
