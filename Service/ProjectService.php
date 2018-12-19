@@ -40,10 +40,9 @@ use \Throwable;
 
 class ProjectService
 {
-    private $fileService;
     private $projectRepository;
     private $profileRepository;
-    private $projectEntityRepository;
+    private $projectEntityService;
     private $errorHandler;
     private $productRepository;
     private $searchCriteriaBuilder;
@@ -57,23 +56,20 @@ class ProjectService
 
     /**
      * ProjectService constructor.
-     * @param FileService $fileService
      * @param ProjectRepository $projectRepository
      * @param ErrorHandler $errorHandler
      */
     public function __construct(
-        FileService $fileService,
         ProjectRepository $projectRepository,
         ProfileRepository $profileRepository,
         ProductRepository $productRepository,
-        ProjectEntityRepository $projectEntityRepository,
+        ProjectEntityService $projectEntityService,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ErrorHandler $errorHandler
     ) {
-        $this->fileService = $fileService;
         $this->projectRepository = $projectRepository;
         $this->profileRepository = $profileRepository;
-        $this->projectEntityRepository = $projectEntityRepository;
+        $this->projectEntityService = $projectEntityService;
         $this->errorHandler = $errorHandler;
         $this->productRepository = $productRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -100,7 +96,7 @@ class ProjectService
 
         try {
             $this->projectRepository->save($project);
-            $this->attachProducts($products, $project, $profile);
+            $this->attachEntities($products, $project, $profile);
         } catch (Throwable $e) {
             $message = $this->errorHandler->handleError($e, "Error save project to db");
             throw new SmartCatHttpException($message, $e->getCode(), $e->getPrevious());
@@ -127,21 +123,6 @@ class ProjectService
     }
 
     /**
-     * @param int $projectId
-     * @return ProjectEntity[]
-     */
-    public function getProjectEntities(int $projectId)
-    {
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter(ProjectEntity::PROJECT_ID, $projectId)
-            ->addFilter(ProjectEntity::STATUS, ProjectEntity::STATUS_NEW)
-            ->create();
-        $list = $this->projectEntityRepository->getList($searchCriteria)->getItems();
-
-        return $list;
-    }
-
-    /**
      * @param \SmartCat\Connector\Api\Data\ProjectInterface|Project $project
      * @return \SmartCat\Connector\Api\Data\ProfileInterface|Profile
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -159,7 +140,7 @@ class ProjectService
     public function getProjectDocumentModels(Project $project)
     {
         $documentModels = [];
-        $entities = $this->getProjectEntities($project->getId());
+        $entities = $this->projectEntityService->getProjectEntities($project);
 
         foreach ($entities as $entity) {
             $product = $this->productRepository->getById($entity->getEntityId());
@@ -178,40 +159,42 @@ class ProjectService
     }
 
     /**
-     * @param array $products
+     * @param \Magento\Framework\Model\AbstractModel[] $entities
      * @param Project $project
+     * @param Profile $profile
      */
-    public function attachProducts(array $products, Project $project, Profile $profile)
+    public function attachEntities(array $entities, Project $project, Profile $profile)
+    {
+        foreach ($entities as $entity) {
+            switch (get_class($entity)) {
+                case Product::class:
+                    $this->attachProduct($entity, $project, $profile);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * @param Product $product
+     * @param Project $project
+     * @param Profile $profile
+     */
+    private function attachProduct(Product $product, Project $project, Profile $profile)
     {
         $exceptAttributes = array_merge($this->excludedAttributes, $profile->getExcludedAttributesArray());
 
-        foreach ($products as $product) {
-            if ($product instanceof Product) {
-                foreach ($product->getAttributes() as $attribute) {
-                    $attributeCode = $attribute->getAttributeCode();
+        foreach ($product->getAttributes() as $attribute) {
+            $attributeCode = $attribute->getAttributeCode();
 
-                    if (in_array($attribute->getFrontendInput(), ['text', 'textarea'])
-                        && !in_array($attributeCode, $exceptAttributes)) {
-                        $data = $product->getData($attributeCode);
+            if (in_array($attribute->getFrontendInput(), ['text', 'textarea'])
+                && !in_array($attributeCode, $exceptAttributes)) {
+                $data = $product->getData($attributeCode);
 
-                        if (is_array($data) || !trim($data)) {
-                            continue;
-                        }
-
-                        $projectProduct = $this->projectEntityRepository->create();
-                        $projectProduct
-                            ->setEntityId($product->getId())
-                            ->setType('product|' . $attributeCode)
-                            ->setStatus(ProjectEntity::STATUS_NEW)
-                            ->setProjectId($project->getId());
-
-                        try {
-                            $this->projectEntityRepository->save($projectProduct);
-                        } catch (CouldNotSaveException $e) {
-                            $this->errorHandler->logError("Could not save: " . $e->getMessage());
-                        }
-                    }
+                if (is_array($data) || !trim($data)) {
+                    continue;
                 }
+
+                $this->projectEntityService->create($project, $product, 'product|' . $attributeCode);
             }
         }
     }

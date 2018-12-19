@@ -21,23 +21,18 @@
 
 namespace SmartCat\Connector\Cron;
 
-use Magento\Catalog\Model\Product;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManager;
 use SmartCat\Client\Model\ProjectModel;
-use SmartCat\Connector\Api\Data\ProjectInterface;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\ProfileRepository;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Model\ProjectRepository;
-use SmartCat\Connector\Module;
 use Magento\Catalog\Model\ProductRepository;
 use SmartCat\Connector\Model\ProjectEntityRepository;
-use SmartCat\Connector\Service\FileService;
 use SmartCat\Connector\Service\StoreService;
 use \Throwable;
 
