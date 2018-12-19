@@ -151,6 +151,30 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     }
 
     /**
+     * @return string|null
+     */
+    public function getLanguage()
+    {
+        return explode('|', $this->getType())[2] ?? null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAttribute()
+    {
+        return explode('|', $this->getType())[1] ?? null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEntity()
+    {
+        return explode('|', $this->getType())[0] ?? null;
+    }
+
+    /**
      * Set type
      * @param string $type
      * @return ProjectEntity

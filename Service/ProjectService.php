@@ -45,7 +45,6 @@ class ProjectService
     private $projectEntityService;
     private $errorHandler;
     private $productRepository;
-    private $searchCriteriaBuilder;
 
     private $excludedAttributes = [
         'required_options',
@@ -64,7 +63,6 @@ class ProjectService
         ProfileRepository $profileRepository,
         ProductRepository $productRepository,
         ProjectEntityService $projectEntityService,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
         ErrorHandler $errorHandler
     ) {
         $this->projectRepository = $projectRepository;
@@ -72,7 +70,6 @@ class ProjectService
         $this->projectEntityService = $projectEntityService;
         $this->errorHandler = $errorHandler;
         $this->productRepository = $productRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -145,14 +142,13 @@ class ProjectService
         foreach ($entities as $entity) {
             $product = $this->productRepository->getById($entity->getEntityId());
 
-            $type = explode('|', $entity->getType());
-            $data = $product->getData($type[1]);
+            $data = $product->getData($entity->getAttribute());
 
-            $fileName = "{$type[1]}({$product->getSku()}).html";
+            $fileName = "{$entity->getAttribute()}({$product->getSku()})({$entity->getLanguage()}).html";
             $file = fopen("php://temp", "r+");
             fputs($file, $data);
             rewind($file);
-            $documentModels[] = $this->getDocumentModel($file, $fileName, $entity->getId());
+            $documentModels[] = $this->getDocumentModel($file, $fileName, $entity);
         }
 
         return $documentModels;
@@ -167,6 +163,7 @@ class ProjectService
     {
         foreach ($entities as $entity) {
             switch (get_class($entity)) {
+                case Product\Interceptor::class:
                 case Product::class:
                     $this->attachProduct($entity, $project, $profile);
                     break;
@@ -194,7 +191,7 @@ class ProjectService
                     continue;
                 }
 
-                $this->projectEntityService->create($project, $product, 'product|' . $attributeCode);
+                $this->projectEntityService->create($project, $product, $profile, 'product|' . $attributeCode);
             }
         }
     }
@@ -232,7 +229,7 @@ class ProjectService
      * @param $fileName
      * @return CreateDocumentPropertyWithFilesModel
      */
-    private function getDocumentModel($filePath, $fileName, $externalId)
+    private function getDocumentModel($filePath, $fileName, ProjectEntity $entity)
     {
         $bilingualFileImportSettings = new BilingualFileImportSettingsModel();
         $bilingualFileImportSettings
@@ -241,8 +238,10 @@ class ProjectService
             ->setTargetSubstitutionMode('all');
 
         $documentModel = new CreateDocumentPropertyWithFilesModel();
-        $documentModel->setBilingualFileImportSettings($bilingualFileImportSettings);
-        $documentModel->setExternalId($externalId);
+        $documentModel
+            ->setBilingualFileImportSettings($bilingualFileImportSettings)
+            ->setExternalId($entity->getId())
+            ->setTargetLanguages([$entity->getLanguage()]);
         $documentModel->attachFile($filePath, $fileName);
 
         return $documentModel;

@@ -39,21 +39,17 @@ use \Throwable;
 class ProjectsRetrieve
 {
     private $smartCatService;
-    private $profileRepository;
     private $projectRepository;
     private $searchCriteriaBuilder;
     private $productRepository;
-    private $projectProductRepository;
     private $storeManager;
     private $errorHandler;
     private $projectEntityRepository;
 
     public function __construct(
         ErrorHandler $errorHandler,
-        ProfileRepository $profileRepository,
         ProjectRepository $projectRepository,
         ProductRepository $productRepository,
-        ProjectEntityRepository $projectProductRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         SmartCatFacade $smartCatService,
         StoreManager $storeManager,
@@ -62,9 +58,7 @@ class ProjectsRetrieve
         $this->errorHandler = $errorHandler;
         $this->smartCatService = $smartCatService;
         $this->projectRepository = $projectRepository;
-        $this->profileRepository = $profileRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->projectProductRepository = $projectProductRepository;
         $this->productRepository = $productRepository;
         $this->storeManager = $storeManager;
         $this->projectEntityRepository = $projectEntityRepository;
@@ -101,7 +95,7 @@ class ProjectsRetrieve
             }
 
             $this->requestExport($smartCatProject);
-            $this->exportDocuments($smartCatProject);
+            $this->exportDocuments();
 
             $project
                 ->setStatus($smartCatProject->getStatus());
@@ -129,7 +123,7 @@ class ProjectsRetrieve
         foreach ($smartCatProject->getDocuments() as $document) {
             $projectEntity = $this->projectEntityRepository->getById($document->getExternalId());
 
-            if (in_array($projectEntity->getStatus(), [ProjectEntity::STATUS_EXPORT, ProjectEntity::STATUS_FAILED])) {
+            if (in_array($projectEntity->getStatus(), [ProjectEntity::STATUS_EXPORT, ProjectEntity::STATUS_FAILED, ProjectEntity::STATUS_SAVED])) {
                 continue;
             }
 
@@ -151,7 +145,7 @@ class ProjectsRetrieve
      * @param ProjectModel $smartCatProject
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
-    private function exportDocuments(ProjectModel $smartCatProject)
+    private function exportDocuments()
     {
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilter(ProjectEntity::STATUS, ProjectEntity::STATUS_EXPORT)->create();
@@ -171,7 +165,7 @@ class ProjectsRetrieve
 
             if ($response->getStatusCode() == 200) {
                 $content = $response->getBody()->getContents();
-                $this->setContent($content, $entity, $smartCatProject);
+                $this->setContent($content, $entity);
                 $entity
                     ->setStatus(ProjectEntity::STATUS_SAVED)
                     ->setTaskId(null);
@@ -185,31 +179,25 @@ class ProjectsRetrieve
      * @param ProjectEntity $entity
      * @param ProjectModel $smartCatProject
      */
-    private function setContent($content, ProjectEntity $entity, ProjectModel $smartCatProject)
+    private function setContent($content, ProjectEntity $entity)
     {
         /** @var StoreInterface[] $stores */
         $stores = $this->storeManager->getStores(true, true);
 
-        foreach ($smartCatProject->getTargetLanguages() as $index => $targetLanguage) {
-            if (!isset($stores[StoreService::getStoreCode($targetLanguage)])) {
-                $this->errorHandler->logError("StoreView with code '$targetLanguage' not exists. Continue.");
-                continue;
-            }
+        if (!isset($stores[StoreService::getStoreCode($entity->getLanguage())])) {
+            $this->errorHandler->logError("StoreView with code '{$entity->getLanguage()}' not exists. Continue.");
+        }
 
-            $entityAttribute = explode('|', $entity->getType());
-
-            try {
-                $product = $this->productRepository->getById(
-                    $entity->getEntityId(),
-                    false,
-                    $stores[StoreService::getStoreCode($targetLanguage)]->getId()
-                );
-                $product->setData($entityAttribute[1], $content);
-                $this->productRepository->save($product);
-            } catch (Throwable $e) {
-                $this->errorHandler->handleError($e, "SmartCat Product Error");
-                continue;
-            }
+        try {
+            $product = $this->productRepository->getById(
+                $entity->getEntityId(),
+                false,
+                $stores[StoreService::getStoreCode($entity->getLanguage())]->getId()
+            );
+            $product->setData($entity->getAttribute(), $content);
+            $this->productRepository->save($product);
+        } catch (Throwable $e) {
+            $this->errorHandler->handleError($e, "SmartCat Product Error");
         }
     }
 }

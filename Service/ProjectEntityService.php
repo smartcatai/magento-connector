@@ -24,6 +24,7 @@ namespace SmartCat\Connector\Service;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\CouldNotSaveException;
 use SmartCat\Connector\Helper\ErrorHandler;
+use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Model\ProjectEntityRepository;
@@ -49,19 +50,21 @@ class ProjectEntityService
      * @param \Magento\Framework\Model\AbstractModel $entity
      * @param string $type
      */
-    public function create(Project $project, $entity, $type)
+    public function create(Project $project, $entity, Profile $profile, $type)
     {
-        $projectProduct = $this->projectEntityRepository->create();
-        $projectProduct
-            ->setEntityId($entity->getId())
-            ->setType($type)
-            ->setStatus(ProjectEntity::STATUS_NEW)
-            ->setProjectId($project->getId());
+        foreach ($profile->getTargetLangArray() as $targetLang) {
+            $projectProduct = $this->projectEntityRepository->create();
+            $projectProduct
+                ->setEntityId($entity->getId())
+                ->setType($type . "|" . $targetLang)
+                ->setStatus(ProjectEntity::STATUS_NEW)
+                ->setProjectId($project->getId());
 
-        try {
-            $this->projectEntityRepository->save($projectProduct);
-        } catch (CouldNotSaveException $e) {
-            $this->errorHandler->logError("Could not save: " . $e->getMessage());
+            try {
+                $this->projectEntityRepository->save($projectProduct);
+            } catch (CouldNotSaveException $e) {
+                $this->errorHandler->logError("Could not save: " . $e->getMessage());
+            }
         }
     }
 
