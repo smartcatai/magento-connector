@@ -23,6 +23,8 @@ namespace SmartCat\Connector\Service;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\CouldNotSaveException;
+use SmartCat\Client\Model\BilingualFileImportSettingsModel;
+use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
@@ -70,16 +72,45 @@ class ProjectEntityService
 
     /**
      * @param Project $project
+     * @param string $type
      * @return ProjectEntity[]
      */
-    public function getProjectEntities(Project $project)
+    public function getProjectEntities(Project $project, $type = null)
     {
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilter(ProjectEntity::PROJECT_ID, $project->getId())
-            ->addFilter(ProjectEntity::STATUS, ProjectEntity::STATUS_NEW)
-            ->create();
-        $list = $this->projectEntityRepository->getList($searchCriteria)->getItems();
+            ->addFilter(ProjectEntity::STATUS, ProjectEntity::STATUS_NEW);
+
+        if ($type) {
+            $searchCriteria->addFilter(ProjectEntity::TYPE, $type . '|%', 'like');
+        }
+
+        $list = $this->projectEntityRepository->getList($searchCriteria->create())->getItems();
 
         return $list;
+    }
+
+    /**
+     * @param $filePath
+     * @param $fileName
+     * @param ProjectEntity $entity
+     * @return CreateDocumentPropertyWithFilesModel
+     */
+    public function getDocumentCreateModel($filePath, $fileName, ProjectEntity $entity)
+    {
+        $bilingualFileImportSettings = new BilingualFileImportSettingsModel();
+        $bilingualFileImportSettings
+            ->setConfirmMode('none')
+            ->setLockMode('none')
+            ->setTargetSubstitutionMode('all');
+
+        $documentModel = new CreateDocumentPropertyWithFilesModel();
+        $documentModel
+            ->setBilingualFileImportSettings($bilingualFileImportSettings)
+            ->setExternalId($entity->getId())
+            ->setTargetLanguages([$entity->getLanguage()]);
+        $documentModel->attachFile($filePath, $fileName);
+
+        return $documentModel;
     }
 }

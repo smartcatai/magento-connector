@@ -2,21 +2,26 @@
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <listingToolbar name="listing_top">
         <massaction name="listing_massaction">
-            <action name="localize_products">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/tree-massactions</item>
+                </item>
+            </argument>
+            <action name="localize_pages">
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
-                        <item name="type" xsi:type="string">localize_products</item>
+                        <item name="type" xsi:type="string">localize_pages</item>
                         <item name="label" xsi:type="string" translate="true">Submit for translation</item>
                     </item>
                 </argument>
                 <argument name="actions" xsi:type="configurableObject">
                     <argument name="class" xsi:type="string">SmartCat\Connector\Ui\Component\MassAction\Localize</argument>
                     <argument name="data" xsi:type="array">
-                        <item name="url" xsi:type="string">smartcat_connector/localize/product</item>
+                        <item name="url" xsi:type="string">smartcat_connector/localize/page</item>
                         <item name="paramName" xsi:type="string">id</item>
                         <item name="confirm" xsi:type="array">
                             <item name="title" xsi:type="string" translate="true">Are you sure?</item>
-                            <item name="message" xsi:type="string" translate="true">Are you sure to translate selected products?</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure to translate selected pages?</item>
                         </item>
                     </argument>
                 </argument>

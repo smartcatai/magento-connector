@@ -21,37 +21,24 @@
 
 namespace SmartCat\Connector\Service;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ProductRepository;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use SmartCat\Client\Model\BilingualFileImportSettingsModel;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Connector\Exception\SmartCatHttpException;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\ProfileRepository;
 use SmartCat\Connector\Model\Project;
-use SmartCat\Connector\Model\ProjectEntity;
-use SmartCat\Connector\Model\ProjectEntityRepository;
 use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Service\Strategy\StrategyInterface;
+use SmartCat\Connector\Service\Strategy\StrategyLoader;
 use \Throwable;
 
 class ProjectService
 {
     private $projectRepository;
     private $profileRepository;
-    private $projectEntityService;
     private $errorHandler;
-    private $productRepository;
-
-    private $excludedAttributes = [
-        'required_options',
-        'sku',
-        'has_options',
-        'url_key'
-    ];
+    private $strategyLoader;
+    private $projectEntityService;
 
     /**
      * ProjectService constructor.
@@ -61,29 +48,35 @@ class ProjectService
     public function __construct(
         ProjectRepository $projectRepository,
         ProfileRepository $profileRepository,
-        ProductRepository $productRepository,
-        ProjectEntityService $projectEntityService,
-        ErrorHandler $errorHandler
+        StrategyLoader $strategyLoader,
+        ErrorHandler $errorHandler,
+        ProjectEntityService $projectEntityService
     ) {
         $this->projectRepository = $projectRepository;
         $this->profileRepository = $profileRepository;
-        $this->projectEntityService = $projectEntityService;
         $this->errorHandler = $errorHandler;
-        $this->productRepository = $productRepository;
+        $this->strategyLoader = $strategyLoader;
+        $this->projectEntityService = $projectEntityService;
     }
 
     /**
-     * @param array $products
+     * @param array $models
      * @param Profile $profile
      * @return Project
      * @throws SmartCatHttpException
      */
-    public function create(array $products, Profile $profile)
+    public function create(array $models, Profile $profile)
     {
+        if (empty($models)) {
+            throw new SmartCatHttpException(__('Models array is empty'));
+        }
+
+        $strategy = $this->strategyLoader->getStrategyByModel(get_class($models[0]));
+
         $project = $this->projectRepository->create();
         $project
             ->setProfileId($profile->getId())
-            ->setElement($this->getGeneratedProjectName($products))
+            ->setElement($strategy->getName($models))
             ->setTranslate($profile->getSourceLang() . ' -> ' . $profile->getTargetLang())
             ->setStatus(Project::STATUS_WAITING);
 
@@ -93,7 +86,9 @@ class ProjectService
 
         try {
             $this->projectRepository->save($project);
-            $this->attachEntities($products, $project, $profile);
+            foreach ($models as $model) {
+                $strategy->attach($model, $project, $profile);
+            }
         } catch (Throwable $e) {
             $message = $this->errorHandler->handleError($e, "Error save project to db");
             throw new SmartCatHttpException($message, $e->getCode(), $e->getPrevious());
@@ -132,7 +127,6 @@ class ProjectService
     /**
      * @param Project $project
      * @return CreateDocumentPropertyWithFilesModel[]
-     * @throws NoSuchEntityException
      */
     public function getProjectDocumentModels(Project $project)
     {
@@ -140,110 +134,11 @@ class ProjectService
         $entities = $this->projectEntityService->getProjectEntities($project);
 
         foreach ($entities as $entity) {
-            $product = $this->productRepository->getById($entity->getEntityId());
-
-            $data = $product->getData($entity->getAttribute());
-
-            $fileName = "{$entity->getAttribute()}({$product->getSku()})({$entity->getLanguage()}).html";
-            $file = fopen("php://temp", "r+");
-            fputs($file, $data);
-            rewind($file);
-            $documentModels[] = $this->getDocumentModel($file, $fileName, $entity);
+            /** @var StrategyInterface $strategy */
+            $strategy = $this->strategyLoader->getStrategyByType($entity->getEntity());
+            $documentModels[] = $strategy->getDocumentModel($entity);
         }
 
         return $documentModels;
-    }
-
-    /**
-     * @param \Magento\Framework\Model\AbstractModel[] $entities
-     * @param Project $project
-     * @param Profile $profile
-     */
-    public function attachEntities(array $entities, Project $project, Profile $profile)
-    {
-        foreach ($entities as $entity) {
-            switch (get_class($entity)) {
-                case Product\Interceptor::class:
-                case Product::class:
-                    $this->attachProduct($entity, $project, $profile);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * @param Product $product
-     * @param Project $project
-     * @param Profile $profile
-     */
-    private function attachProduct(Product $product, Project $project, Profile $profile)
-    {
-        $exceptAttributes = array_merge($this->excludedAttributes, $profile->getExcludedAttributesArray());
-
-        foreach ($product->getAttributes() as $attribute) {
-            $attributeCode = $attribute->getAttributeCode();
-
-            if (in_array($attribute->getFrontendInput(), ['text', 'textarea'])
-                && !in_array($attributeCode, $exceptAttributes)) {
-                $data = $product->getData($attributeCode);
-
-                if (is_array($data) || !trim($data)) {
-                    continue;
-                }
-
-                $this->projectEntityService->create($project, $product, $profile, 'product|' . $attributeCode);
-            }
-        }
-    }
-
-    /**
-     * @param array $products
-     * @return bool|string
-     */
-    private function getGeneratedProjectName(array $products)
-    {
-        $name = null;
-        
-        foreach ($products as $product) {
-            if ($product instanceof Product) {
-                if (strlen($name) < 80) {
-                    $name .= $product->getName();
-                } else {
-                    break;
-                }
-                $name .= ', ';
-            }
-        }
-
-        if (strlen($name) > 99) {
-            $name = substr($name, 0, 99);
-        } else {
-            $name = substr($name, 0, -2);
-        }
-
-        return str_replace(['*', '|', '\\', ':', '"', '<', '>', '?', '/'], ' ', $name);
-    }
-
-    /**
-     * @param $filePath
-     * @param $fileName
-     * @return CreateDocumentPropertyWithFilesModel
-     */
-    private function getDocumentModel($filePath, $fileName, ProjectEntity $entity)
-    {
-        $bilingualFileImportSettings = new BilingualFileImportSettingsModel();
-        $bilingualFileImportSettings
-            ->setConfirmMode('none')
-            ->setLockMode('none')
-            ->setTargetSubstitutionMode('all');
-
-        $documentModel = new CreateDocumentPropertyWithFilesModel();
-        $documentModel
-            ->setBilingualFileImportSettings($bilingualFileImportSettings)
-            ->setExternalId($entity->getId())
-            ->setTargetLanguages([$entity->getLanguage()]);
-        $documentModel->attachFile($filePath, $fileName);
-
-        return $documentModel;
     }
 }

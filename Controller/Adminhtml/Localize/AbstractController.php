@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml\Profile;
+namespace SmartCat\Connector\Controller\Adminhtml\Localize;
 
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use SmartCat\Connector\Api\ProfileRepositoryInterface;
@@ -29,17 +29,14 @@ use SmartCat\Connector\Model\Profile;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\NotFoundException;
-use Magento\Framework\App\ObjectManager;
 use SmartCat\Connector\Service\ProjectService;
 use Magento\Ui\Component\MassAction\Filter;
 
-class Localize extends \Magento\Backend\App\Action
+class AbstractController extends \Magento\Backend\App\Action
 {
-    private $productRepository;
     private $profileRepository;
-    private $productCollectionFactory;
     private $projectService;
-    private $filter;
+    protected $filter;
 
     /**
      * @param Context $context
@@ -53,16 +50,10 @@ class Localize extends \Magento\Backend\App\Action
         Context $context,
         Filter $filter,
         ProjectService $projectService,
-        ProductCollectionFactory $productCollectionFactory,
-        ProfileRepositoryInterface $profileRepository = null,
-        ProductRepositoryInterface $productRepository = null
+        ProfileRepositoryInterface $profileRepository
     ) {
-        $this->productRepository = $productRepository
-            ?: ObjectManager::getInstance()->create(ProductRepositoryInterface::class);
-        $this->profileRepository = $profileRepository
-            ?: ObjectManager::getInstance()->create(ProfileRepositoryInterface::class);
+        $this->profileRepository = $profileRepository;
         $this->projectService = $projectService;
-        $this->productCollectionFactory = $productCollectionFactory;
         $this->filter = $filter;
         parent::__construct($context);
     }
@@ -78,7 +69,6 @@ class Localize extends \Magento\Backend\App\Action
     {
         /** @var \Magento\Framework\App\Request\Http $request */
         $request = $this->getRequest();
-        $productsCollection = $this->filter->getCollection($this->productCollectionFactory->create());
 
         /** @var \Magento\Backend\Model\View\Result\Redirect\Interceptor $resultFactory */
         $resultFactory = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
@@ -98,23 +88,19 @@ class Localize extends \Magento\Backend\App\Action
             return $resultFactory->setPath('catalog/product/index');
         }
 
-        $products = [];
+        $models = $this->getModels();
 
-        if ($productsCollection->getSize() == 0) {
-            $this->messageManager->addErrorMessage(__('Not found selected products'));
+        if (empty($models)) {
+            $this->messageManager->addErrorMessage(__('Not found selected items'));
             return $resultFactory->setPath('catalog/product/index');
-        } else {
-            foreach ($productsCollection as $productFromCollection) {
-                $products[] = $this->productRepository->getById($productFromCollection->getId(), false, 1);
-            }
         }
 
         try {
             if ($profile->getBatchSend()) {
-                $this->projectService->create($products, $profile);
+                $this->projectService->create($models, $profile);
             } else {
-                foreach ($products as $product) {
-                    $this->projectService->create([$product], $profile);
+                foreach ($models as $model) {
+                    $this->projectService->create([$model], $profile);
                 }
             }
         } catch (SmartCatHttpException $e) {
@@ -123,8 +109,13 @@ class Localize extends \Magento\Backend\App\Action
             return $resultFactory->setPath('catalog/product/index');
         }
 
-        $this->messageManager->addSuccessMessage(__('All selected products sended on localize'));
+        $this->messageManager->addSuccessMessage(__('All selected items sended on localize'));
 
         return $resultFactory->setPath('catalog/product/index');
+    }
+
+    public function getModels()
+    {
+        return [];
     }
 }
