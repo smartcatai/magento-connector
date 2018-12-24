@@ -21,6 +21,7 @@
 
 namespace SmartCat\Connector\Service\Strategy;
 
+use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProjectEntityService;
@@ -28,14 +29,16 @@ use SmartCat\Connector\Service\ProjectEntityService;
 abstract class AbstractStrategy implements StrategyInterface
 {
     protected $projectEntityService;
+    protected $storeManager;
 
     /**
      * AbstractStrategy constructor.
      * @param ProjectEntityService $projectEntityService
      */
-    public function __construct(ProjectEntityService $projectEntityService)
+    public function __construct(ProjectEntityService $projectEntityService, StoreManager $storeManager)
     {
         $this->projectEntityService = $projectEntityService;
+        $this->storeManager = $storeManager;
     }
 
     /**

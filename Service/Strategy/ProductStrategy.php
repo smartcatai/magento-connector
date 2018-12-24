@@ -23,10 +23,13 @@ namespace SmartCat\Connector\Service\Strategy;
 
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductRepository;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProjectEntityService;
+use SmartCat\Connector\Service\StoreService;
 
 class ProductStrategy extends AbstractStrategy
 {
@@ -44,10 +47,14 @@ class ProductStrategy extends AbstractStrategy
      * @param ProjectEntityService $projectEntityService
      * @param ProductRepository $productRepository
      */
-    public function __construct(ProjectEntityService $projectEntityService, ProductRepository $productRepository)
-    {
+    public function __construct(
+        ProjectEntityService $projectEntityService,
+        StoreManager $storeManager,
+        ProductRepository $productRepository
+    ) {
         $this->productRepository = $productRepository;
-        parent::__construct($projectEntityService);
+        $this->storeManager = $storeManager;
+        parent::__construct($projectEntityService, $storeManager);
     }
 
     /**
@@ -141,5 +148,32 @@ class ProductStrategy extends AbstractStrategy
         }
 
         return str_replace(['*', '|', '\\', ':', '"', '<', '>', '?', '/'], ' ', $name);
+    }
+
+    /**
+     * @param $content
+     * @param ProjectEntity $entity
+     * @return void
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\StateException
+     */
+    public function setContent($content, ProjectEntity $entity)
+    {
+        /** @var StoreInterface[] $stores */
+        $stores = $this->storeManager->getStores(true, true);
+
+        if (!isset($stores[StoreService::getStoreCode($entity->getLanguage())])) {
+            throw new \Exception("StoreView with code '{$entity->getLanguage()}' not exists. Continue.");
+        }
+
+        $product = $this->productRepository->getById(
+            $entity->getEntityId(),
+            false,
+            $stores[StoreService::getStoreCode($entity->getLanguage())]->getId()
+        );
+        $product->setData($entity->getAttribute(), $content);
+        $this->productRepository->save($product);
     }
 }

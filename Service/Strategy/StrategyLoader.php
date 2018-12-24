@@ -25,10 +25,11 @@ class StrategyLoader
 {
     private $strategies = [];
 
-    public function __construct(PageStrategy $pageStrategy, ProductStrategy $productStrategy)
+    public function __construct(PageStrategy $pageStrategy, ProductStrategy $productStrategy, BlockStrategy $blockStrategy)
     {
         $this->strategies[] = $pageStrategy;
         $this->strategies[] = $productStrategy;
+        $this->strategies[] = $blockStrategy;
     }
 
     /**

@@ -21,46 +21,47 @@
 
 namespace SmartCat\Connector\Service\Strategy;
 
-use Magento\Cms\Model\Page;
-use Magento\Cms\Model\PageRepository;
+use Magento\Cms\Model\Block;
+use Magento\Cms\Model\BlockRepository;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProjectEntityService;
 
-class PageStrategy extends AbstractStrategy
+class BlockStrategy extends AbstractStrategy
 {
-    private $pageRepository;
     private $parametersTag = 'parameters';
+    private $blockRepository;
 
     /**
-     * PageStrategy constructor.
+     * BlockStrategy constructor.
      * @param ProjectEntityService $projectEntityService
-     * @param PageRepository $pageRepository
+     * @param BlockRepository $blockRepository
      */
-    public function __construct(ProjectEntityService $projectEntityService, PageRepository $pageRepository)
+    public function __construct(ProjectEntityService $projectEntityService, BlockRepository $blockRepository)
     {
-        $this->pageRepository = $pageRepository;
+        $this->blockRepository = $blockRepository;
         parent::__construct($projectEntityService);
     }
 
     /**
-     * @return array|string[]
+     * @return string[]
      */
     public static function getAppliedClasses()
     {
-        return [Page::class];
+        return [Block::class];
     }
 
     /**
      * @param \Magento\Framework\Model\AbstractModel $model
      * @param Project $project
      * @param Profile $profile
+     * @return void
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        if (trim($model->getData(Page::CONTENT))) {
-            $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . Page::CONTENT);
+        if (trim($model->getData(Block::CONTENT))) {
+            $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . Block::CONTENT);
         }
 
         $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . $this->parametersTag);
@@ -68,52 +69,15 @@ class PageStrategy extends AbstractStrategy
 
     /**
      * @param ProjectEntity $entity
-     * @return \SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel|null
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @return mixed
      */
     public function getDocumentModel(ProjectEntity $entity)
     {
-        if ($entity->getEntity() != self::getType()) {
-            return null;
-        }
-
-        $page = $this->pageRepository->getById($entity->getEntityId());
-
-        switch ($entity->getAttribute()) {
-            case $this->parametersTag:
-                $data = $this->getJsonParameters($page);
-                $fileName = "{$entity->getAttribute()}({$page->getTitle()})({$entity->getLanguage()}).json";
-                break;
-            case Page::CONTENT:
-                $data = $page->getContent();
-                $fileName = "{$entity->getAttribute()}({$page->getTitle()})({$entity->getLanguage()}).html";
-                break;
-            default:
-                return null;
-        }
-
-        return $this->getDocumentFile($data, $fileName, $entity);
+        // TODO: Implement getDocumentModel() method.
     }
 
     /**
-     * @param Page $page
-     * @return false|string
-     */
-    private function getJsonParameters(Page $page)
-    {
-        $parameters = [
-            'title' => $page->getTitle(),
-            'meta_title' => $page->getMetaTitle(),
-            'meta_keywords' => $page->getMetaKeywords(),
-            'meta_description' => $page->getMetaDescription(),
-            'content_heading' => $page->getContentHeading()
-        ];
-
-        return json_encode($parameters);
-    }
-
-    /**
-     * @param array|\Magento\Framework\Model\AbstractModel[] $models
+     * @param \Magento\Framework\Model\AbstractModel[] $models
      * @return string
      */
     public function getName(array $models)
@@ -121,7 +85,7 @@ class PageStrategy extends AbstractStrategy
         $name = null;
 
         foreach ($models as $model) {
-            if ($model instanceof Page) {
+            if ($model instanceof Block) {
                 if (strlen($name) < 80) {
                     $name .= $model->getTitle();
                 } else {
@@ -145,6 +109,6 @@ class PageStrategy extends AbstractStrategy
      */
     public static function getType()
     {
-        return 'page';
+        return 'block';
     }
 }

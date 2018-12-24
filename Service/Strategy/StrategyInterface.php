@@ -62,4 +62,11 @@ interface StrategyInterface
      * @return string
      */
     public static function getType();
+
+    /**
+     * @param $content
+     * @param ProjectEntity $entity
+     * @return mixed
+     */
+    public function setContent($content, ProjectEntity $entity);
 }

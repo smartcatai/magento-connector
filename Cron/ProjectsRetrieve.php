@@ -142,7 +142,6 @@ class ProjectsRetrieve
     }
 
     /**
-     * @param ProjectModel $smartCatProject
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
     private function exportDocuments()
@@ -171,33 +170,6 @@ class ProjectsRetrieve
                     ->setTaskId(null);
             }
             $this->projectEntityRepository->save($entity);
-        }
-    }
-
-    /**
-     * @param $content
-     * @param ProjectEntity $entity
-     * @param ProjectModel $smartCatProject
-     */
-    private function setContent($content, ProjectEntity $entity)
-    {
-        /** @var StoreInterface[] $stores */
-        $stores = $this->storeManager->getStores(true, true);
-
-        if (!isset($stores[StoreService::getStoreCode($entity->getLanguage())])) {
-            $this->errorHandler->logError("StoreView with code '{$entity->getLanguage()}' not exists. Continue.");
-        }
-
-        try {
-            $product = $this->productRepository->getById(
-                $entity->getEntityId(),
-                false,
-                $stores[StoreService::getStoreCode($entity->getLanguage())]->getId()
-            );
-            $product->setData($entity->getAttribute(), $content);
-            $this->productRepository->save($product);
-        } catch (Throwable $e) {
-            $this->errorHandler->handleError($e, "SmartCat Product Error");
         }
     }
 }
