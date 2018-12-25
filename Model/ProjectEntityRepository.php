@@ -23,57 +23,51 @@ namespace SmartCat\Connector\Model;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 use SmartCat\Connector\Api\Data\ProjectEntitySearchResultsFactory;
-use SmartCat\Connector\Model\ResourceModel\ProjectEntity\CollectionFactory as ProjectProductCollectionFactory;
+use SmartCat\Connector\Model\ResourceModel\ProjectEntity\CollectionFactory as ProjectEntityCollectionFactory;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Reflection\DataObjectProcessor;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
-use SmartCat\Connector\Model\ResourceModel\ProjectEntity as ResourceProjectProduct;
+use SmartCat\Connector\Model\ResourceModel\ProjectEntity as ResourceProjectEntity;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\DataObjectHelper;
 
 class ProjectEntityRepository
 {
     private $extensionAttributesJoinProcessor;
-    private $projectProductCollectionFactory;
+    private $projectEntityCollectionFactory;
     private $dataObjectHelper;
-    private $dataProjectProductFactory;
     private $searchResultsFactory;
     private $dataObjectProcessor;
     private $resource;
     private $projectProductFactory;
 
-    private $storeManager;
     private $collectionProcessor;
 
     /**
-     * @param ResourceProjectProduct $resource
+     * @param ResourceProjectEntity $resource
      * @param ProjectEntityFactory $projectProductFactory
-     * @param ProjectProductCollectionFactory $projectProductCollectionFactory
+     * @param ProjectEntityCollectionFactory $projectProductCollectionFactory
      * @param DataObjectHelper $dataObjectHelper
      * @param DataObjectProcessor $dataObjectProcessor
-     * @param StoreManagerInterface $storeManager
      * @param CollectionProcessorInterface $collectionProcessor
      * @param JoinProcessorInterface $extensionAttributesJoinProcessor
      */
     public function __construct(
-        ResourceProjectProduct $resource,
+        ResourceProjectEntity $resource,
         ProjectEntityFactory $projectProductFactory,
-        ProjectProductCollectionFactory $projectProductCollectionFactory,
+        ProjectEntityCollectionFactory $projectProductCollectionFactory,
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
-        StoreManagerInterface $storeManager,
         CollectionProcessorInterface $collectionProcessor,
         JoinProcessorInterface $extensionAttributesJoinProcessor,
         ProjectEntitySearchResultsFactory $searchResultsFactory
     ) {
         $this->resource = $resource;
         $this->projectProductFactory = $projectProductFactory;
-        $this->projectProductCollectionFactory = $projectProductCollectionFactory;
+        $this->projectEntityCollectionFactory = $projectProductCollectionFactory;
         $this->dataObjectHelper = $dataObjectHelper;
         $this->dataObjectProcessor = $dataObjectProcessor;
-        $this->storeManager = $storeManager;
         $this->collectionProcessor = $collectionProcessor;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
         $this->searchResultsFactory = $searchResultsFactory;
@@ -118,7 +112,7 @@ class ProjectEntityRepository
     public function getList(
         \Magento\Framework\Api\SearchCriteriaInterface $criteria
     ) {
-        $collection = $this->projectProductCollectionFactory->create();
+        $collection = $this->projectEntityCollectionFactory->create();
 
         $this->collectionProcessor->process($criteria, $collection);
 
@@ -127,6 +121,25 @@ class ProjectEntityRepository
         $searchResults->setItems($collection->getItems());
         $searchResults->setTotalCount($collection->getSize());
         return $searchResults;
+    }
+
+    /**
+     * @param $type
+     * @param $entityId
+     * @param $status
+     * @return \SmartCat\Connector\Model\ResourceModel\ProjectEntity|null
+     */
+    public function getItemByTypeIdStatus($type, $entityId, $status)
+    {
+        $collection = $this->projectEntityCollectionFactory->create();
+        $collection
+            ->addFilter(ProjectEntity::TYPE, $type)
+            ->addFilter(ProjectEntity::STATUS, $status)
+            ->addFilter(ProjectEntity::ENTITY_ID, $entityId);
+
+        $item = $collection->setCurPage(1)->setPageSize(1)->getItems();
+
+        return $item[0] ?? null;
     }
 
     /**

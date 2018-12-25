@@ -22,7 +22,10 @@
 namespace SmartCat\Connector\Service\Strategy;
 
 use Magento\Cms\Model\Page;
+use Magento\Cms\Model\PageFactory;
 use Magento\Cms\Model\PageRepository;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -31,6 +34,7 @@ use SmartCat\Connector\Service\ProjectEntityService;
 class PageStrategy extends AbstractStrategy
 {
     private $pageRepository;
+    private $pageFactory;
     private $parametersTag = 'parameters';
 
     /**
@@ -38,10 +42,15 @@ class PageStrategy extends AbstractStrategy
      * @param ProjectEntityService $projectEntityService
      * @param PageRepository $pageRepository
      */
-    public function __construct(ProjectEntityService $projectEntityService, PageRepository $pageRepository)
-    {
+    public function __construct(
+        ProjectEntityService $projectEntityService,
+        StoreManager $storeManager,
+        PageRepository $pageRepository,
+        PageFactory $pageFactory
+    ) {
         $this->pageRepository = $pageRepository;
-        parent::__construct($projectEntityService);
+        $this->pageFactory = $pageFactory;
+        parent::__construct($projectEntityService, $storeManager);
     }
 
     /**
@@ -59,10 +68,6 @@ class PageStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        if (trim($model->getData(Page::CONTENT))) {
-            $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . Page::CONTENT);
-        }
-
         $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . $this->parametersTag);
     }
 
@@ -79,65 +84,54 @@ class PageStrategy extends AbstractStrategy
 
         $page = $this->pageRepository->getById($entity->getEntityId());
 
-        switch ($entity->getAttribute()) {
-            case $this->parametersTag:
-                $data = $this->getJsonParameters($page);
-                $fileName = "{$entity->getAttribute()}({$page->getTitle()})({$entity->getLanguage()}).json";
-                break;
-            case Page::CONTENT:
-                $data = $page->getContent();
-                $fileName = "{$entity->getAttribute()}({$page->getTitle()})({$entity->getLanguage()}).html";
-                break;
-            default:
-                return null;
-        }
+        $data = $this->encodeJsonParameters($page);
+        $fileName = "{$page->getTitle()}({$entity->getLanguage()}).json";
 
-        return $this->getDocumentFile($data, $fileName, $entity);
+         return $this->getDocumentFile($data, $fileName, $entity);
     }
 
     /**
      * @param Page $page
      * @return false|string
      */
-    private function getJsonParameters(Page $page)
+    private function encodeJsonParameters(Page $page)
     {
         $parameters = [
             'title' => $page->getTitle(),
             'meta_title' => $page->getMetaTitle(),
             'meta_keywords' => $page->getMetaKeywords(),
             'meta_description' => $page->getMetaDescription(),
-            'content_heading' => $page->getContentHeading()
+            'content_heading' => $page->getContentHeading(),
+            'content' => $page->getContent()
         ];
 
         return json_encode($parameters);
     }
 
     /**
-     * @param array|\Magento\Framework\Model\AbstractModel[] $models
+     * @param string $json
+     * @return array
+     */
+    private function decodeJsonParameters($json)
+    {
+        return json_decode($json);
+    }
+
+    /**
+     * @param Page[] $models
      * @return string
      */
     public function getName(array $models)
     {
-        $name = null;
+        $names = [];
 
         foreach ($models as $model) {
             if ($model instanceof Page) {
-                if (strlen($name) < 80) {
-                    $name .= $model->getTitle();
-                } else {
-                    break;
-                }
-                $name .= ', ';
+                $names[] = $model->getTitle();
             }
         }
 
-        if (strlen($name) > 99) {
-            $name = substr($name, 0, 99);
-        } else {
-            $name = substr($name, 0, -2);
-        }
-
-        return str_replace(['*', '|', '\\', ':', '"', '<', '>', '?', '/'], ' ', $name);
+        return parent::getName($names);
     }
 
     /**
@@ -146,5 +140,44 @@ class PageStrategy extends AbstractStrategy
     public static function getType()
     {
         return 'page';
+    }
+
+    /**
+     * @param string $content
+     * @param ProjectEntity $entity
+     * @return bool
+     */
+    public function setContent($content, ProjectEntity $entity): bool
+    {
+        /** @var StoreInterface[] $stores */
+        $stores = $this->storeManager->getStores(true, true);
+
+        try {
+            $page = $this->pageRepository->getById($entity->getEntityId());
+        } catch (NoSuchEntityException $e) {
+            $entity->setStatus(ProjectEntity::STATUS_FAILED);
+            $this->projectEntityService->update($entity);
+            return false;
+        }
+
+        if ($entity->getAttribute() == $this->parametersTag) {
+            $parameters = $this->decodeJsonParameters($content);
+            $newPage = $this->pageFactory->create();
+            $newPage
+                ->setTitle($parameters['title'])
+                ->setMetaTitle($parameters['meta_title'])
+                ->setMetaDescription($parameters['meta_description'])
+                ->setMetaKeywords($parameters['meta_keywords'])
+                ->setContentHeading($parameters['content_heading'])
+                ->setContent($parameters['content'])
+                ->setIsActive(true)
+                ->setIdentifier($page->getIdentifier() . '_' . $entity->getLanguage())
+                ->setPageLayout($page->getPageLayout());
+            $this->pageRepository->save($newPage);
+
+            return true;
+        }
+
+        return false;
     }
 }

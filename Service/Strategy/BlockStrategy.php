@@ -22,26 +22,39 @@
 namespace SmartCat\Connector\Service\Strategy;
 
 use Magento\Cms\Model\Block;
+use Magento\Cms\Model\BlockFactory;
 use Magento\Cms\Model\BlockRepository;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProjectEntityService;
+use SmartCat\Connector\Service\StoreService;
 
 class BlockStrategy extends AbstractStrategy
 {
     private $parametersTag = 'parameters';
     private $blockRepository;
+    private $blockFactory;
 
     /**
      * BlockStrategy constructor.
      * @param ProjectEntityService $projectEntityService
+     * @param StoreManager $storeManager
      * @param BlockRepository $blockRepository
+     * @param BlockFactory $blockFactory
      */
-    public function __construct(ProjectEntityService $projectEntityService, BlockRepository $blockRepository)
-    {
+    public function __construct(
+        ProjectEntityService $projectEntityService,
+        StoreManager $storeManager,
+        BlockRepository $blockRepository,
+        BlockFactory $blockFactory
+    ) {
         $this->blockRepository = $blockRepository;
-        parent::__construct($projectEntityService);
+        $this->blockFactory = $blockFactory;
+        parent::__construct($projectEntityService, $storeManager);
     }
 
     /**
@@ -60,48 +73,66 @@ class BlockStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        if (trim($model->getData(Block::CONTENT))) {
-            $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . Block::CONTENT);
-        }
-
         $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . $this->parametersTag);
     }
 
     /**
      * @param ProjectEntity $entity
      * @return mixed
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getDocumentModel(ProjectEntity $entity)
     {
-        // TODO: Implement getDocumentModel() method.
+        if ($entity->getEntity() != self::getType()) {
+            return null;
+        }
+
+        $block = $this->blockRepository->getById($entity->getEntityId());
+
+        $data = $this->encodeJsonParameters($block);
+        $fileName = "{$block->getTitle()}({$entity->getLanguage()}).json";
+
+        return $this->getDocumentFile($data, $fileName, $entity);
     }
 
     /**
-     * @param \Magento\Framework\Model\AbstractModel[] $models
+     * @param Block $block
+     * @return false|string
+     */
+    private function encodeJsonParameters(Block $block)
+    {
+        $jsonBlock = [
+            'content' => $block->getContent(),
+            'title' => $block->getTitle()
+        ];
+
+        return json_encode($jsonBlock);
+    }
+
+    /**
+     * @param string $json
+     * @return array
+     */
+    private function decodeJsonParameters($json)
+    {
+        return json_decode($json);
+    }
+
+    /**
+     * @param Block[] $models
      * @return string
      */
     public function getName(array $models)
     {
-        $name = null;
+        $names = [];
 
         foreach ($models as $model) {
             if ($model instanceof Block) {
-                if (strlen($name) < 80) {
-                    $name .= $model->getTitle();
-                } else {
-                    break;
-                }
-                $name .= ', ';
+                $names[] = $model->getTitle();
             }
         }
 
-        if (strlen($name) > 99) {
-            $name = substr($name, 0, 99);
-        } else {
-            $name = substr($name, 0, -2);
-        }
-
-        return str_replace(['*', '|', '\\', ':', '"', '<', '>', '?', '/'], ' ', $name);
+        return parent::getName($names);
     }
 
     /**
@@ -110,5 +141,36 @@ class BlockStrategy extends AbstractStrategy
     public static function getType()
     {
         return 'block';
+    }
+
+    /**
+     * @param $content
+     * @param ProjectEntity $entity
+     * @return bool
+     */
+    public function setContent($content, ProjectEntity $entity): bool
+    {
+        try {
+            $block = $this->blockRepository->getById($entity->getEntityId());
+        } catch (NoSuchEntityException $e) {
+            $entity->setStatus(ProjectEntity::STATUS_FAILED);
+            $this->projectEntityService->update($entity);
+            return false;
+        }
+
+        $parameters = $this->decodeJsonParameters($content);
+        $newBlock = $this->blockFactory->create();
+
+        $newBlock
+            ->setContent($parameters['content'])
+            ->setTitle($parameters['title'])
+            ->setIsActive(true)
+            ->setIdentifier($block->getIdentifier() . '_' . $entity->getLanguage());
+
+        try {
+            $this->blockRepository->save($newBlock);
+        } catch (CouldNotSaveException $e) {
+            return false;
+        }
     }
 }

@@ -51,14 +51,13 @@ class StoreService
     public function createStoreByCode($languageCode)
     {
         $store = $this->storeFactory->create();
-        $name = LanguageDictionary::getNameByCode($languageCode);
 
         $store
             ->setCode($this->getStoreCode($languageCode))
             ->setIsActive(true)
             ->setWebsiteId(1)
             ->setGroupId(1)
-            ->setName($name);
+            ->setName(LanguageDictionary::getNameByCode($languageCode));
 
         try {
             $this->storeResourceModel->save($store);

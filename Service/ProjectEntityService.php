@@ -22,7 +22,6 @@
 namespace SmartCat\Connector\Service;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\CouldNotSaveException;
 use SmartCat\Client\Model\BilingualFileImportSettingsModel;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Connector\Helper\ErrorHandler;
@@ -30,6 +29,7 @@ use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Model\ProjectEntityRepository;
+use \Throwable;
 
 class ProjectEntityService
 {
@@ -55,19 +55,51 @@ class ProjectEntityService
     public function create(Project $project, $entity, Profile $profile, $type)
     {
         foreach ($profile->getTargetLangArray() as $targetLang) {
-            $projectProduct = $this->projectEntityRepository->create();
-            $projectProduct
+            $projectEntity = $this->projectEntityRepository->create();
+            $projectEntity
                 ->setEntityId($entity->getId())
                 ->setType($type . "|" . $targetLang)
                 ->setStatus(ProjectEntity::STATUS_NEW)
                 ->setProjectId($project->getId());
 
-            try {
-                $this->projectEntityRepository->save($projectProduct);
-            } catch (CouldNotSaveException $e) {
-                $this->errorHandler->logError("Could not save: " . $e->getMessage());
-            }
+            $this->update($projectEntity);
         }
+    }
+
+    /**
+     * @return array|ProjectEntity[]
+     */
+    public function getExportingEntities()
+    {
+        $searchCriteria = $this->searchCriteriaBuilder
+            ->addFilter(ProjectEntity::STATUS, ProjectEntity::STATUS_EXPORT)->create();
+
+        try {
+            $entities = $this->projectEntityRepository->getList($searchCriteria)->getItems();
+        } catch (Throwable $e) {
+            $this->errorHandler->logError("An error occurred on getExportingEntities: {$e->getMessage()}");
+            return [];
+        }
+
+        return $entities;
+    }
+
+    /**
+     * @param ProjectEntity $entity
+     * @return bool
+     */
+    public function update(ProjectEntity $entity)
+    {
+        try {
+            if ($entity->hasDataChanges()) {
+                $this->projectEntityRepository->save($entity);
+            }
+        } catch (Throwable $e) {
+            $this->errorHandler->logError("An error occurred on projectEntity update: {$e->getMessage()}");
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -88,6 +120,16 @@ class ProjectEntityService
         $list = $this->projectEntityRepository->getList($searchCriteria->create())->getItems();
 
         return $list;
+    }
+
+    /**
+     * @param $entityId
+     * @return ProjectEntity
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function getEntityById($entityId)
+    {
+        return $this->projectEntityRepository->getById($entityId);
     }
 
     /**

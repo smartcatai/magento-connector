@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Service\Strategy;
 
 use Magento\Store\Model\StoreManager;
+use SmartCat\Connector\Helper\StringHelper;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProjectEntityService;
@@ -39,6 +40,17 @@ abstract class AbstractStrategy implements StrategyInterface
     {
         $this->projectEntityService = $projectEntityService;
         $this->storeManager = $storeManager;
+    }
+
+    /**
+     * @param string[] $strings
+     * @return string
+     */
+    public function getName(array $strings)
+    {
+        $stringNames = StringHelper::limitImplode($strings);
+
+        return StringHelper::whitespaceSpecChars($stringNames);
     }
 
     /**

@@ -31,23 +31,23 @@ use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntityRepository;
-use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Service\ProfileService;
 use SmartCat\Connector\Service\ProjectService;
 use \Throwable;
 
-class ProjectsSending
+class SendProjects
 {
     private $smartCatService;
     private $projectService;
     private $errorHandler;
     private $searchCriteriaBuilder;
-    private $projectRepository;
     private $projectEntityRepository;
+    private $profileService;
 
     public function __construct(
         SmartCatFacade $smartCatService,
         ProjectService $projectService,
-        ProjectRepository $projectRepository,
+        ProfileService $profileService,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ErrorHandler $errorHandler,
         ProjectEntityRepository $projectEntityRepository
@@ -55,25 +55,18 @@ class ProjectsSending
         $this->smartCatService = $smartCatService;
         $this->errorHandler = $errorHandler;
         $this->projectService = $projectService;
-        $this->projectRepository = $projectRepository;
+        $this->profileService = $profileService;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->projectEntityRepository = $projectEntityRepository;
     }
 
     public function execute()
     {
-        $criteria = $this->searchCriteriaBuilder->addFilter(Project::STATUS, Project::STATUS_WAITING)->create();
-
-        try {
-            $projects = $this->projectRepository->getList($criteria)->getItems();
-        } catch (Throwable $e) {
-            $this->errorHandler->handleError($e, "SmartCat project list error");
-            return;
-        }
+        $projects = $this->projectService->getWaitingProjects();
 
         foreach ($projects as $project) {
             try {
-                $profile = $this->projectService->getProjectProfile($project);
+                $profile = $this->profileService->getProfileByProject($project);
 
                 if ($profile->getProjectGuid()) {
                     $this->updateProject($project, $profile);
@@ -161,18 +154,15 @@ class ProjectsSending
         try {
             $projectModel = $projectManager->projectGet($profile->getProjectGuid());
             $smartCatDocuments = $projectModel->getDocuments();
-            $projectDocuments = $this->projectService->getProjectDocumentModels($project, $profile);
+            $projectDocuments = $this->projectService->getProjectDocumentModels($project);
 
             $smartCatNameDocuments = array_map(function (DocumentModel $value) {
-                return $value->getName();
+                return $value->getExternalId();
             }, $smartCatDocuments);
 
             foreach ($projectDocuments as $projectDocument) {
-                $index = array_search(str_replace(
-                    '.html',
-                    '',
-                    $projectDocument->getFile()['fileName']
-                ), $smartCatNameDocuments);
+                $index = array_search($projectDocument->getExternalId(), $smartCatNameDocuments);
+
                 if ($index !== false) {
                     $this->waitingCompleteDocumentStatus($smartCatDocuments[$index]->getId());
                     $documentManager->documentUpdate([

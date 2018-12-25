@@ -23,17 +23,23 @@ namespace SmartCat\Connector\Service\Strategy;
 
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductRepository;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
+use SmartCat\Connector\Service\ProfileService;
 use SmartCat\Connector\Service\ProjectEntityService;
+use SmartCat\Connector\Service\ProjectService;
 use SmartCat\Connector\Service\StoreService;
 
 class ProductStrategy extends AbstractStrategy
 {
     private $productRepository;
+    private $profileService;
+    private $parametersTag = 'parameters';
 
     private $excludedAttributes = [
         'required_options',
@@ -45,15 +51,19 @@ class ProductStrategy extends AbstractStrategy
     /**
      * ProductStrategy constructor.
      * @param ProjectEntityService $projectEntityService
+     * @param StoreManager $storeManager
+     * @param ProfileService $profileService
      * @param ProductRepository $productRepository
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
         StoreManager $storeManager,
+        ProfileService $profileService,
         ProductRepository $productRepository
     ) {
         $this->productRepository = $productRepository;
         $this->storeManager = $storeManager;
+        $this->profileService = $profileService;
         parent::__construct($projectEntityService, $storeManager);
     }
 
@@ -81,6 +91,32 @@ class ProductStrategy extends AbstractStrategy
      */
     public function attach($product, Project $project, Profile $profile)
     {
+        $this->projectEntityService->create(
+            $project,
+            $product,
+            $profile,
+            self::getType() . '|' . $this->parametersTag
+        );
+    }
+
+    /**
+     * @param ProjectEntity $entity
+     * @return \SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel|null
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function getDocumentModel(ProjectEntity $entity)
+    {
+        if ($entity->getEntity() != self::getType()) {
+            return null;
+        }
+
+        $attributes = [];
+
+        /** @var Product $product */
+        $product = $this->productRepository->getById($entity->getEntityId());
+        $profile = $this->profileService->getProfileByProjectId($entity->getProjectId());
+
         $exceptAttributes = array_merge($this->excludedAttributes, $profile->getExcludedAttributesArray());
 
         foreach ($product->getAttributes() as $attribute) {
@@ -94,72 +130,42 @@ class ProductStrategy extends AbstractStrategy
                     continue;
                 }
 
-                $this->projectEntityService->create(
-                    $project,
-                    $product,
-                    $profile,
-                    self::getType() . '|' . $attributeCode
-                );
+                array_merge($attributes, [$attributeCode => $data]);
             }
         }
-    }
 
-    /**
-     * @param ProjectEntity $entity
-     * @return \SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel|null
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
-    public function getDocumentModel(ProjectEntity $entity)
-    {
-        if ($entity->getEntity() != self::getType()) {
-            return null;
-        }
-
-        $product = $this->productRepository->getById($entity->getEntityId());
-        $data = $product->getData($entity->getAttribute());
-        $fileName = "{$entity->getAttribute()}({$product->getSku()})({$entity->getLanguage()}).html";
+        $data = json_encode($attributes);
+        $fileName = "{$product->getSku()}({$entity->getLanguage()}).json";
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
 
     /**
-     * @param array $products
+     * @param Product[] $products
      * @return mixed|string
      */
     public function getName(array $products)
     {
-        $name = null;
+        $names = [];
 
         foreach ($products as $product) {
             if ($product instanceof Product) {
-                if (strlen($name) < 80) {
-                    $name .= $product->getName();
-                } else {
-                    break;
-                }
-                $name .= ', ';
+                $names[] = $product->getName();
             }
         }
 
-        if (strlen($name) > 99) {
-            $name = substr($name, 0, 99);
-        } else {
-            $name = substr($name, 0, -2);
-        }
-
-        return str_replace(['*', '|', '\\', ':', '"', '<', '>', '?', '/'], ' ', $name);
+        return parent::getName($names);
     }
 
     /**
-     * @param $content
+     * @param string $content
      * @param ProjectEntity $entity
-     * @return void
+     * @return bool
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      * @throws \Magento\Framework\Exception\StateException
      */
-    public function setContent($content, ProjectEntity $entity)
+    public function setContent($content, ProjectEntity $entity): bool
     {
         /** @var StoreInterface[] $stores */
         $stores = $this->storeManager->getStores(true, true);
@@ -168,12 +174,24 @@ class ProductStrategy extends AbstractStrategy
             throw new \Exception("StoreView with code '{$entity->getLanguage()}' not exists. Continue.");
         }
 
-        $product = $this->productRepository->getById(
-            $entity->getEntityId(),
-            false,
-            $stores[StoreService::getStoreCode($entity->getLanguage())]->getId()
-        );
-        $product->setData($entity->getAttribute(), $content);
+        $attributes = json_decode($content);
+
+        try {
+            $product = $this->productRepository->getById(
+                $entity->getEntityId(),
+                false,
+                $stores[StoreService::getStoreCode($entity->getLanguage())]->getId()
+            );
+        } catch (NoSuchEntityException $e) {
+            return false;
+        }
+
+        foreach ($attributes as $attributeCode => $attributeContent) {
+            $product->setData($attributeCode, $attributeContent);
+        }
+
         $this->productRepository->save($product);
+
+        return true;
     }
 }

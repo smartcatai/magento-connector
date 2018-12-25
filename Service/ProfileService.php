@@ -24,17 +24,22 @@ namespace SmartCat\Connector\Service;
 use SmartCat\Connector\Exception\ProfileServiceException;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\ProfileRepository;
+use SmartCat\Connector\Model\Project;
+use SmartCat\Connector\Model\ProjectRepository;
 
 class ProfileService
 {
     private $profileRepository;
+    private $projectRepository;
     private $storeService;
 
     public function __construct(
         ProfileRepository $profileRepository,
+        ProjectRepository $projectRepository,
         StoreService $storeService
     ) {
         $this->profileRepository = $profileRepository;
+        $this->projectRepository = $projectRepository;
         $this->storeService = $storeService;
     }
 
@@ -80,5 +85,36 @@ class ProfileService
     private function checkProject()
     {
 
+    }
+
+    /**
+     * @param int $profileId
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface|Profile
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getProfileById($profileId)
+    {
+        return $this->profileRepository->getById($profileId);
+    }
+
+    /**
+     * @param \SmartCat\Connector\Api\Data\ProjectInterface|Project $project
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface|Profile
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getProfileByProject(Project $project)
+    {
+        return $this->profileRepository->getById($project->getProfileId());
+    }
+
+    /**
+     * @param int $projectId
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface|Profile
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getProfileByProjectId($projectId)
+    {
+        $project = $this->projectRepository->getById($projectId);
+        return $this->profileRepository->getById($project->getProfileId());
     }
 }
