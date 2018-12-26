@@ -81,8 +81,8 @@ class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
                             'confirm' => [
                                 'title' => __('Delete "${ $.$data.'. Profile::NAME .' }"'),
                                 'message' => __(
-                                    'Are you sure you wan\'t to delete a "${ $.$data.'. Profile::NAME .' }" record?' .
-                                    '<br /> All projects which used this profile will be deleted!'
+                                    'Are you sure you want to delete "${ $.$data.'. Profile::NAME .' }" profile?' .
+                                    '<br /> All projects that use this profile will be deleted!'
                                 )
                             ]
                         ]

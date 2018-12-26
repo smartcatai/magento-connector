@@ -26,6 +26,7 @@ use Magento\Cms\Model\BlockFactory;
 use Magento\Cms\Model\BlockRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
@@ -110,15 +111,6 @@ class BlockStrategy extends AbstractStrategy
     }
 
     /**
-     * @param string $json
-     * @return array
-     */
-    private function decodeJsonParameters($json)
-    {
-        return json_decode($json);
-    }
-
-    /**
      * @param Block[] $models
      * @return string
      */
@@ -147,30 +139,31 @@ class BlockStrategy extends AbstractStrategy
      * @param $content
      * @param ProjectEntity $entity
      * @return bool
+     * @throws CouldNotSaveException
+     * @throws NoSuchEntityException
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        try {
-            $block = $this->blockRepository->getById($entity->getEntityId());
-        } catch (NoSuchEntityException $e) {
-            $entity->setStatus(ProjectEntity::STATUS_FAILED);
-            $this->projectEntityService->update($entity);
-            return false;
-        }
+        /** @var Store[] $stores */
+        $stores = $this->storeManager->getStores(true, true);
+        $block = $this->blockRepository->getById($entity->getEntityId());
 
-        $parameters = $this->decodeJsonParameters($content);
-        $newBlock = $this->blockFactory->create();
+        if ($entity->getAttribute() == $this->parametersTag) {
+            $parameters = $this->decodeJsonParameters($content);
+            $newBlock = $this->blockFactory->create();
 
-        $newBlock
-            ->setContent($parameters['content'])
-            ->setTitle($parameters['title'])
-            ->setIsActive(true)
-            ->setIdentifier($block->getIdentifier() . '_' . $entity->getLanguage());
+            $newBlock
+                ->setStoreId([$stores[StoreService::getStoreCode($entity->getLanguage())]->getId()])
+                ->setContent($parameters['content'])
+                ->setTitle($parameters['title'])
+                ->setIsActive(true)
+                ->setIdentifier($block->getIdentifier() . '_' . $entity->getLanguage());
 
-        try {
             $this->blockRepository->save($newBlock);
-        } catch (CouldNotSaveException $e) {
-            return false;
+
+            return true;
         }
+
+        return false;
     }
 }

@@ -62,7 +62,7 @@ class Save extends \Magento\Backend\App\Action
         if ($data) {
             try {
                 $modelId = $this->profileService->createFromData($data);
-                $this->messageManager->addSuccessMessage(__('You successfully saved the Profile.'));
+                $this->messageManager->addSuccessMessage(__('You successfully saved the profile.'));
                 $this->dataPersistor->clear('smartcat_connector_profile');
         
                 if ($this->getRequest()->getParam('back')) {
@@ -72,7 +72,7 @@ class Save extends \Magento\Backend\App\Action
             } catch (LocalizedException $e) {
                 $this->messageManager->addErrorMessage($e->getMessage());
             } catch (\Exception $e) {
-                $this->messageManager->addExceptionMessage($e, __('Something went wrong while saving the Profile.'));
+                $this->messageManager->addExceptionMessage($e, __('Something went wrong while saving the profile.'));
             }
         
             $this->dataPersistor->set('smartcat_connector_profile', $data);

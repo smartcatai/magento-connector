@@ -56,7 +56,7 @@ class Edit extends \SmartCat\Connector\Controller\Adminhtml\Profile
         if ($id) {
             $model->load($id);
             if (!$model->getId()) {
-                $this->messageManager->addErrorMessage(__('This Profile no longer exists.'));
+                $this->messageManager->addErrorMessage(__('This profile no longer exists.'));
                 /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
                 $resultRedirect = $this->resultRedirectFactory->create();
                 return $resultRedirect->setPath('*/*/');

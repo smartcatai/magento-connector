@@ -24,12 +24,15 @@ namespace SmartCat\Connector\Service\Strategy;
 use Magento\Cms\Model\Page;
 use Magento\Cms\Model\PageFactory;
 use Magento\Cms\Model\PageRepository;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProjectEntityService;
+use SmartCat\Connector\Service\StoreService;
 
 class PageStrategy extends AbstractStrategy
 {
@@ -109,15 +112,6 @@ class PageStrategy extends AbstractStrategy
     }
 
     /**
-     * @param string $json
-     * @return array
-     */
-    private function decodeJsonParameters($json)
-    {
-        return json_decode($json);
-    }
-
-    /**
      * @param Page[] $models
      * @return string
      */
@@ -146,24 +140,20 @@ class PageStrategy extends AbstractStrategy
      * @param string $content
      * @param ProjectEntity $entity
      * @return bool
+     * @throws CouldNotSaveException
+     * @throws NoSuchEntityException
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        /** @var StoreInterface[] $stores */
+        /** @var Store[] $stores */
         $stores = $this->storeManager->getStores(true, true);
-
-        try {
-            $page = $this->pageRepository->getById($entity->getEntityId());
-        } catch (NoSuchEntityException $e) {
-            $entity->setStatus(ProjectEntity::STATUS_FAILED);
-            $this->projectEntityService->update($entity);
-            return false;
-        }
+        $page = $this->pageRepository->getById($entity->getEntityId());
 
         if ($entity->getAttribute() == $this->parametersTag) {
             $parameters = $this->decodeJsonParameters($content);
             $newPage = $this->pageFactory->create();
             $newPage
+                ->setStoreId([$stores[StoreService::getStoreCode($entity->getLanguage())]->getId()])
                 ->setTitle($parameters['title'])
                 ->setMetaTitle($parameters['meta_title'])
                 ->setMetaDescription($parameters['meta_description'])
@@ -173,6 +163,7 @@ class PageStrategy extends AbstractStrategy
                 ->setIsActive(true)
                 ->setIdentifier($page->getIdentifier() . '_' . $entity->getLanguage())
                 ->setPageLayout($page->getPageLayout());
+
             $this->pageRepository->save($newPage);
 
             return true;

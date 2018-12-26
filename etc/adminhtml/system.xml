@@ -16,16 +16,16 @@
 				</field>
 				<field id="application_id" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="text">
 					<label>Smartcat Account ID</label>
-					<comment>Enter your Smartcat account ID</comment>
+					<comment>Insert your Smartcat account ID</comment>
 				</field>
 				<field id="server" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Server</label>
 					<source_model>SmartCat\Connector\Model\Config\Source\ServerList</source_model>
-					<comment>Choose Smartcat server</comment>
+					<comment>Select Smartcat server</comment>
 				</field>
 				<field id="test" translate="label" type="label" sortOrder="999" showInDefault="1" showInStore="0" showInWebsite="0">
 					<label>Note:</label>
-					<comment><![CDATA[<a href="https://help.smartcat.ai/hc/en-us/articles/115002475012">Learn more</a> how to get Smartcat API credentials.]]></comment>
+					<comment><![CDATA[<a href="https://help.smartcat.ai/hc/en-us/articles/115002475012" target="_blank">Learn more</a> how to get Smartcat API credentials.]]></comment>
 				</field>
 			</group>
 		</section>

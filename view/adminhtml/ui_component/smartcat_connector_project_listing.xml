@@ -60,7 +60,7 @@
 		<column name="translate" sortOrder="40">
 			<settings>
 				<filter>text</filter>
-				<label translate="true">Translate</label>
+				<label translate="true">Translation</label>
 			</settings>
 		</column>
 		<column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectStatusColumn" sortOrder="50">

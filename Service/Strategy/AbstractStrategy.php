@@ -54,6 +54,15 @@ abstract class AbstractStrategy implements StrategyInterface
     }
 
     /**
+     * @param string $json
+     * @return array
+     */
+    public function decodeJsonParameters($json)
+    {
+        return json_decode($json, true);
+    }
+
+    /**
      * @param $data
      * @param $fileName
      * @param ProjectEntity $entity

@@ -161,7 +161,8 @@ class ProductStrategy extends AbstractStrategy
      * @param string $content
      * @param ProjectEntity $entity
      * @return bool
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws CouldNotSaveException
+     * @throws NoSuchEntityException
      * @throws \Magento\Framework\Exception\InputException
      * @throws \Magento\Framework\Exception\StateException
      */
@@ -174,24 +175,23 @@ class ProductStrategy extends AbstractStrategy
             throw new \Exception("StoreView with code '{$entity->getLanguage()}' not exists. Continue.");
         }
 
-        $attributes = json_decode($content);
+        if ($entity->getAttribute() == $this->parametersTag) {
+            $attributes = $this->decodeJsonParameters($content);
 
-        try {
             $product = $this->productRepository->getById(
                 $entity->getEntityId(),
                 false,
                 $stores[StoreService::getStoreCode($entity->getLanguage())]->getId()
             );
-        } catch (NoSuchEntityException $e) {
-            return false;
+
+            foreach ($attributes as $attributeCode => $attributeContent) {
+                $product->setData($attributeCode, $attributeContent);
+            }
+
+            $this->productRepository->save($product);
+            return true;
         }
 
-        foreach ($attributes as $attributeCode => $attributeContent) {
-            $product->setData($attributeCode, $attributeContent);
-        }
-
-        $this->productRepository->save($product);
-
-        return true;
+        return false;
     }
 }

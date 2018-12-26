@@ -55,7 +55,7 @@
 		<column name="vendor" class="SmartCat\Connector\Ui\Component\Listing\Column\VendorColumn" sortOrder="15">
 			<settings>
 				<filter>text</filter>
-				<label translate="true">Translation agency</label>
+				<label translate="true">Translation Agency</label>
 				<editor>
 					<editorType>text</editorType>
 					<validation>
@@ -127,7 +127,7 @@
 		<column name="auto_send_new" component="Magento_Ui/js/grid/columns/select" sortOrder="70">
 			<settings>
 				<filter>select</filter>
-				<label translate="true">Auto Send New</label>
+				<label translate="true">Auto Submit New</label>
 				<options class="SmartCat\Connector\Model\Config\Source\YesNoOption"/>
 				<dataType>select</dataType>
 			</settings>
@@ -135,7 +135,7 @@
 		<column name="auto_send_save" component="Magento_Ui/js/grid/columns/select" sortOrder="80">
 			<settings>
 				<filter>select</filter>
-				<label translate="true">Auto Send Updated</label>
+				<label translate="true">Auto Submit Updated</label>
 				<options class="SmartCat\Connector\Model\Config\Source\YesNoOption"/>
 				<dataType>select</dataType>
 			</settings>

@@ -22,9 +22,20 @@
 namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
 use SmartCat\Connector\Model\Profile;
+use Magento\Framework\Registry;
+use Magento\Backend\App\Action\Context;
+use SmartCat\Connector\Model\ProfileRepository;
 
 class Delete extends \SmartCat\Connector\Controller\Adminhtml\Profile
 {
+    private $profileRepository;
+
+    public function __construct(Context $context, Registry $coreRegistry, ProfileRepository $profileRepository)
+    {
+        $this->profileRepository = $profileRepository;
+        parent::__construct($context, $coreRegistry);
+    }
+
     /**
      * Delete action
      *
@@ -34,17 +45,13 @@ class Delete extends \SmartCat\Connector\Controller\Adminhtml\Profile
     {
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
-        // check if we know what should be deleted
+
         $id = $this->getRequest()->getParam(Profile::ID);
         if ($id) {
             try {
-                // init model and delete
-                $model = $this->_objectManager->create(\SmartCat\Connector\Model\Profile::class);
-                $model->load($id);
-                $model->delete();
-                // display success message
-                $this->messageManager->addSuccessMessage(__('You deleted the Profile.'));
-                // go to grid
+                $this->profileRepository->deleteById($id);
+                $this->messageManager->addSuccessMessage(__('You deleted the profile.'));
+
                 return $resultRedirect->setPath('*/*/');
             } catch (\Exception $e) {
                 // display error message
@@ -53,9 +60,8 @@ class Delete extends \SmartCat\Connector\Controller\Adminhtml\Profile
                 return $resultRedirect->setPath('*/*/edit', [Profile::ID => $id]);
             }
         }
-        // display error message
-        $this->messageManager->addErrorMessage(__('We can\'t find a Profile to delete.'));
-        // go to grid
+        $this->messageManager->addErrorMessage(__('We can\'t find a profile to delete.'));
+
         return $resultRedirect->setPath('*/*/');
     }
 }

@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Cron;
 
 use Http\Client\Common\Exception\ClientErrorException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Project;
@@ -105,7 +106,7 @@ class ExportDocuments
                     ? ProjectEntity::STATUS_COMPLETED : ProjectEntity::STATUS_FAILED;
                 $entity->setStatus($status);
                 $this->errorHandler
-                    ->logError("SmartCat API Error: An error occurred on document export " . $e->getMessage());
+                    ->logError("SmartCat API Error: An error occurred on document export {$e->getMessage()}");
                 $this->projectEntityService->update($entity);
                 continue;
             }
@@ -117,7 +118,17 @@ class ExportDocuments
             $content = $response->getBody()->getContents();
             $strategy = $this->strategyLoader->getStrategyByType($entity->getEntity());
 
-            if (!$strategy->setContent($content, $entity)) {
+            try {
+                $strategy->setContent($content, $entity);
+            } catch (Throwable $e) {
+                $this->errorHandler
+                    ->logError("Can't save content to entity {$entity->getId()}");
+
+                if ($e instanceof NoSuchEntityException) {
+                    $entity->setStatus(ProjectEntity::STATUS_FAILED);
+                    $this->projectEntityService->update($entity);
+                }
+
                 continue;
             }
 

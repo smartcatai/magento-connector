@@ -32,7 +32,7 @@ use Magento\Framework\Exception\NotFoundException;
 use SmartCat\Connector\Service\ProjectService;
 use Magento\Ui\Component\MassAction\Filter;
 
-class AbstractController extends \Magento\Backend\App\Action
+abstract class AbstractController extends \Magento\Backend\App\Action
 {
     private $profileRepository;
     private $projectService;
@@ -109,11 +109,14 @@ class AbstractController extends \Magento\Backend\App\Action
             return $resultFactory->setPath('catalog/product/index');
         }
 
-        $this->messageManager->addSuccessMessage(__('All selected items sended on localize'));
+        $this->messageManager->addSuccessMessage(__('All selected items were sent to localization'));
 
         return $resultFactory->setPath('catalog/product/index');
     }
 
+    /**
+     * @return array
+     */
     public function getModels()
     {
         return [];
