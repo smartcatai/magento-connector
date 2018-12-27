@@ -40,11 +40,6 @@
 		<paging name="listing_paging"/>
 	</listingToolbar>
 	<columns name="smartcat_connector_profile_columns">
-		<selectionsColumn name="ids">
-			<settings>
-				<indexField>id</indexField>
-			</settings>
-		</selectionsColumn>
 		<column name="id" sortOrder="10">
 			<settings>
 				<filter>text</filter>

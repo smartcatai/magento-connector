@@ -109,6 +109,7 @@
 				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\WorkflowStagesList</item>
 				<item name="config" xsi:type="array">
 					<item name="source" xsi:type="string">Profile</item>
+					<item name="default" xsi:type="string">translation</item>
 				</item>
 			</argument>
 			<settings>

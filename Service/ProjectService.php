@@ -21,7 +21,6 @@
 
 namespace SmartCat\Connector\Service;
 
-use Composer\Command\StatusCommand;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Connector\Exception\SmartCatHttpException;
@@ -165,7 +164,7 @@ class ProjectService
     public function getProjectDocumentModels(Project $project)
     {
         $documentModels = [];
-        $entities = $this->projectEntityService->getProjectEntities($project);
+        $entities = $this->projectEntityService->getNewProjectEntities($project);
 
         foreach ($entities as $entity) {
             /** @var StrategyInterface $strategy */

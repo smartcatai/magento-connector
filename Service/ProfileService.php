@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Service;
 
 use SmartCat\Connector\Exception\ProfileServiceException;
+use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\ProfileRepository;
 use SmartCat\Connector\Model\Project;
@@ -31,16 +32,19 @@ class ProfileService
 {
     private $profileRepository;
     private $projectRepository;
+    private $smartCatService;
     private $storeService;
 
     public function __construct(
         ProfileRepository $profileRepository,
         ProjectRepository $projectRepository,
-        StoreService $storeService
+        StoreService $storeService,
+        SmartCatFacade $smartCatService
     ) {
         $this->profileRepository = $profileRepository;
         $this->projectRepository = $projectRepository;
         $this->storeService = $storeService;
+        $this->smartCatService = $smartCatService;
     }
 
     /**
@@ -76,15 +80,35 @@ class ProfileService
             $data[Profile::NAME] = __('Languages:') . ' ' . $data[Profile::SOURCE_LANG] . ' -> ' . $data[Profile::TARGET_LANG];
         }
 
+        if (!empty($data[Profile::PROJECT_GUID])) {
+            $this->checkProject($model, $data[Profile::PROJECT_GUID]);
+        }
+
         $model->setData($data);
         $this->profileRepository->save($model);
 
         return $model->getId();
     }
 
-    private function checkProject()
+    /**
+     * @param Profile $model
+     * @param $projectId
+     * @throws ProfileServiceException
+     */
+    private function checkProject(Profile &$model, $projectId)
     {
+        try {
+            $projectManager = $this->smartCatService->getProjectManager();
+            $smartCatProject = $projectManager->projectGet($projectId);
 
+            $targetLanguages = $smartCatProject->getTargetLanguages();
+            $sourceLanguage = $smartCatProject->getSourceLanguage();
+
+            $model->setTargetLang($targetLanguages);
+            $model->setSourceLang($sourceLanguage);
+        } catch (\Throwable $e) {
+            throw new ProfileServiceException(__($e->getMessage()));
+        }
     }
 
     /**

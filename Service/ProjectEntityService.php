@@ -107,7 +107,7 @@ class ProjectEntityService
      * @param string $type
      * @return ProjectEntity[]
      */
-    public function getProjectEntities(Project $project, $type = null)
+    public function getNewProjectEntities(Project $project, $type = null)
     {
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilter(ProjectEntity::PROJECT_ID, $project->getId())

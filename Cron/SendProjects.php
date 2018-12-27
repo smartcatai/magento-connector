@@ -21,8 +21,8 @@
 
 namespace SmartCat\Connector\Cron;
 
+use Http\Client\Common\Exception\ClientErrorException;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\LocalizedException;
 use SmartCat\Client\Model\CreateProjectModel;
 use SmartCat\Client\Model\DocumentModel;
 use SmartCat\Client\Model\ProjectChangesModel;
@@ -30,8 +30,9 @@ use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
-use SmartCat\Connector\Model\ProjectEntityRepository;
+use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProfileService;
+use SmartCat\Connector\Service\ProjectEntityService;
 use SmartCat\Connector\Service\ProjectService;
 use \Throwable;
 
@@ -41,7 +42,7 @@ class SendProjects
     private $projectService;
     private $errorHandler;
     private $searchCriteriaBuilder;
-    private $projectEntityRepository;
+    private $projectEntityService;
     private $profileService;
 
     public function __construct(
@@ -50,14 +51,14 @@ class SendProjects
         ProfileService $profileService,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ErrorHandler $errorHandler,
-        ProjectEntityRepository $projectEntityRepository
+        ProjectEntityService $projectEntityService
     ) {
         $this->smartCatService = $smartCatService;
         $this->errorHandler = $errorHandler;
         $this->projectService = $projectService;
         $this->profileService = $profileService;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->projectEntityRepository = $projectEntityRepository;
+        $this->projectEntityService = $projectEntityService;
     }
 
     public function execute()
@@ -106,11 +107,11 @@ class SendProjects
             ]);
 
             foreach ($smartcatDocuments as $smartcatDocument) {
-                $projectEntity = $this->projectEntityRepository->getById($smartcatDocument->getExternalId());
+                $projectEntity = $this->projectEntityService->getEntityById($smartcatDocument->getExternalId());
                 $projectEntity
                     ->setStatus($smartcatDocument->getStatus())
                     ->setDocumentId($smartcatDocument->getId());
-                $this->projectEntityRepository->save($projectEntity);
+                $this->projectEntityService->update($projectEntity);
             }
         } catch (Throwable $e) {
             $this->errorHandler->handleProjectError($e, $project, "SmartCat create project error");
@@ -157,59 +158,62 @@ class SendProjects
             $projectDocuments = $this->projectService->getProjectDocumentModels($project);
 
             $smartCatNameDocuments = array_map(function (DocumentModel $value) {
-                return $value->getExternalId();
+                return $value->getName();
             }, $smartCatDocuments);
-
-            foreach ($projectDocuments as $projectDocument) {
-                $index = array_search($projectDocument->getExternalId(), $smartCatNameDocuments);
-
-                if ($index !== false) {
-                    $this->waitingCompleteDocumentStatus($smartCatDocuments[$index]->getId());
-                    $documentManager->documentUpdate([
-                        'documentId' => $smartCatDocuments[$index]->getId(),
-                        'uploadedFile' => $projectDocument->getFile()
-                    ]);
-                } else {
-                    $projectManager->projectAddDocument([
-                        'projectId' => $projectModel->getId(),
-                        'documentModel' => [$projectDocument]
-                    ]);
-                }
-            }
         } catch (Throwable $e) {
             $this->errorHandler->handleProjectError($e, $project, "SmartCat update project error");
             return;
         }
 
-        $project
-            ->setStatus($projectModel->getStatus());
+        foreach ($projectDocuments as $projectDocument) {
+            $index = array_search($projectDocument->getFile()['fileName'], $smartCatNameDocuments);
 
+            try {
+                $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
+            } catch (Throwable $e) {
+                $this->errorHandler->logError("SmartCat update project error: {$e->getMessage()}");
+                continue;
+            }
+
+            try {
+                if ($index !== false) {
+                    /** @var DocumentModel $resDocument */
+                    $resDocument = $documentManager->documentUpdate([
+                        'documentId' => $smartCatDocuments[$index]->getId(),
+                        'uploadedFile' => $projectDocument->getFile()
+                    ]);
+                } else {
+                    $resDocument = $projectManager->projectAddDocument([
+                        'projectId' => $projectModel->getId(),
+                        'documentModel' => [$projectDocument]
+                    ]);
+                }
+
+                $entity
+                    ->setStatus($resDocument->getStatus())
+                    ->setDocumentId($resDocument->getId());
+            } catch (Throwable $e) {
+                if ($e instanceof ClientErrorException) {
+                    continue;
+                }
+
+                $this->errorHandler->logError("SmartCat update project error: {$e->getMessage()}");
+                $entity->setStatus(ProjectEntity::STATUS_FAILED);
+            }
+            $this->projectEntityService->update($entity);
+        }
+
+        $projectDocuments = $this->projectService->getProjectDocumentModels($project);
+
+        if (empty($projectDocuments)) {
+            $project
+                ->setStatus($projectModel->getStatus());
+        }
+        
         if ($projectModel->getDeadline()) {
             $project->setDeadline($projectModel->getDeadline()->format('U'));
         }
 
         $this->projectService->update($project);
-    }
-
-    /**
-     * @param $documentId
-     * @param int $attempt
-     * @return bool
-     * @throws LocalizedException
-     */
-    private function waitingCompleteDocumentStatus($documentId, $attempt = 1)
-    {
-        if ($attempt > 120) {
-            throw new LocalizedException(__('120 attempts to get document failed'));
-        }
-
-        $document = $this->smartCatService->getDocumentManager()->documentGet(['documentId' => $documentId]);
-
-        if ($document->getDocumentDisassemblingStatus() != "success") {
-            sleep(1);
-            return $this->waitingCompleteDocumentStatus($documentId, $attempt++);
-        }
-
-        return true;
     }
 }
