@@ -21,13 +21,11 @@
 
 namespace SmartCat\Connector\Controller\Adminhtml\Localize;
 
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use SmartCat\Connector\Api\ProfileRepositoryInterface;
 use Magento\Backend\App\Action\Context;
 use SmartCat\Connector\Exception\SmartCatHttpException;
 use SmartCat\Connector\Model\Profile;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\NotFoundException;
 use SmartCat\Connector\Service\ProjectService;
 use Magento\Ui\Component\MassAction\Filter;
@@ -42,9 +40,7 @@ abstract class AbstractController extends \Magento\Backend\App\Action
      * @param Context $context
      * @param Filter $filter
      * @param ProjectService $projectService
-     * @param ProductCollectionFactory $productCollectionFactory
      * @param ProfileRepositoryInterface|null $profileRepository
-     * @param ProductRepositoryInterface $productRepository
      */
     public function __construct(
         Context $context,
@@ -85,14 +81,14 @@ abstract class AbstractController extends \Magento\Backend\App\Action
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(__('Profile not found'));
 
-            return $resultFactory->setPath('catalog/product/index');
+            return $resultFactory->setPath('*/*/index');
         }
 
         $models = $this->getModels();
 
         if (empty($models)) {
             $this->messageManager->addErrorMessage(__('Not found selected items'));
-            return $resultFactory->setPath('catalog/product/index');
+            return $resultFactory->setPath('*/*/index');
         }
 
         try {
@@ -106,12 +102,12 @@ abstract class AbstractController extends \Magento\Backend\App\Action
         } catch (SmartCatHttpException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
 
-            return $resultFactory->setPath('catalog/product/index');
+            return $resultFactory->setPath('*/*/index');
         }
 
         $this->messageManager->addSuccessMessage(__('All selected items were sent to localization'));
 
-        return $resultFactory->setPath('catalog/product/index');
+        return $resultFactory->setPath('*/*/index');
     }
 
     /**

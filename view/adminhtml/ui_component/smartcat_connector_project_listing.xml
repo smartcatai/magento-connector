@@ -43,7 +43,7 @@
 		<column name="element" sortOrder="20">
 			<settings>
 				<filter>text</filter>
-				<label translate="true">Element</label>
+				<label translate="true">Elements</label>
 			</settings>
 		</column>
 		<column name="profile_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectProfile" sortOrder="30">

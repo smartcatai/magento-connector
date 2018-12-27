@@ -96,8 +96,7 @@ class SendProjects
             ->setSourceLanguage($profile->getSourceLang())
             ->setTargetLanguages($profile->getTargetLangArray())
             ->setWorkflowStages($profile->getStagesArray())
-            ->setExternalTag('source:Magento')
-            ->setAssignToVendor(true);
+            ->setExternalTag('source:Magento');
 
         try {
             $projectModel = $projectManager->projectCreateProject($newProjectModel);
@@ -209,7 +208,7 @@ class SendProjects
             $project
                 ->setStatus($projectModel->getStatus());
         }
-        
+
         if ($projectModel->getDeadline()) {
             $project->setDeadline($projectModel->getDeadline()->format('U'));
         }

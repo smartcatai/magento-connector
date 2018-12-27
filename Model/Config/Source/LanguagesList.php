@@ -46,7 +46,7 @@ class LanguagesList implements ArrayInterface
 
     public function toOptionArray()
     {
-        $stores = [];
+        $languages = [];
 
         try {
             $languageList = $this->smartCatService->getDirectoriesManager()
@@ -54,12 +54,12 @@ class LanguagesList implements ArrayInterface
                 ->getItems();
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(__('SmartCat API error occurred: ') . $e->getMessage());
-            return $stores;
+            return $languages;
         }
 
         if (isset($languageList)) {
             foreach ($languageList as $language) {
-                $stores[] = [
+                $languages[] = [
                     'label' => LanguageDictionary::getNameByCode($language->getId()) . ' - ' . $language->getId(),
                     'value' => $language->getId()
                 ];
@@ -68,6 +68,10 @@ class LanguagesList implements ArrayInterface
             $this->messageManager->addWarningMessage(__('Languages not found'));
         }
 
-        return $stores;
+        usort($languages, function ($a, $b) {
+            return strnatcmp($a['label'], $b['label']);
+        });
+
+        return $languages;
     }
 }
