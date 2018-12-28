@@ -96,7 +96,8 @@ class SendProjects
             ->setSourceLanguage($profile->getSourceLang())
             ->setTargetLanguages($profile->getTargetLangArray())
             ->setWorkflowStages($profile->getStagesArray())
-            ->setExternalTag('source:Magento');
+            ->setExternalTag('source:Magento')
+            ->setAssignToVendor(false);
 
         try {
             $projectModel = $projectManager->projectCreateProject($newProjectModel);
