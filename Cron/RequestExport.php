@@ -21,6 +21,7 @@
 
 namespace SmartCat\Connector\Cron;
 
+use Http\Client\Common\Exception\ClientErrorException;
 use SmartCat\Client\Model\ProjectModel;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
@@ -64,7 +65,7 @@ class RequestExport
         foreach ($projects as $project) {
             try {
                 $smartCatProject = $projectManager->projectGet($project->getGuid());
-                $this->requestExport($smartCatProject);
+                $this->setStatuses($smartCatProject);
             } catch (Throwable $e) {
                 $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
                 continue;
@@ -74,7 +75,35 @@ class RequestExport
                 $project->setDeadline($smartCatProject->getDeadline()->format('U'));
             }
 
+            $project->setStatus($smartCatProject->getStatus());
             $this->projectService->update($project);
+        }
+
+        $this->requestExport();
+    }
+
+    private function requestExport()
+    {
+        $completedEntities = $this->projectEntityService->getCompletedEntities();
+
+        foreach ($completedEntities as $entity) {
+            try {
+                $export = $this->smartCatService
+                    ->getDocumentExportManager()
+                    ->documentExportRequestExport(['documentIds' => [$entity->getDocumentId()]]);
+            } catch (Throwable $e) {
+                if ($e instanceof ClientErrorException && $e->getResponse()->getStatusCode() == 404) {
+                    $entity->setStatus(ProjectEntity::STATUS_FAILED);
+                }
+                $this->errorHandler->logError("SmartCat API Error: {$e->getMessage()}");
+                $this->projectEntityService->update($entity);
+                continue;
+            }
+
+            $entity
+                ->setTaskId($export->getId())
+                ->setStatus(ProjectEntity::STATUS_EXPORT);
+            $this->projectEntityService->update($entity);
         }
     }
 
@@ -82,29 +111,15 @@ class RequestExport
      * @param ProjectModel $smartCatProject
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    private function requestExport(ProjectModel $smartCatProject)
+    private function setStatuses(ProjectModel $smartCatProject)
     {
         foreach ($smartCatProject->getDocuments() as $document) {
             $projectEntity = $this->projectEntityService->getEntityById($document->getExternalId());
 
-            if (in_array(
-                $projectEntity->getStatus(),
-                [ProjectEntity::STATUS_EXPORT, ProjectEntity::STATUS_FAILED, ProjectEntity::STATUS_SAVED]
-            )) {
-                continue;
+            if (!in_array($projectEntity->getStatus(), ProjectEntity::getSelfStatuses())) {
+                $projectEntity->setStatus($document->getStatus());
+                $this->projectEntityService->update($projectEntity);
             }
-
-            $projectEntity->setStatus($document->getStatus());
-
-            if ($document->getStatus() == ProjectEntity::STATUS_COMPLETED) {
-                $export = $this->smartCatService
-                    ->getDocumentExportManager()
-                    ->documentExportRequestExport(['documentIds' => [$document->getId()]]);
-                $projectEntity
-                    ->setTaskId($export->getId())
-                    ->setStatus(ProjectEntity::STATUS_EXPORT);
-            }
-            $this->projectEntityService->update($projectEntity);
         }
     }
 }

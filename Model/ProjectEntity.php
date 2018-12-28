@@ -33,10 +33,14 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
 
     const STATUS_NEW = 'new';
     const STATUS_SENDED = 'sended';
-    const STATUS_COMPLETED = 'completed';
     const STATUS_EXPORT = 'export';
     const STATUS_SAVED = 'saved';
     const STATUS_FAILED = 'failed';
+
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_IN_PROGRESS = 'inProgress';
+    const STATUS_CREATED = 'created';
+    const STATUS_CANCELLED = 'cancelled';
 
     /**
      * @return void
@@ -44,6 +48,33 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     public function _construct()
     {
         $this->_init(\SmartCat\Connector\Model\ResourceModel\ProjectEntity::class);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getSmartCatStatuses()
+    {
+        return [
+            self::STATUS_CREATED,
+            self::STATUS_IN_PROGRESS,
+            self::STATUS_CANCELLED,
+            self::STATUS_COMPLETED
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getSelfStatuses()
+    {
+        return [
+            self::STATUS_NEW,
+            self::STATUS_SENDED,
+            self::STATUS_EXPORT,
+            self::STATUS_SAVED,
+            self::STATUS_FAILED
+        ];
     }
 
     /**

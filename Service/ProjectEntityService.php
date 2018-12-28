@@ -71,8 +71,25 @@ class ProjectEntityService
      */
     public function getExportingEntities()
     {
+        return $this->getEntitiesByStatus(ProjectEntity::STATUS_EXPORT);
+    }
+
+    /**
+     * @return array|ProjectEntity[]
+     */
+    public function getCompletedEntities()
+    {
+        return $this->getEntitiesByStatus(ProjectEntity::STATUS_COMPLETED);
+    }
+
+    /**
+     * @param $status
+     * @return array|ProjectEntity[]
+     */
+    private function getEntitiesByStatus($status)
+    {
         $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter(ProjectEntity::STATUS, ProjectEntity::STATUS_EXPORT)->create();
+            ->addFilter(ProjectEntity::STATUS, $status)->create();
 
         try {
             $entities = $this->projectEntityRepository->getList($searchCriteria)->getItems();
