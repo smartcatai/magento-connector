@@ -130,7 +130,7 @@ class ProductStrategy extends AbstractStrategy
                     continue;
                 }
 
-                array_merge($attributes, [$attributeCode => $data]);
+                $attributes = array_merge($attributes, [$attributeCode => $data]);
             }
         }
 
