@@ -25,31 +25,26 @@ use Http\Client\Common\Exception\ClientErrorException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
-use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProjectEntityService;
-use SmartCat\Connector\Service\ProjectService;
 use SmartCat\Connector\Service\Strategy\StrategyLoader;
 use \Throwable;
 
 class ExportDocuments
 {
     private $smartCatService;
-    private $projectService;
     private $errorHandler;
     private $projectEntityService;
     private $strategyLoader;
 
     public function __construct(
         ErrorHandler $errorHandler,
-        ProjectService $projectService,
         SmartCatFacade $smartCatService,
         ProjectEntityService $projectEntityService,
         StrategyLoader $strategyLoader
     ) {
         $this->errorHandler = $errorHandler;
         $this->smartCatService = $smartCatService;
-        $this->projectService = $projectService;
         $this->projectEntityService = $projectEntityService;
         $this->strategyLoader = $strategyLoader;
     }
@@ -60,39 +55,6 @@ class ExportDocuments
      * @return void
      */
     public function execute()
-    {
-        $smartCatProject = null;
-        $projectManager = $this->smartCatService->getProjectManager();
-        $projects = $this->projectService->getOpenedProjects();
-
-        /** @var Project $project */
-        foreach ($projects as $project) {
-            try {
-                $smartCatProject = $projectManager->projectGet($project->getGuid());
-            } catch (Throwable $e) {
-                $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
-                continue;
-            }
-
-            if (!$this->exportDocuments()) {
-                continue;
-            }
-
-            $project
-                ->setStatus($smartCatProject->getStatus());
-
-            if ($smartCatProject->getDeadline()) {
-                $project->setDeadline($smartCatProject->getDeadline()->format('U'));
-            }
-
-            $this->projectService->update($project);
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    private function exportDocuments()
     {
         $entities = $this->projectEntityService->getExportingEntities();
 
@@ -138,7 +100,5 @@ class ExportDocuments
 
             $this->projectEntityService->update($entity);
         }
-
-        return true;
     }
 }
