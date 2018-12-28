@@ -189,15 +189,17 @@ class SendProjects
                     ]);
                 }
 
+                $project->setIsStatisticsBuilded(false);
                 $entity
                     ->setStatus($resDocument->getStatus())
                     ->setDocumentId($resDocument->getId());
             } catch (Throwable $e) {
+                $this->errorHandler->logError("SmartCat update project error: {$e->getMessage()}");
+
                 if ($e instanceof ClientErrorException) {
                     continue;
                 }
 
-                $this->errorHandler->logError("SmartCat update project error: {$e->getMessage()}");
                 $entity->setStatus(ProjectEntity::STATUS_FAILED);
             }
             $this->projectEntityService->update($entity);
@@ -206,8 +208,7 @@ class SendProjects
         $projectDocuments = $this->projectService->getProjectDocumentModels($project);
 
         if (empty($projectDocuments)) {
-            $project
-                ->setStatus($projectModel->getStatus());
+            $project->setStatus($projectModel->getStatus());
         }
 
         if ($projectModel->getDeadline()) {
