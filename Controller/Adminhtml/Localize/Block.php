@@ -70,4 +70,12 @@ class Block extends AbstractController
 
         return $models;
     }
+
+    /**
+     * @return string
+     */
+    public function getRedirectPath()
+    {
+        return "cms/block/index";
+    }
 }

@@ -70,4 +70,12 @@ class Product extends AbstractController
 
         return $models;
     }
+
+    /**
+     * @return string
+     */
+    public function getRedirectPath()
+    {
+        return "catalog/product/index";
+    }
 }

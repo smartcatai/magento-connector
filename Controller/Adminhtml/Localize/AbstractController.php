@@ -65,6 +65,7 @@ abstract class AbstractController extends \Magento\Backend\App\Action
     {
         /** @var \Magento\Framework\App\Request\Http $request */
         $request = $this->getRequest();
+        $redirectPage = $this->getRedirectPath();
 
         /** @var \Magento\Backend\Model\View\Result\Redirect\Interceptor $resultFactory */
         $resultFactory = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
@@ -81,14 +82,14 @@ abstract class AbstractController extends \Magento\Backend\App\Action
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(__('Profile not found'));
 
-            return $resultFactory->setPath('*/*/index');
+            return $resultFactory->setPath($redirectPage);
         }
 
         $models = $this->getModels();
 
         if (empty($models)) {
             $this->messageManager->addErrorMessage(__('Not found selected items'));
-            return $resultFactory->setPath('*/*/index');
+            return $resultFactory->setPath($redirectPage);
         }
 
         try {
@@ -102,12 +103,12 @@ abstract class AbstractController extends \Magento\Backend\App\Action
         } catch (SmartCatHttpException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
 
-            return $resultFactory->setPath('*/*/index');
+            return $resultFactory->setPath($redirectPage);
         }
 
         $this->messageManager->addSuccessMessage(__('All selected items were sent to localization'));
 
-        return $resultFactory->setPath('*/*/index');
+        return $resultFactory->setPath($redirectPage);
     }
 
     /**
@@ -116,5 +117,13 @@ abstract class AbstractController extends \Magento\Backend\App\Action
     public function getModels()
     {
         return [];
+    }
+
+    /**
+     * @return string
+     */
+    public function getRedirectPath()
+    {
+        return "*/*/index";
     }
 }

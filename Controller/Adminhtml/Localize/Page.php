@@ -70,4 +70,12 @@ class Page extends AbstractController
 
         return $models;
     }
+
+    /**
+     * @return string
+     */
+    public function getRedirectPath()
+    {
+        return "cms/page/index";
+    }
 }
