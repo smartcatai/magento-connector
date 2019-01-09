@@ -1,5 +1,9 @@
 <?xml version="1.0" ?>
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+	<argument name="context" xsi:type="configurableObject">
+		<argument name="class" xsi:type="string">Magento\Framework\View\Element\UiComponent\Context</argument>
+		<argument name="namespace" xsi:type="string">smartcat_connector_profile_listing</argument>
+	</argument>
 	<argument name="data" xsi:type="array">
 		<item name="js_config" xsi:type="array">
 			<item name="provider" xsi:type="string">smartcat_connector_profile_listing.smartcat_connector_profile_listing_data_source</item>
@@ -21,6 +25,9 @@
 	<dataSource component="Magento_Ui/js/grid/provider" name="smartcat_connector_profile_listing_data_source">
 		<settings>
 			<updateUrl path="mui/index/render"/>
+			<storageConfig>
+				<param name="indexField" xsi:type="string">id</param>
+			</storageConfig>
 		</settings>
 		<aclResource>SmartCat_Connector::Profile</aclResource>
 		<dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="smartcat_connector_profile_listing_data_source">
