@@ -61,7 +61,7 @@
 		</settings>
 		<column name="id" sortOrder="10">
 			<settings>
-				<filter>range</filter>
+				<filter>integerRange</filter>
 				<sorting>asc</sorting>
 				<label translate="true">ID</label>
 			</settings>
@@ -69,6 +69,7 @@
 		<column name="vendor" class="SmartCat\Connector\Ui\Component\Listing\Column\VendorColumn" sortOrder="15">
 			<settings>
 				<filter>select</filter>
+				<options class="SmartCat\Connector\Model\Config\Source\VendorList"/>
 				<label translate="true">Translation Agency</label>
 				<editor>
 					<editorType>text</editorType>
@@ -81,6 +82,7 @@
 		<column name="source_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="20">
 			<settings>
 				<filter>select</filter>
+				<options class="SmartCat\Connector\Model\Config\Source\LanguagesList"/>
 				<label translate="true">Source Language</label>
 				<editor>
 					<editorType>text</editorType>
@@ -105,6 +107,7 @@
 		<column name="stages" class="SmartCat\Connector\Ui\Component\Listing\Column\WorkFlowColumn" sortOrder="40">
 			<settings>
 				<filter>select</filter>
+				<options class="SmartCat\Connector\Model\Config\Source\WorkflowStagesList"/>
 				<label translate="true">Workflow</label>
 				<editor>
 					<editorType>text</editorType>
