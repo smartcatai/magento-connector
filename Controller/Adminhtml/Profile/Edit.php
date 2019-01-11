@@ -50,6 +50,7 @@ class Edit extends \SmartCat\Connector\Controller\Adminhtml\Profile
     {
         // 1. Get ID and create model
         $id = $this->getRequest()->getParam(Profile::ID);
+        /** @var Profile $model */
         $model = $this->_objectManager->create(\SmartCat\Connector\Model\Profile::class);
         
         // 2. Initial checking
@@ -73,7 +74,7 @@ class Edit extends \SmartCat\Connector\Controller\Adminhtml\Profile
         );
         $resultPage->getConfig()->getTitle()->prepend(__('Profiles'));
         $resultPage->getConfig()->getTitle()->prepend(
-            $model->getId() ? __('Edit Profile %1', $model->getId()) : __('New Profile')
+            $model->getId() ? __('Edit Profile "%1"', $model->getName()) : __('New Profile')
         );
         return $resultPage;
     }

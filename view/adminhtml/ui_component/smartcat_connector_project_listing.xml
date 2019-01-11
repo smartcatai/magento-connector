@@ -42,7 +42,7 @@
 	<columns name="smartcat_connector_project_columns">
 		<column name="id" sortOrder="10">
 			<settings>
-				<filter>integer</filter>
+				<filter>range</filter>
 				<sorting>desc</sorting>
 				<label translate="true">ID</label>
 			</settings>
@@ -67,13 +67,13 @@
 		</column>
 		<column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectStatusColumn" sortOrder="50">
 			<settings>
-				<filter>text</filter>
+				<filter>select</filter>
 				<label translate="true">Status</label>
 			</settings>
 		</column>
 		<column name="deadline" sortOrder="60">
 			<settings>
-				<filter>text</filter>
+				<filter>date</filter>
 				<label translate="true">Deadline</label>
 			</settings>
 		</column>

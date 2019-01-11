@@ -47,16 +47,28 @@
 		<paging name="listing_paging"/>
 	</listingToolbar>
 	<columns name="smartcat_connector_profile_columns">
+		<settings>
+			<childDefaults>
+				<param name="fieldAction" xsi:type="array">
+					<item name="provider" xsi:type="string">smartcat_connector_profile_listing.smartcat_connector_profile_listing.smartcat_connector_profile_columns.actions</item>
+					<item name="target" xsi:type="string">applyAction</item>
+					<item name="params" xsi:type="array">
+						<item name="0" xsi:type="string">edit</item>
+						<item name="1" xsi:type="string">${ $.$data.rowIndex }</item>
+					</item>
+				</param>
+			</childDefaults>
+		</settings>
 		<column name="id" sortOrder="10">
 			<settings>
-				<filter>text</filter>
+				<filter>range</filter>
 				<sorting>asc</sorting>
 				<label translate="true">ID</label>
 			</settings>
 		</column>
 		<column name="vendor" class="SmartCat\Connector\Ui\Component\Listing\Column\VendorColumn" sortOrder="15">
 			<settings>
-				<filter>text</filter>
+				<filter>select</filter>
 				<label translate="true">Translation Agency</label>
 				<editor>
 					<editorType>text</editorType>
@@ -68,7 +80,7 @@
 		</column>
 		<column name="source_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="20">
 			<settings>
-				<filter>text</filter>
+				<filter>select</filter>
 				<label translate="true">Source Language</label>
 				<editor>
 					<editorType>text</editorType>
@@ -92,7 +104,7 @@
 		</column>
 		<column name="stages" class="SmartCat\Connector\Ui\Component\Listing\Column\WorkFlowColumn" sortOrder="40">
 			<settings>
-				<filter>text</filter>
+				<filter>select</filter>
 				<label translate="true">Workflow</label>
 				<editor>
 					<editorType>text</editorType>
