@@ -10,17 +10,21 @@
 			<resource>SmartCat_Connector::config</resource>
 			<group id="smartcat_localization" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
 				<label>Smartcat Translation Manager</label>
-				<field id="token" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="text">
+				<field id="token" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="obscure">
 					<label>API Key</label>
+					<backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+					<validate>validate-no-html-tags</validate>
 					<comment>Insert Smartcat API Key</comment>
 				</field>
 				<field id="application_id" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="text">
 					<label>Smartcat Account ID</label>
+					<validate>validate-no-html-tags</validate>
 					<comment>Insert your Smartcat account ID</comment>
 				</field>
 				<field id="server" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Server</label>
 					<source_model>SmartCat\Connector\Model\Config\Source\ServerList</source_model>
+					<validate>validate-select</validate>
 					<comment>Select Smartcat server</comment>
 				</field>
 				<field id="test" translate="label" type="label" sortOrder="999" showInDefault="1" showInStore="0" showInWebsite="0">

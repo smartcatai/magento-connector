@@ -21,28 +21,16 @@
 
 namespace SmartCat\Connector\Helper;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use SmartCat\Client\SmartCat;
 
 class SmartCatFacade extends SmartCat
 {
-    public function __construct(ScopeConfigInterface $scopeConfig)
+    public function __construct(ConfigurationHelper $helper)
     {
-        $apiToken = $scopeConfig->getValue('general/smartcat_localization/token');
-        $applicationId = $scopeConfig->getValue('general/smartcat_localization/application_id');
-
-        switch ($scopeConfig->getValue('general/smartcat_localization/server')) {
-            case 'usa':
-                $host = SmartCat::SC_USA;
-                break;
-            case 'asia':
-                $host = SmartCat::SC_ASIA;
-                break;
-            default:
-                $host = SmartCat::SC_EUROPE;
-                break;
-        }
-
-        parent::__construct($applicationId, $apiToken, $host);
+         parent::__construct(
+             $helper->getApplicationId(),
+             $helper->getToken(),
+             $helper->getServer()
+         );
     }
 }
