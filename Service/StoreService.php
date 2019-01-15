@@ -22,8 +22,10 @@
 namespace SmartCat\Connector\Service;
 
 use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ResourceModel\Store;
 use Magento\Store\Model\StoreFactory;
+use Magento\Store\Model\StoreManager;
 use Psr\Log\LoggerInterface;
 use SmartCat\Connector\Helper\LanguageDictionary;
 
@@ -31,16 +33,19 @@ class StoreService
 {
     private $storeResourceModel;
     private $storeFactory;
+    private $storeManager;
     private $logger;
 
     const BAD_SYMBOLS = ['*', '|', '\\', ':', '"', '<', '>', '?', '/', '-'];
 
     public function __construct(
         StoreFactory $storeFactory,
+        StoreManager $storeManager,
         Store $storeResourceModel,
         LoggerInterface $logger
     ) {
         $this->storeFactory = $storeFactory;
+        $this->storeManager = $storeManager;
         $this->storeResourceModel = $storeResourceModel;
         $this->logger = $logger;
     }
@@ -67,6 +72,43 @@ class StoreService
         }
     }
 
+    /**
+     * @param $storeCode
+     * @return StoreInterface|null
+     */
+    public function getStoreByCode($storeCode)
+    {
+        /** @var StoreInterface[] $stores */
+        $stores = $this->storeManager->getStores(true, true);
+
+        if (!isset($stores[self::getStoreCode($storeCode)])) {
+            $this->logger->error("SmartCat Store Service error: Store with code {$storeCode} not exists");
+
+            return null;
+        }
+
+        return $stores[self::getStoreCode($storeCode)];
+    }
+
+    /**
+     * @param $storeCode
+     * @return int|null
+     */
+    public function getStoreIdByCode($storeCode)
+    {
+        $store = $this->getStoreByCode($storeCode);
+
+        if ($store !== null) {
+            return $store->getId();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $languageCode
+     * @return string
+     */
     public static function getStoreCode($languageCode)
     {
         return strtolower(str_replace(self::BAD_SYMBOLS, '_', $languageCode));

@@ -43,7 +43,19 @@
 		</settings>
 		<bookmark name="bookmarks"/>
 		<columnsControls name="columns_controls"/>
-		<filters name="listing_filters"/>
+		<filters name="listing_filters">
+			<filterSelect name="vendor" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+				<settings>
+					<options class="SmartCat\Connector\Model\Config\Source\VendorList"/>
+					<caption translate="true">Select...</caption>
+					<label translate="true">Translation Agency</label>
+					<dataScope>vendor</dataScope>
+					<imports>
+						<link name="visible">componentType = column, index = ${ $.index }:visible</link>
+					</imports>
+				</settings>
+			</filterSelect>
+		</filters>
 		<paging name="listing_paging"/>
 	</listingToolbar>
 	<columns name="smartcat_connector_profile_columns">
@@ -68,15 +80,8 @@
 		</column>
 		<column name="vendor" class="SmartCat\Connector\Ui\Component\Listing\Column\VendorColumn" sortOrder="15">
 			<settings>
-				<filter>select</filter>
-				<options class="SmartCat\Connector\Model\Config\Source\VendorList"/>
 				<label translate="true">Translation Agency</label>
-				<editor>
-					<editorType>text</editorType>
-					<validation>
-						<rule name="required-entry" xsi:type="boolean">true</rule>
-					</validation>
-				</editor>
+				<dataType>select</dataType>
 			</settings>
 		</column>
 		<column name="source_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="20">
@@ -84,24 +89,13 @@
 				<filter>select</filter>
 				<options class="SmartCat\Connector\Model\Config\Source\LanguagesList"/>
 				<label translate="true">Source Language</label>
-				<editor>
-					<editorType>text</editorType>
-					<validation>
-						<rule name="required-entry" xsi:type="boolean">true</rule>
-					</validation>
-				</editor>
+				<dataType>select</dataType>
 			</settings>
 		</column>
 		<column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="30">
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Target Language</label>
-				<editor>
-					<editorType>text</editorType>
-					<validation>
-						<rule name="required-entry" xsi:type="boolean">true</rule>
-					</validation>
-				</editor>
 			</settings>
 		</column>
 		<column name="stages" class="SmartCat\Connector\Ui\Component\Listing\Column\WorkFlowColumn" sortOrder="40">
@@ -109,36 +103,19 @@
 				<filter>select</filter>
 				<options class="SmartCat\Connector\Model\Config\Source\WorkflowStagesList"/>
 				<label translate="true">Workflow</label>
-				<editor>
-					<editorType>text</editorType>
-					<validation>
-						<rule name="required-entry" xsi:type="boolean">true</rule>
-					</validation>
-				</editor>
+				<dataType>select</dataType>
 			</settings>
 		</column>
 		<column name="name" sortOrder="50">
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Name</label>
-				<editor>
-					<editorType>text</editorType>
-					<validation>
-						<rule name="required-entry" xsi:type="boolean">false</rule>
-					</validation>
-				</editor>
 			</settings>
 		</column>
 		<column name="excluded_attributes" class="SmartCat\Connector\Ui\Component\Listing\Column\AttributesColumn" sortOrder="60">
 			<settings>
 				<filter>text</filter>
 				<label translate="true">Excluded Attributes</label>
-				<editor>
-					<editorType>text</editorType>
-					<validation>
-						<rule name="required-entry" xsi:type="boolean">false</rule>
-					</validation>
-				</editor>
 			</settings>
 		</column>
 		<column name="auto_send_new" component="Magento_Ui/js/grid/columns/select" sortOrder="70">

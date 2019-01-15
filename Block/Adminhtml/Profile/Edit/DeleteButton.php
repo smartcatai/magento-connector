@@ -22,10 +22,10 @@
 namespace SmartCat\Connector\Block\Adminhtml\Profile\Edit;
 
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
+use SmartCat\Connector\Model\Profile;
 
 class DeleteButton extends GenericButton implements ButtonProviderInterface
 {
-
     /**
      * @return array
      */
@@ -52,6 +52,6 @@ class DeleteButton extends GenericButton implements ButtonProviderInterface
      */
     public function getDeleteUrl()
     {
-        return $this->getUrl('*/*/delete', ['profile_id' => $this->getModelId()]);
+        return $this->getUrl('*/*/delete', [Profile::ID => $this->getModelId()]);
     }
 }

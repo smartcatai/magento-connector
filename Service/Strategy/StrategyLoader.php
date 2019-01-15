@@ -25,11 +25,26 @@ class StrategyLoader
 {
     private $strategies = [];
 
-    public function __construct(PageStrategy $pageStrategy, ProductStrategy $productStrategy, BlockStrategy $blockStrategy)
-    {
-        $this->strategies[] = $pageStrategy;
-        $this->strategies[] = $productStrategy;
-        $this->strategies[] = $blockStrategy;
+    /**
+     * StrategyLoader constructor.
+     * @param PageStrategy $pageStrategy
+     * @param ProductStrategy $productStrategy
+     * @param BlockStrategy $blockStrategy
+     * @param CategoryStrategy $categoryStrategy
+     * @param AttributesStrategy $attributesStrategy
+     */
+    public function __construct(
+        PageStrategy $pageStrategy,
+        ProductStrategy $productStrategy,
+        BlockStrategy $blockStrategy,
+        CategoryStrategy $categoryStrategy,
+        AttributesStrategy $attributesStrategy
+    ) {
+        foreach (func_get_args() as $arg) {
+            if ($arg instanceof StrategyInterface) {
+                $this->strategies[] = $arg;
+            }
+        }
     }
 
     /**

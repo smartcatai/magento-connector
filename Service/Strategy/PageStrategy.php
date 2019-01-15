@@ -27,7 +27,6 @@ use Magento\Cms\Model\PageRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -47,13 +46,13 @@ class PageStrategy extends AbstractStrategy
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
-        StoreManager $storeManager,
+        StoreService $storeService,
         PageRepository $pageRepository,
         PageFactory $pageFactory
     ) {
         $this->pageRepository = $pageRepository;
         $this->pageFactory = $pageFactory;
-        parent::__construct($projectEntityService, $storeManager);
+        parent::__construct($projectEntityService, $storeService);
     }
 
     /**
@@ -145,15 +144,19 @@ class PageStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        /** @var Store[] $stores */
-        $stores = $this->storeManager->getStores(true, true);
+        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+
+        if ($storeID === null) {
+            return false;
+        }
+
         $page = $this->pageRepository->getById($entity->getEntityId());
 
         if ($entity->getAttribute() == $this->parametersTag) {
             $parameters = $this->decodeJsonParameters($content);
             $newPage = $this->pageFactory->create();
             $newPage
-                ->setStoreId([$stores[StoreService::getStoreCode($entity->getLanguage())]->getId()])
+                ->setStoreId([$storeID])
                 ->setTitle($parameters['title'])
                 ->setMetaTitle($parameters['meta_title'])
                 ->setMetaDescription($parameters['meta_description'])

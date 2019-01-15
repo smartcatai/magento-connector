@@ -144,8 +144,12 @@ class BlockStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        /** @var Store[] $stores */
-        $stores = $this->storeManager->getStores(true, true);
+        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+
+        if ($storeID === null) {
+            return false;
+        }
+
         $block = $this->blockRepository->getById($entity->getEntityId());
 
         if ($entity->getAttribute() == $this->parametersTag) {
@@ -153,7 +157,7 @@ class BlockStrategy extends AbstractStrategy
             $newBlock = $this->blockFactory->create();
 
             $newBlock
-                ->setStoreId([$stores[StoreService::getStoreCode($entity->getLanguage())]->getId()])
+                ->setStoreId([$storeID])
                 ->setContent($parameters['content'])
                 ->setTitle($parameters['title'])
                 ->setIsActive(true)

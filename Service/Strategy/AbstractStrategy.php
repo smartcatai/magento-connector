@@ -26,20 +26,22 @@ use SmartCat\Connector\Helper\StringHelper;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProjectEntityService;
+use SmartCat\Connector\Service\StoreService;
 
 abstract class AbstractStrategy implements StrategyInterface
 {
     protected $projectEntityService;
-    protected $storeManager;
+    protected $storeService;
 
     /**
      * AbstractStrategy constructor.
      * @param ProjectEntityService $projectEntityService
+     * @param StoreService $storeService
      */
-    public function __construct(ProjectEntityService $projectEntityService, StoreManager $storeManager)
+    public function __construct(ProjectEntityService $projectEntityService, StoreService $storeService)
     {
         $this->projectEntityService = $projectEntityService;
-        $this->storeManager = $storeManager;
+        $this->storeService = $storeService;
     }
 
     /**

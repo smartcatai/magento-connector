@@ -22,10 +22,10 @@
 namespace SmartCat\Connector\Block\Adminhtml\Profile\Edit;
 
 use Magento\Backend\Block\Widget\Context;
+use SmartCat\Connector\Model\Profile;
 
 abstract class GenericButton
 {
-
     protected $context;
 
     /**
@@ -43,7 +43,7 @@ abstract class GenericButton
      */
     public function getModelId()
     {
-        return $this->context->getRequest()->getParam('profile_id');
+        return $this->context->getRequest()->getParam(Profile::ID);
     }
 
     /**

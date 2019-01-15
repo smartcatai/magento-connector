@@ -26,13 +26,11 @@ use Magento\Catalog\Model\ProductRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Service\ProfileService;
 use SmartCat\Connector\Service\ProjectEntityService;
-use SmartCat\Connector\Service\ProjectService;
 use SmartCat\Connector\Service\StoreService;
 
 class ProductStrategy extends AbstractStrategy
@@ -51,20 +49,19 @@ class ProductStrategy extends AbstractStrategy
     /**
      * ProductStrategy constructor.
      * @param ProjectEntityService $projectEntityService
-     * @param StoreManager $storeManager
+     * @param StoreService $storeService
      * @param ProfileService $profileService
      * @param ProductRepository $productRepository
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
-        StoreManager $storeManager,
+        StoreService $storeService,
         ProfileService $profileService,
         ProductRepository $productRepository
     ) {
         $this->productRepository = $productRepository;
-        $this->storeManager = $storeManager;
         $this->profileService = $profileService;
-        parent::__construct($projectEntityService, $storeManager);
+        parent::__construct($projectEntityService, $storeService);
     }
 
     /**
@@ -168,21 +165,16 @@ class ProductStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        /** @var StoreInterface[] $stores */
-        $stores = $this->storeManager->getStores(true, true);
+        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
 
-        if (!isset($stores[StoreService::getStoreCode($entity->getLanguage())])) {
-            throw new \Exception("StoreView with code '{$entity->getLanguage()}' not exists. Continue.");
+        if ($storeID === null) {
+            return false;
         }
 
         if ($entity->getAttribute() == $this->parametersTag) {
             $attributes = $this->decodeJsonParameters($content);
 
-            $product = $this->productRepository->getById(
-                $entity->getEntityId(),
-                false,
-                $stores[StoreService::getStoreCode($entity->getLanguage())]->getId()
-            );
+            $product = $this->productRepository->getById($entity->getEntityId(), false, $storeID);
 
             foreach ($attributes as $attributeCode => $attributeContent) {
                 $product->setData($attributeCode, $attributeContent);
