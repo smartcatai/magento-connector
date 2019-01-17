@@ -21,18 +21,50 @@
 
 namespace SmartCat\Connector\Service\Strategy;
 
+use Magento\Eav\Model\Attribute;
+use Magento\Eav\Model\AttributeRepository;
+use Magento\Eav\Model\Entity\Attribute\FrontendLabelFactory;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
+use SmartCat\Connector\Service\ProjectEntityService;
+use SmartCat\Connector\Service\StoreService;
 
 class AttributesStrategy extends AbstractStrategy
 {
+    private $attributeRepository;
+    private $searchCriteriaBuilder;
+    private $attributeFrontendLabelFactory;
+    private $parametersTag = 'all';
+
+    /**
+     * AttributesStrategy constructor.
+     * @param AttributeRepository $attributeRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param ProjectEntityService $projectEntityService
+     * @param FrontendLabelFactory $attributeFrontendLabelFactory
+     * @param StoreService $storeService
+     */
+    public function __construct(
+        AttributeRepository $attributeRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        ProjectEntityService $projectEntityService,
+        FrontendLabelFactory $attributeFrontendLabelFactory,
+        StoreService $storeService
+    ) {
+        $this->attributeRepository = $attributeRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->attributeFrontendLabelFactory = $attributeFrontendLabelFactory;
+        parent::__construct($projectEntityService, $storeService);
+    }
+
     /**
      * @return string[]
      */
     public static function getAppliedClasses()
     {
-        // TODO: Implement getAppliedClasses() method.
+        return [Attribute::class];
     }
 
     /**
@@ -43,16 +75,37 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        // TODO: Implement attach() method.
+        $this->projectEntityService->create(
+            $project,
+            $model,
+            $profile,
+            self::getType() . '|' . $this->parametersTag
+        );
     }
 
     /**
      * @param ProjectEntity $entity
      * @return mixed
+     * @throws \Magento\Framework\Exception\InputException
      */
     public function getDocumentModel(ProjectEntity $entity)
     {
-        // TODO: Implement getDocumentModel() method.
+        $data = [];
+        $searchCriteria = $this->searchCriteriaBuilder->create();
+
+        /** @var Attribute[] $attributesList */
+        $attributesList = $this->attributeRepository
+            ->getList('catalog_product', $searchCriteria)
+            ->getItems();
+
+        foreach ($attributesList as $attribute) {
+            $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel(0)]);
+        }
+
+        $data = json_encode($data);
+        $fileName = "({$entity->getLanguage()}).json";
+
+        return $this->getDocumentFile($data, $fileName, $entity);
     }
 
     /**
@@ -67,9 +120,42 @@ class AttributesStrategy extends AbstractStrategy
      * @param string $content
      * @param ProjectEntity $entity
      * @return bool
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\StateException
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        // TODO: Implement setContent() method.
+        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+
+        if ($storeID === null) {
+            return false;
+        }
+
+        $searchCriteria = $this->searchCriteriaBuilder->create();
+
+        /** @var Attribute[] $attributesList */
+        $attributesList = $this->attributeRepository
+            ->getList('catalog_product', $searchCriteria)
+            ->getItems();
+
+        $attributeNames = array_map(function (Attribute $attribute) {
+            return $attribute->getName();
+        }, $attributesList);
+
+        $data = $this->decodeJsonParameters($content);
+
+        foreach ($data as $name => $label) {
+            $index = array_search($name, $attributeNames);
+
+            if ($index !== false) {
+                $attributesList[$index]->setFrontendLabels([
+                    $this->attributeFrontendLabelFactory->create()
+                        ->setStoreId($storeID)
+                        ->setLabel($label)
+                ]);
+
+                $this->attributeRepository->save($attributesList[$index]);
+            }
+        }
     }
 }

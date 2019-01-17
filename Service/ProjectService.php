@@ -69,7 +69,7 @@ class ProjectService
      * @return Project
      * @throws SmartCatHttpException
      */
-    public function create(array $models, Profile $profile)
+    public function createByModels(array $models, Profile $profile)
     {
         if (empty($models)) {
             throw new SmartCatHttpException(__('Models array is empty'));
@@ -77,19 +77,8 @@ class ProjectService
 
         $strategy = $this->strategyLoader->getStrategyByModel(get_class($models[0]));
 
-        $project = $this->projectRepository->create();
-        $project
-            ->setProfileId($profile->getId())
-            ->setElement($strategy->getName($models))
-            ->setTranslate($profile->getSourceLang() . ' -> ' . $profile->getTargetLang())
-            ->setStatus(Project::STATUS_WAITING);
-
-        if ($profile->getProjectGuid()) {
-            $project->setGuid($profile->getProjectGuid());
-        }
-
         try {
-            $this->projectRepository->save($project);
+            $project = $this->create($strategy->getName($models), $profile);
             foreach ($models as $model) {
                 $strategy->attach($model, $project, $profile);
             }
@@ -97,6 +86,51 @@ class ProjectService
             $message = $this->errorHandler->handleError($e, "Error save project to db");
             throw new SmartCatHttpException($message, $e->getCode(), $e->getPrevious());
         }
+
+        return $project;
+    }
+
+    /**
+     * @param $key
+     * @param Profile $profile
+     * @return Project
+     * @throws SmartCatHttpException
+     */
+    public function createByKey($key, Profile $profile)
+    {
+        $strategy = $this->strategyLoader->getStrategyByType($key);
+
+        try {
+            $project = $this->create($key, $profile);
+            $strategy->attach(null, $project, $profile);
+        } catch (Throwable $e) {
+            $message = $this->errorHandler->handleError($e, "Error save project to db");
+            throw new SmartCatHttpException($message, $e->getCode(), $e->getPrevious());
+        }
+
+        return $project;
+    }
+
+    /**
+     * @param $name
+     * @param Profile $profile
+     * @return Project
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function create($name, Profile $profile)
+    {
+        $project = $this->projectRepository->create();
+        $project
+            ->setProfileId($profile->getId())
+            ->setElement($name)
+            ->setTranslate($profile->getSourceLang() . ' -> ' . $profile->getTargetLang())
+            ->setStatus(Project::STATUS_WAITING);
+
+        if ($profile->getProjectGuid()) {
+            $project->setGuid($profile->getProjectGuid());
+        }
+
+        $this->projectRepository->save($project);
 
         return $project;
     }

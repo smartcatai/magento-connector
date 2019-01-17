@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Service;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Model\AbstractModel;
 use SmartCat\Client\Model\BilingualFileImportSettingsModel;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Connector\Helper\ErrorHandler;
@@ -49,7 +50,7 @@ class ProjectEntityService
 
     /**
      * @param Project $project
-     * @param \Magento\Framework\Model\AbstractModel $entity
+     * @param AbstractModel $entity
      * @param string $type
      */
     public function create(Project $project, $entity, Profile $profile, $type)
@@ -57,10 +58,15 @@ class ProjectEntityService
         foreach ($profile->getTargetLangArray() as $targetLang) {
             $projectEntity = $this->projectEntityRepository->create();
             $projectEntity
-                ->setEntityId($entity->getId())
                 ->setType($type . "|" . $targetLang)
                 ->setStatus(ProjectEntity::STATUS_NEW)
                 ->setProjectId($project->getId());
+
+            if ($entity instanceof AbstractModel) {
+                $projectEntity->setEntityId($entity->getId());
+            } else {
+                $projectEntity->setEntityId(null);
+            }
 
             $this->update($projectEntity);
         }

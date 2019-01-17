@@ -27,4 +27,12 @@
 			<argument name="resourceModel" xsi:type="string">SmartCat\Connector\Model\ResourceModel\Project\Collection</argument>
 		</arguments>
 	</virtualType>
+
+	<type name="Magento\Framework\Console\CommandList">
+		<arguments>
+			<argument name="commands" xsi:type="array">
+				<item name="test" xsi:type="object">SmartCat\Connector\Console\Command\TestCommand</item>
+			</argument>
+		</arguments>
+	</type>
 </config>

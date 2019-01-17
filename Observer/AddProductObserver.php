@@ -71,7 +71,7 @@ class AddProductObserver implements ObserverInterface
         /** @var Profile $profile */
         foreach ($profiles as $profile) {
             try {
-                $this->senderService->create([$product], $profile);
+                $this->senderService->createByModels([$product], $profile);
             } catch (SmartCatHttpException $e) {
             }
         }

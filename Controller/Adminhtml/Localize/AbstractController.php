@@ -94,10 +94,10 @@ abstract class AbstractController extends \Magento\Backend\App\Action
 
         try {
             if ($profile->getBatchSend()) {
-                $this->projectService->create($models, $profile);
+                $this->projectService->createByModels($models, $profile);
             } else {
                 foreach ($models as $model) {
-                    $this->projectService->create([$model], $profile);
+                    $this->projectService->createByModels([$model], $profile);
                 }
             }
         } catch (SmartCatHttpException $e) {

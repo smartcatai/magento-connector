@@ -26,8 +26,6 @@ use Magento\Cms\Model\BlockFactory;
 use Magento\Cms\Model\BlockRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -43,19 +41,19 @@ class BlockStrategy extends AbstractStrategy
     /**
      * BlockStrategy constructor.
      * @param ProjectEntityService $projectEntityService
-     * @param StoreManager $storeManager
+     * @param StoreService $storeService
      * @param BlockRepository $blockRepository
      * @param BlockFactory $blockFactory
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
-        StoreManager $storeManager,
+        StoreService $storeService,
         BlockRepository $blockRepository,
         BlockFactory $blockFactory
     ) {
         $this->blockRepository = $blockRepository;
         $this->blockFactory = $blockFactory;
-        parent::__construct($projectEntityService, $storeManager);
+        parent::__construct($projectEntityService, $storeService);
     }
 
     /**
