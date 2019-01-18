@@ -45,7 +45,11 @@ class ProjectService
     /**
      * ProjectService constructor.
      * @param ProjectRepository $projectRepository
+     * @param ProfileRepository $profileRepository
+     * @param StrategyLoader $strategyLoader
      * @param ErrorHandler $errorHandler
+     * @param ProjectEntityService $projectEntityService
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
     public function __construct(
         ProjectRepository $projectRepository,

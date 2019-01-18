@@ -2,11 +2,7 @@
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <settings>
         <buttons>
-            <button name="localize">
-                <url path="smartcat_connector/localize/category"/>
-                <class>primary</class>
-                <label translate="true">Localize all</label>
-            </button>
+            <button name="localize" class="SmartCat\Connector\Block\Adminhtml\Category\Localize" />
         </buttons>
     </settings>
 </form>

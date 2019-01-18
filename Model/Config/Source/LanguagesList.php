@@ -53,7 +53,6 @@ class LanguagesList implements ArrayInterface
                 ->directoriesGet(['type' => 'language'])
                 ->getItems();
         } catch (\Throwable $e) {
-            $this->messageManager->addErrorMessage(__('SmartCat API error occurred: ') . $e->getMessage());
             return $languages;
         }
 

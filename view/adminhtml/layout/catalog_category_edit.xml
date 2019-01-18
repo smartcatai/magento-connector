@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="SmartCat\Connector\Block\Adminhtml\Modal\ProfilesModal" template="profiles_modal.phtml" name="profiles-modal">
+                <arguments>
+                    <argument name="modal-id" xsi:type="string">profiles-modal</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

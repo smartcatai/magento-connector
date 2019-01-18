@@ -21,9 +21,7 @@
 
 namespace SmartCat\Connector\Block\Adminhtml\Profile\Edit;
 
-use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
-
-class SaveButton extends GenericButton implements ButtonProviderInterface
+class SaveButton extends GenericButton
 {
     /**
      * @return array

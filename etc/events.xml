@@ -3,7 +3,7 @@
     <event name="controller_action_catalog_product_save_entity_after">
         <observer name="AutoSendCreatedProducts" instance="SmartCat\Connector\Observer\AddProductObserver" />
     </event>
-    <event name="admin_system_config_changed_section_general">
-        <observer name="custom_admin_system_config_changed_section_general" instance="SmartCat\Connector\Observer\SaveConfigObserver"/>
+    <event name="admin_system_config_changed_section_smartcat_localization">
+        <observer name="custom_admin_system_config_changed_section_smartcat_localization" instance="SmartCat\Connector\Observer\SaveConfigObserver"/>
     </event>
 </config>

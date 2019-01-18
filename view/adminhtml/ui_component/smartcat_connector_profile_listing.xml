@@ -15,11 +15,7 @@
 			<dep>smartcat_connector_profile_listing.smartcat_connector_profile_listing_data_source</dep>
 		</deps>
 		<buttons>
-			<button name="add">
-				<url path="*/*/new"/>
-				<class>primary</class>
-				<label translate="true">New Profile</label>
-			</button>
+			<button name="add" class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\NewButton"/>
 		</buttons>
 	</settings>
 	<dataSource component="Magento_Ui/js/grid/provider" name="smartcat_connector_profile_listing_data_source">

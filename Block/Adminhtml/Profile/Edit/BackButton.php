@@ -21,9 +21,7 @@
 
 namespace SmartCat\Connector\Block\Adminhtml\Profile\Edit;
 
-use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
-
-class BackButton extends GenericButton implements ButtonProviderInterface
+class BackButton extends GenericButton
 {
     /**
      * @return array

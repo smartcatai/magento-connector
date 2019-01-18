@@ -19,36 +19,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Helper;
+namespace SmartCat\Connector\Controller\Adminhtml\Localize;
 
-use SmartCat\Client\SmartCat;
-
-class SmartCatFacade extends SmartCat
+class Category extends \Magento\Backend\App\Action
 {
-    /**
-     * SmartCatFacade constructor.
-     * @param ConfigurationHelper $helper
-     */
-    public function __construct(ConfigurationHelper $helper)
+    public function execute()
     {
-         parent::__construct(
-             $helper->getApplicationId(),
-             $helper->getToken(),
-             $helper->getServer()
-         );
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkCredentials(): bool
-    {
-        try {
-            $this->getAccountManager()->accountGetAccountInfo();
-        } catch (\Throwable $e) {
-            return false;
-        }
-
-        return true;
     }
 }

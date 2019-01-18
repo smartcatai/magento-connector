@@ -21,9 +21,15 @@
 
 namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
-class Index extends \Magento\Backend\App\Action
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
+use SmartCat\Connector\Helper\SmartCatFacade;
+
+class Index extends Action
 {
     private $resultPageFactory;
+    private $smartCatService;
 
     /**
      * Constructor
@@ -32,10 +38,12 @@ class Index extends \Magento\Backend\App\Action
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
+        Context $context,
+        PageFactory $resultPageFactory,
+        SmartCatFacade $smartCatService
     ) {
         $this->resultPageFactory = $resultPageFactory;
+        $this->smartCatService = $smartCatService;
         parent::__construct($context);
     }
 
@@ -46,8 +54,19 @@ class Index extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        if (!$this->smartCatService->checkCredentials()) {
+            $this->messageManager->addErrorMessage(__(
+                "Smartcat credentials are wrong. Login failed. Please check it on <a href=''>"
+            ));
+        }
+
         $resultPage = $this->resultPageFactory->create();
             $resultPage->getConfig()->getTitle()->prepend(__("Profiles"));
             return $resultPage;
+    }
+
+    private function getConfigUrl()
+    {
+        $this->getUrl();
     }
 }

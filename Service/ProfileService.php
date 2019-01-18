@@ -21,6 +21,7 @@
 
 namespace SmartCat\Connector\Service;
 
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use SmartCat\Connector\Exception\ProfileServiceException;
 use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Profile;
@@ -32,17 +33,28 @@ class ProfileService
 {
     private $profileRepository;
     private $projectRepository;
+    private $searchCriteriaBuilder;
     private $smartCatService;
     private $storeService;
 
+    /**
+     * ProfileService constructor.
+     * @param ProfileRepository $profileRepository
+     * @param ProjectRepository $projectRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param StoreService $storeService
+     * @param SmartCatFacade $smartCatService
+     */
     public function __construct(
         ProfileRepository $profileRepository,
         ProjectRepository $projectRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
         StoreService $storeService,
         SmartCatFacade $smartCatService
     ) {
         $this->profileRepository = $profileRepository;
         $this->projectRepository = $projectRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->storeService = $storeService;
         $this->smartCatService = $smartCatService;
     }
@@ -77,7 +89,8 @@ class ProfileService
         }
 
         if (empty($data[Profile::NAME])) {
-            $data[Profile::NAME] = __('Languages:') . ' ' . $data[Profile::SOURCE_LANG] . ' -> ' . $data[Profile::TARGET_LANG];
+            $data[Profile::NAME] =
+                __('Languages:') . ' ' . $data[Profile::SOURCE_LANG] . ' -> ' . $data[Profile::TARGET_LANG];
         }
 
         if (!empty($data[Profile::PROJECT_GUID])) {
@@ -140,5 +153,22 @@ class ProfileService
     {
         $project = $this->projectRepository->getById($projectId);
         return $this->profileRepository->getById($project->getProfileId());
+    }
+
+    /**
+     * @return array|Profile[]
+     */
+    public function getAllProfiles()
+    {
+        $searchCriteria = $this->searchCriteriaBuilder->create();
+
+        try {
+            /** @var Profile[] $profiles */
+            $profiles = $this->profileRepository->getList($searchCriteria)->getItems();
+        } catch (\Throwable $e) {
+            return [];
+        }
+
+        return $profiles;
     }
 }

@@ -50,7 +50,6 @@ class AttributesList implements ArrayInterface
             $searchCriteria = $this->searchCriteriaBuilder->create();
             $attributesList = $this->attributeRepository->getList($searchCriteria)->getItems();
         } catch (\Throwable $e) {
-            $this->messageManager->addErrorMessage(__('Error occurred: ') . $e->getMessage());
             return $attributes;
         }
 

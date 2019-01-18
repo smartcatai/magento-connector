@@ -22,14 +22,15 @@
 namespace SmartCat\Connector\Block\Adminhtml\Profile\Edit;
 
 use Magento\Backend\Block\Widget\Context;
+use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 use SmartCat\Connector\Model\Profile;
 
-abstract class GenericButton
+abstract class GenericButton implements ButtonProviderInterface
 {
-    protected $context;
+    private $context;
 
     /**
-     * @param \Magento\Backend\Block\Widget\Context $context
+     * @param Context $context
      */
     public function __construct(Context $context)
     {

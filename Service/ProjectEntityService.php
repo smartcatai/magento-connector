@@ -38,6 +38,12 @@ class ProjectEntityService
     private $searchCriteriaBuilder;
     private $errorHandler;
 
+    /**
+     * ProjectEntityService constructor.
+     * @param ProjectEntityRepository $projectEntityRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param ErrorHandler $errorHandler
+     */
     public function __construct(
         ProjectEntityRepository $projectEntityRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,

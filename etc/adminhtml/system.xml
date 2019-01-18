@@ -4,12 +4,12 @@
 		<tab id="localization" sortOrder="999" translate="label">
 			<label>Localization</label>
 		</tab>
-		<section id="general" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label">
-			<label>General</label>
+		<section id="smartcat_localization" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label">
+			<label>Smartcat Translation Manager</label>
 			<tab>localization</tab>
 			<resource>SmartCat_Connector::config</resource>
-			<group id="smartcat_localization" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
-				<label>Smartcat Translation Manager</label>
+			<group id="general" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
+				<label>General</label>
 				<field id="token" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="10" translate="label" type="obscure">
 					<label>API Key</label>
 					<backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>

@@ -21,10 +21,9 @@
 
 namespace SmartCat\Connector\Block\Adminhtml\Profile\Edit;
 
-use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 use SmartCat\Connector\Model\Profile;
 
-class DeleteButton extends GenericButton implements ButtonProviderInterface
+class DeleteButton extends GenericButton
 {
     /**
      * @return array

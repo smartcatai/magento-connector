@@ -21,23 +21,37 @@
 
 namespace SmartCat\Connector\Controller\Adminhtml\Profile;
 
+use SmartCat\Connector\Helper\SmartCatFacade;
+use SmartCat\Connector\Controller\Adminhtml\Profile as AbstractProfile;
 use SmartCat\Connector\Model\Profile;
+use SmartCat\Connector\Model\ProfileRepository;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Registry;
 
-class Edit extends \SmartCat\Connector\Controller\Adminhtml\Profile
+class Edit extends AbstractProfile
 {
     private $resultPageFactory;
+    private $profileRepository;
+    private $smartCatService;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param Context $context
+     * @param Registry $coreRegistry
+     * @param PageFactory $resultPageFactory
+     * @param ProfileRepository $profileRepository
+     * @param SmartCatFacade $smartCatService
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
+        Context $context,
+        Registry $coreRegistry,
+        PageFactory $resultPageFactory,
+        ProfileRepository $profileRepository,
+        SmartCatFacade $smartCatService
     ) {
         $this->resultPageFactory = $resultPageFactory;
+        $this->smartCatService = $smartCatService;
+        $this->profileRepository = $profileRepository;
         parent::__construct($context, $coreRegistry);
     }
 
@@ -48,26 +62,28 @@ class Edit extends \SmartCat\Connector\Controller\Adminhtml\Profile
      */
     public function execute()
     {
-        // 1. Get ID and create model
         $id = $this->getRequest()->getParam(Profile::ID);
-        /** @var Profile $model */
-        $model = $this->_objectManager->create(\SmartCat\Connector\Model\Profile::class);
-        
-        // 2. Initial checking
-        if ($id) {
-            $model->load($id);
-            if (!$model->getId()) {
-                $this->messageManager->addErrorMessage(__('This profile no longer exists.'));
-                /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
-                $resultRedirect = $this->resultRedirectFactory->create();
-                return $resultRedirect->setPath('*/*/');
-            }
-        }
-        $this->_coreRegistry->register('smartcat_connector_profile', $model);
-        
-        // 3. Build edit form
+
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultRedirectFactory->create();
+
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
+
+        if (!$this->smartCatService->checkCredentials()) {
+            $this->messageManager->addErrorMessage(__('Smartcat API error: Wrong credentials. Please check config.'));
+            return $resultRedirect->setPath('*/*/');
+        }
+
+        try {
+            $model = $this->profileRepository->getById($id);
+        } catch (\Throwable $e) {
+            $this->messageManager->addErrorMessage(__('This profile no longer exists.'));
+            return $resultRedirect->setPath('*/*/');
+        }
+
+        $this->_coreRegistry->register('smartcat_connector_profile', $model);
+
         $this->initPage($resultPage)->addBreadcrumb(
             $id ? __('Edit Profile') : __('New Profile'),
             $id ? __('Edit Profile') : __('New Profile')
@@ -76,6 +92,7 @@ class Edit extends \SmartCat\Connector\Controller\Adminhtml\Profile
         $resultPage->getConfig()->getTitle()->prepend(
             $model->getId() ? __('Edit Profile "%1"', $model->getName()) : __('New Profile')
         );
+
         return $resultPage;
     }
 }

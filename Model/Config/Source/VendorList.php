@@ -54,7 +54,6 @@ class VendorList implements ArrayInterface
                 ->directoriesGet(['type' => 'vendor'])
                 ->getItems();
         } catch (\Throwable $e) {
-            $this->messageManager->addErrorMessage(__('SmartCat API error occurred: ') . $e->getMessage());
             return $vendors;
         }
 

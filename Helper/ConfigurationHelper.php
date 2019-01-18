@@ -29,6 +29,8 @@ use SmartCat\Client\SmartCat;
 
 class ConfigurationHelper extends AbstractHelper
 {
+    const CONFIG_KEY = 'smartcat_localization/general';
+
     /**
      * @var EncryptorInterface
      */
@@ -38,10 +40,8 @@ class ConfigurationHelper extends AbstractHelper
      * @param Context $context
      * @param EncryptorInterface $encryptor
      */
-    public function __construct(
-        Context $context,
-        EncryptorInterface $encryptor
-    ) {
+    public function __construct(Context $context, EncryptorInterface $encryptor)
+    {
         parent::__construct($context);
         $this->encryptor = $encryptor;
     }
@@ -53,7 +53,7 @@ class ConfigurationHelper extends AbstractHelper
     public function getToken($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
     {
         $secret = $this->scopeConfig->getValue(
-            'general/smartcat_localization/token',
+            self::CONFIG_KEY . '/token',
             $scope
         );
 
@@ -69,7 +69,7 @@ class ConfigurationHelper extends AbstractHelper
     public function getApplicationId($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
     {
         return $this->scopeConfig->getValue(
-            'general/smartcat_localization/application_id',
+            self::CONFIG_KEY . '/application_id',
             $scope
         );
     }
@@ -82,7 +82,7 @@ class ConfigurationHelper extends AbstractHelper
     {
         $host = SmartCat::SC_EUROPE;
 
-        switch ($this->scopeConfig->getValue('general/smartcat_localization/server', $scope)) {
+        switch ($this->scopeConfig->getValue(self::CONFIG_KEY . '/server', $scope)) {
             case 'usa':
                 $host = SmartCat::SC_USA;
                 break;
