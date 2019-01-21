@@ -9,6 +9,9 @@
 			<argument name="resourceModel" xsi:type="string">SmartCat\Connector\Model\ResourceModel\Profile\Collection</argument>
 		</arguments>
 	</virtualType>
+	<type name="Magento\Catalog\Controller\Adminhtml\Product\Attribute\Index">
+		<plugin name="smartcat_catalog_product_attribute_index" type="SmartCat\Connector\Controller\Adminhtml\Product\Attribute\Index" />
+	</type>
 	<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
 		<arguments>
 			<argument name="collections" xsi:type="array">
@@ -27,12 +30,4 @@
 			<argument name="resourceModel" xsi:type="string">SmartCat\Connector\Model\ResourceModel\Project\Collection</argument>
 		</arguments>
 	</virtualType>
-
-	<type name="Magento\Framework\Console\CommandList">
-		<arguments>
-			<argument name="commands" xsi:type="array">
-				<item name="test" xsi:type="object">SmartCat\Connector\Console\Command\TestCommand</item>
-			</argument>
-		</arguments>
-	</type>
 </config>

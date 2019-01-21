@@ -1,6 +1,6 @@
 define([
         "jquery", "Magento_Ui/js/modal/modal"
-    ], function($){
+    ], function($) {
         var options = {
             type: 'popup',
             responsive: true,

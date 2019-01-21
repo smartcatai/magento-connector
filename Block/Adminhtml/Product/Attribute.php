@@ -19,33 +19,52 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Block\Adminhtml\Modal;
+namespace SmartCat\Connector\Block\Adminhtml\Product;
 
-use Magento\Framework\Data\Form\FormKey;
-use Magento\Framework\View\Element\Template;
 use SmartCat\Connector\Service\ProfileService;
+use Magento\Backend\Block\Widget\Container;
 
-class ProfilesModal extends \Magento\Framework\View\Element\Template
+class Attribute extends Container
 {
     private $profileService;
-    private $formKey;
 
     /**
      * ProfilesModal constructor.
-     * @param Template\Context $context
+     * @param \Magento\Backend\Block\Widget\Context $context
      * @param ProfileService $profileService
-     * @param FormKey $formKey
      * @param array $data
      */
     public function __construct(
-        Template\Context $context,
+        \Magento\Backend\Block\Widget\Context $context,
         ProfileService $profileService,
-        FormKey $formKey,
         array $data = []
     ) {
-        $this->formKey = $formKey;
         $this->profileService = $profileService;
         parent::__construct($context, $data);
+    }
+
+    protected function _construct()
+    {
+        $this->_controller = 'adminhtml_product_attribute';
+        $this->_blockGroup = 'Magento_Catalog';
+        $this->_template = 'SmartCat_Connector::attributes_profiles_modal.phtml';
+
+        $this->addButton(
+            'localize_all',
+            [
+                'label' => __('Localize All'),
+                'class' => 'primary',
+                'on_click' => '',
+                'data_attribute' => [
+                    'mage-init' => [
+                        'profiles-modal' => ['target' => '#modal-content'],
+                    ],
+                ],
+                'sort_order' => 9
+            ]
+        );
+
+        parent::_construct();
     }
 
     /**

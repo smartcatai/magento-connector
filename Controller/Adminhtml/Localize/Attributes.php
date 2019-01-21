@@ -24,9 +24,10 @@ namespace SmartCat\Connector\Controller\Adminhtml\Localize;
 use Magento\Backend\App\Action;
 use SmartCat\Connector\Service\ProfileService;
 use SmartCat\Connector\Service\ProjectService;
+use SmartCat\Connector\Service\Strategy\AttributesStrategy;
 use SmartCat\Connector\Service\Strategy\CategoryStrategy;
 
-class Category extends \Magento\Backend\App\Action
+class Attributes extends \Magento\Backend\App\Action
 {
     private $profileService;
     private $projectService;
@@ -58,13 +59,13 @@ class Category extends \Magento\Backend\App\Action
 
         try {
             $profile = $this->profileService->getProfileById($profilesIds);
-            $this->projectService->createByKey(CategoryStrategy::getType(), $profile);
+            $this->projectService->createByKey(AttributesStrategy::getType(), $profile);
 
-            $this->messageManager->addSuccessMessage(__('All categories were sent to localization'));
+            $this->messageManager->addSuccessMessage(__('All attributes were sent to localization'));
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(__('An a error occurred: %s', $e->getMessage()));
         }
 
-        return $redirectFactory->setPath('catalog/category/index');
+        return $redirectFactory->setPath('catalog/product_attribute/index');
     }
 }

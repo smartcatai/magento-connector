@@ -1,0 +1,17 @@
+<div id="modal-content" style="display: none">
+    <form id="modal-form" action="<?= $block->getFormUrl('smartcat_connector/localize/category') ?>" method="post" enctype="multipart/form-data" data-mage-init='{"validation":{}}'>
+        <div class="admin__fieldset-wrapper-content _hide col-md-12">
+            <fieldset class="admin__fieldset">
+                <label class="admin__field-label col-md-10" for="profiles" style="padding-right: 20px">
+                    <span>Profiles</span>
+                </label>
+                <select class="admin__control-select" name="profiles" id="profiles">
+                    <?php foreach ($block->getOptions() as $option) : ?>
+                        <option value="<?= $option['id'] ?>"><?= $option['name'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </fieldset>
+            <input name="form_key" type="hidden" value="<?php echo $block->getFormKey() ?>">
+        </div>
+    </form>
+</div>
