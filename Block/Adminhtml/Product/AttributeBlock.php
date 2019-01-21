@@ -21,15 +21,16 @@
 
 namespace SmartCat\Connector\Block\Adminhtml\Product;
 
+use SmartCat\Connector\Block\Adminhtml\Category\LocalizeButton;
 use SmartCat\Connector\Service\ProfileService;
 use Magento\Backend\Block\Widget\Container;
 
-class Attribute extends Container
+class AttributeBlock extends Container
 {
     private $profileService;
+    private $localizeButton;
 
     /**
-     * ProfilesModal constructor.
      * @param \Magento\Backend\Block\Widget\Context $context
      * @param ProfileService $profileService
      * @param array $data
@@ -37,8 +38,10 @@ class Attribute extends Container
     public function __construct(
         \Magento\Backend\Block\Widget\Context $context,
         ProfileService $profileService,
+        LocalizeButton $localizeButton,
         array $data = []
     ) {
+        $this->localizeButton = $localizeButton;
         $this->profileService = $profileService;
         parent::__construct($context, $data);
     }
@@ -47,21 +50,11 @@ class Attribute extends Container
     {
         $this->_controller = 'adminhtml_product_attribute';
         $this->_blockGroup = 'Magento_Catalog';
-        $this->_template = 'SmartCat_Connector::attributes_profiles_modal.phtml';
+        $this->_template = 'SmartCat_Connector::profiles_modal.phtml';
 
         $this->addButton(
             'localize_all',
-            [
-                'label' => __('Localize All'),
-                'class' => 'primary',
-                'on_click' => '',
-                'data_attribute' => [
-                    'mage-init' => [
-                        'profiles-modal' => ['target' => '#modal-content'],
-                    ],
-                ],
-                'sort_order' => 9
-            ]
+            $this->localizeButton->getButtonData()
         );
 
         parent::_construct();
@@ -94,10 +87,10 @@ class Attribute extends Container
     /**
      * @return string
      */
-    public function getFormUrl($route)
+    public function getFormUrl()
     {
         return $this->getUrl(
-            $route,
+            'smartcat_connector/localize/attributes',
             ['_secure' => $this->getRequest()->isSecure()]
         );
     }

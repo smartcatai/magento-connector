@@ -19,23 +19,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml\Product\Attribute;
+namespace SmartCat\Connector\Block\Adminhtml\Category;
 
-class Index
+use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
+
+class LocalizeButton implements ButtonProviderInterface
 {
     /**
-     * @param \Magento\Catalog\Controller\Adminhtml\Product\Attribute\Index $subject
-     * @param \Magento\Backend\Model\View\Result\Page $result
-     * @return \Magento\Backend\Model\View\Result\Page string
+     * @return array
      */
-    public function afterExecute(\Magento\Catalog\Controller\Adminhtml\Product\Attribute\Index $subject, $result)
+    public function getButtonData()
     {
-        $result->addContent(
-            $result->getLayout()->createBlock(
-                \SmartCat\Connector\Block\Adminhtml\Product\Attribute::class
-            )
-        );
-
-        return $result;
+        return [
+            'label' => __('Localize All'),
+            'class' => 'primary',
+            'on_click' => '',
+            'data_attribute' => [
+                'mage-init' => [
+                    'profiles-modal' => ['target' => '#modal-content'],
+                ],
+            ],
+            'sort_order' => 9,
+        ];
     }
 }

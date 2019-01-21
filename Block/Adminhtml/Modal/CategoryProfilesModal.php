@@ -25,13 +25,13 @@ use Magento\Framework\Data\Form\FormKey;
 use Magento\Framework\View\Element\Template;
 use SmartCat\Connector\Service\ProfileService;
 
-class ProfilesModal extends \Magento\Framework\View\Element\Template
+class CategoryProfilesModal extends \Magento\Framework\View\Element\Template
 {
     private $profileService;
     private $formKey;
 
     /**
-     * ProfilesModal constructor.
+     * CategoryProfilesModal constructor.
      * @param Template\Context $context
      * @param ProfileService $profileService
      * @param FormKey $formKey
@@ -75,10 +75,10 @@ class ProfilesModal extends \Magento\Framework\View\Element\Template
     /**
      * @return string
      */
-    public function getFormUrl($route)
+    public function getFormUrl()
     {
         return $this->getUrl(
-            $route,
+            'smartcat_connector/localize/category',
             ['_secure' => $this->getRequest()->isSecure()]
         );
     }
