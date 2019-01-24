@@ -76,7 +76,9 @@ class Edit extends AbstractProfile
         }
 
         try {
-            $model = $this->profileRepository->getById($id);
+            if ($id) {
+                $model = $this->profileRepository->getById($id);
+            }
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(__('This profile no longer exists.'));
             return $resultRedirect->setPath('*/*/');
