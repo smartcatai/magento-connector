@@ -63,7 +63,8 @@ class Edit extends AbstractProfile
     public function execute()
     {
         $id = $this->getRequest()->getParam(Profile::ID);
-
+        $model = null;
+        
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
 
