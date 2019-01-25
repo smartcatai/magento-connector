@@ -36,13 +36,35 @@
 		</settings>
 		<bookmark name="bookmarks"/>
 		<columnsControls name="columns_controls"/>
-		<filters name="listing_filters"/>
+		<filters name="listing_filters">
+			<filterSelect name="profile_id" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+				<settings>
+					<options class="SmartCat\Connector\Model\Config\Source\ProfilesList"/>
+					<caption translate="true">Select...</caption>
+					<label translate="true">Profile</label>
+					<dataScope>profile_id</dataScope>
+					<imports>
+						<link name="visible">componentType = column, index = ${ $.index }:visible</link>
+					</imports>
+				</settings>
+			</filterSelect>
+			<filterSelect name="status" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+				<settings>
+					<options class="SmartCat\Connector\Model\Config\Source\ProjectStatusList"/>
+					<caption translate="true">Select...</caption>
+					<label translate="true">Status</label>
+					<dataScope>status</dataScope>
+					<imports>
+						<link name="visible">componentType = column, index = ${ $.index }:visible</link>
+					</imports>
+				</settings>
+			</filterSelect>
+		</filters>
 		<paging name="listing_paging"/>
 	</listingToolbar>
 	<columns name="smartcat_connector_project_columns">
 		<column name="id" sortOrder="10">
 			<settings>
-				<filter>integerRange</filter>
 				<sorting>desc</sorting>
 				<label translate="true">ID</label>
 			</settings>
@@ -55,19 +77,16 @@
 		</column>
 		<column name="profile_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectProfile" sortOrder="30">
 			<settings>
-				<filter>text</filter>
 				<label translate="true">Profile</label>
 			</settings>
 		</column>
 		<column name="translate" sortOrder="40">
 			<settings>
-				<filter>text</filter>
 				<label translate="true">Translation</label>
 			</settings>
 		</column>
 		<column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectStatusColumn" sortOrder="50">
 			<settings>
-				<filter>select</filter>
 				<label translate="true">Status</label>
 			</settings>
 		</column>

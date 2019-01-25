@@ -69,7 +69,6 @@
 		</settings>
 		<column name="id" sortOrder="10">
 			<settings>
-				<filter>integerRange</filter>
 				<sorting>asc</sorting>
 				<label translate="true">ID</label>
 			</settings>
@@ -77,7 +76,6 @@
 		<column name="vendor" class="SmartCat\Connector\Ui\Component\Listing\Column\VendorColumn" sortOrder="15">
 			<settings>
 				<label translate="true">Translation Agency</label>
-				<dataType>select</dataType>
 			</settings>
 		</column>
 		<column name="source_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="20">
@@ -90,16 +88,12 @@
 		</column>
 		<column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="30">
 			<settings>
-				<filter>text</filter>
 				<label translate="true">Target Language</label>
 			</settings>
 		</column>
 		<column name="stages" class="SmartCat\Connector\Ui\Component\Listing\Column\WorkFlowColumn" sortOrder="40">
 			<settings>
-				<filter>select</filter>
-				<options class="SmartCat\Connector\Model\Config\Source\WorkflowStagesList"/>
 				<label translate="true">Workflow</label>
-				<dataType>select</dataType>
 			</settings>
 		</column>
 		<column name="name" sortOrder="50">
@@ -110,7 +104,6 @@
 		</column>
 		<column name="excluded_attributes" class="SmartCat\Connector\Ui\Component\Listing\Column\AttributesColumn" sortOrder="60">
 			<settings>
-				<filter>text</filter>
 				<label translate="true">Excluded Attributes</label>
 			</settings>
 		</column>

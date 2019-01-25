@@ -22,15 +22,39 @@
 namespace SmartCat\Connector\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
+use SmartCat\Connector\Service\ProfileService;
 
-class WorkflowStagesList implements ArrayInterface
+class ProfilesList implements ArrayInterface
 {
+    private $profileService;
+
+    /**
+     * ProfilesList constructor.
+     * @param ProfileService $profileService
+     */
+    public function __construct(ProfileService $profileService)
+    {
+        $this->profileService = $profileService;
+    }
+
+    /**
+     * @return array
+     */
     public function toOptionArray()
     {
-        return [
-            ['value' => 'translation','label' => __('Translation')],
-            ['value' => 'editing','label' => __('Editing')],
-            ['value' => 'proofreading','label' => __('Proofreading')]
-        ];
+        $profiles = [];
+
+        $ProfilesList = $this->profileService->getAllProfiles();
+
+        if (!empty($ProfilesList)) {
+            foreach ($ProfilesList as $profile) {
+                $profiles[] = [
+                    'label' => $profile->getName(),
+                    'value' => $profile->getId()
+                ];
+            }
+        }
+
+        return $profiles;
     }
 }
