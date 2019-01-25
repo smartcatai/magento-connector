@@ -57,8 +57,8 @@ class Index extends Action
     {
         if (!$this->smartCatService->checkCredentials()) {
             $this->messageManager->addErrorMessage(__(
-                "Smartcat credentials are wrong. Login failed. Please check it on %1",
-                "<a href='{$this->getConfigUrl()}'>" . __("this page") . "</a>"
+                "Smartcat credentials are wrong. Login failed. Please check it" // on %1",
+                //"<a href='{$this->getConfigUrl()}'>" . __("this page") . "</a>"
             ));
         }
 
