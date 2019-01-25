@@ -31,6 +31,7 @@ use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
+use SmartCat\Connector\Module;
 use SmartCat\Connector\Service\ProfileService;
 use SmartCat\Connector\Service\ProjectEntityService;
 use SmartCat\Connector\Service\ProjectService;
@@ -96,7 +97,7 @@ class SendProjects
             ->setSourceLanguage($profile->getSourceLang())
             ->setTargetLanguages($profile->getTargetLangArray())
             ->setWorkflowStages($profile->getStagesArray())
-            ->setExternalTag('source:Magento')
+            ->setExternalTag(Module::EXTERNAL_TAG)
             ->setAssignToVendor(false);
 
         try {
@@ -133,6 +134,7 @@ class SendProjects
             $projectChanges = (new ProjectChangesModel())
                 ->setName($projectModel->getName())
                 ->setDescription($projectModel->getDescription())
+                ->setExternalTag(Module::EXTERNAL_TAG)
                 ->setVendorAccountIds([$profile->getVendor()]);
             try {
                 $projectManager->projectUpdateProject($projectModel->getId(), $projectChanges);
@@ -213,6 +215,19 @@ class SendProjects
 
         if ($projectModel->getDeadline()) {
             $project->setDeadline($projectModel->getDeadline()->format('U'));
+        }
+
+        if ($projectModel->getExternalTag() != Module::EXTERNAL_TAG) {
+            $projectChanges = (new ProjectChangesModel())
+                ->setName($projectModel->getName())
+                ->setDescription($projectModel->getDescription())
+                ->setExternalTag(Module::EXTERNAL_TAG);
+            try {
+                $projectManager->projectUpdateProject($projectModel->getId(), $projectChanges);
+            } catch (Throwable $e) {
+                $this->errorHandler->handleProjectError($e, $project, "SmartCat error update project external tag");
+                return;
+            }
         }
 
         $this->projectService->update($project);

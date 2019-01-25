@@ -25,7 +25,7 @@ use Magento\Framework\Data\Form\FormKey;
 use Magento\Framework\View\Element\Template;
 use SmartCat\Connector\Service\ProfileService;
 
-class CategoryProfilesModal extends \Magento\Framework\View\Element\Template
+class CategoryProfilesModal extends Template
 {
     private $profileService;
     private $formKey;

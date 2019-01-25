@@ -36,6 +36,7 @@ class Index extends Action
      *
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param SmartCatFacade $smartCatService
      */
     public function __construct(
         Context $context,
@@ -56,7 +57,8 @@ class Index extends Action
     {
         if (!$this->smartCatService->checkCredentials()) {
             $this->messageManager->addErrorMessage(__(
-                "Smartcat credentials are wrong. Login failed. Please check it on <a href=''>"
+                "Smartcat credentials are wrong. Login failed. Please check it on %s",
+                "<a href='{$this->getConfigUrl()}'>" . __("this page") . "</a>"
             ));
         }
 
@@ -67,6 +69,6 @@ class Index extends Action
 
     private function getConfigUrl()
     {
-        $this->getUrl();
+        return $this->getUrl('*/system_config/edit/section/smartcat_localization/');
     }
 }

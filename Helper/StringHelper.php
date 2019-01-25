@@ -59,7 +59,7 @@ class StringHelper
      * @param string $glue
      * @return bool|string
      */
-    public static function limitImplode(array $strings, $limit = 100, $glue = ', ')
+    public static function limitImplode(array $strings, $limit = 94, $glue = ', ')
     {
         $string = implode($glue, $strings);
 

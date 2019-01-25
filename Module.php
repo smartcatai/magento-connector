@@ -25,6 +25,8 @@ class Module
 {
     const MANUFACTURER = 'smartcat_connector';
 
+    const EXTERNAL_TAG = 'source:Magento';
+
     const PROJECT_TABLE_NAME = self::MANUFACTURER . '_project';
     const PROFILE_TABLE_NAME = self::MANUFACTURER . '_profile';
     const PROJECT_ENTITY_TABLE_NAME = self::MANUFACTURER . '_project_entity';
