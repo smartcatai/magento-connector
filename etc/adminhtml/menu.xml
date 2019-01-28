@@ -4,5 +4,6 @@
 		<add id="SmartCat::top_level" module="SmartCat_Connector" resource="Magento_Backend::content" sortOrder="79" title="Localization"/>
 		<add action="smartcat_connector/profile/index" id="SmartCat_Connector::smartcat_connector_profile" module="SmartCat_Connector" parent="SmartCat::top_level" resource="Magento_Backend::content" sortOrder="10" title="Profiles"/>
 		<add action="smartcat_connector/project/index" id="SmartCat_Connector::smartcat_connector_project" module="SmartCat_Connector" parent="SmartCat::top_level" resource="Magento_Backend::content" sortOrder="20" title="Dashboard"/>
+		<add action="adminhtml/system_config/edit/section/smartcat_localization" id="SmartCat_Connector::smartcat_connector_config" module="SmartCat_Connector" parent="SmartCat::top_level" resource="Magento_Backend::content" sortOrder="30" title="Configuration"/>
 	</menu>
 </config>

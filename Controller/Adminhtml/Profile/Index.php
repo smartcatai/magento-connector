@@ -56,10 +56,14 @@ class Index extends Action
     public function execute()
     {
         if (!$this->smartCatService->checkCredentials()) {
-            $this->messageManager->addErrorMessage(__(
-                "Smartcat credentials are wrong. Login failed. Please check it" // on %1",
-                //"<a href='{$this->getConfigUrl()}'>" . __("this page") . "</a>"
-            ));
+            $this->messageManager->addComplexErrorMessage(
+                'urlMessage',
+                [
+                    'text' => "Smartcat credentials are wrong. Login failed. Please check it on ",
+                    'url' => $this->getConfigUrl(),
+                    'urlText' => "this page",
+                ]
+            );
         }
 
         $resultPage = $this->resultPageFactory->create();
@@ -72,6 +76,6 @@ class Index extends Action
      */
     private function getConfigUrl()
     {
-        return $this->getUrl('*/system_config/edit/section/smartcat_localization/');
+        return $this->getUrl('adminhtml/system_config/edit/section/smartcat_localization/');
     }
 }
