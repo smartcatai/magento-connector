@@ -23,7 +23,6 @@ namespace SmartCat\Connector\Controller\Adminhtml;
 
 abstract class Profile extends \Magento\Backend\App\Action
 {
-
     protected $_coreRegistry;
     const ADMIN_RESOURCE = 'SmartCat_Connector::top_level';
 

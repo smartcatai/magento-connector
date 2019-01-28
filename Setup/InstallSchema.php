@@ -42,7 +42,6 @@ class InstallSchema implements InstallSchemaInterface
         $installer->startSetup();
         $this->initTable($installer, Module::PROJECT_TABLE_NAME, $this->getProjectColumns());
         $this->initTable($installer, Module::PROFILE_TABLE_NAME, $this->getProfileColumns());
-        //$this->initTable($installer, Module::PROJECT_PRODUCT_TABLE_NAME, $this->getProjectProductColumns());
 
         $this->setForeignKey(
             $installer,
@@ -245,7 +244,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Auto Send Save',
             ],
-            Profile::BATCH_SEND => [
+            'batch_send' => [
                 'type' => Table::TYPE_BOOLEAN,
                 'size' => null,
                 'options' => [
@@ -285,7 +284,6 @@ class InstallSchema implements InstallSchemaInterface
 
     /**
      * @param SchemaSetupInterface $setup
-     * @param ModuleContextInterface $context
      * @param $tableName
      * @param array $columns
      * @throws \Zend_Db_Exception

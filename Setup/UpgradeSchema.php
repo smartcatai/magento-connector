@@ -84,6 +84,11 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $setup->getConnection()->dropTable(Module::MANUFACTURER . '_project_product');
         }
 
+        $setup->getConnection()->dropColumn(
+            $setup->getTable(Module::PROFILE_TABLE_NAME),
+            'batch_send'
+        );
+
         $this->initTable($setup, Module::PROJECT_ENTITY_TABLE_NAME, $this->getProjectEntityColumns());
 
         $this->setForeignKey(
@@ -98,7 +103,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
     /**
      * @param SchemaSetupInterface $setup
-     * @param ModuleContextInterface $context
      * @param $tableName
      * @param array $columns
      * @throws \Zend_Db_Exception

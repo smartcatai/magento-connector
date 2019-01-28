@@ -34,7 +34,6 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     const AUTO_SEND_NEW = 'auto_send_new';
     const AUTO_SEND_SAVE = 'auto_send_save';
     const EXCLUDED_ATTRIBUTES = 'excluded_attributes';
-    const BATCH_SEND = 'batch_send';
     const PROJECT_GUID = 'project_guid';
 
     /**
@@ -136,7 +135,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
 
     /**
      * Set project guid
-     * @param string $projecyGuid
+     * @param string $projectGuid
      * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setProjectGuid($projectGuid);
@@ -159,19 +158,6 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
      * @return string|null
      */
     public function getAutoSendSave();
-
-    /**
-     * Set batch send
-     * @param string $batchSend
-     * @return \SmartCat\Connector\Api\Data\ProfileInterface
-     */
-    public function setBatchSend($batchSend);
-
-    /**
-     * Get batch send
-     * @return string|null
-     */
-    public function getBatchSend();
 
     /**
      * Set auto send new

@@ -215,7 +215,6 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
     public function getProjectGuid()
     {
         return $this->getData(self::PROJECT_GUID);
-
     }
 
     /**
@@ -226,7 +225,6 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
     public function setProjectGuid($projectGuid)
     {
         return $this->setData(self::PROJECT_GUID, $projectGuid);
-
     }
 
     /**
@@ -265,25 +263,6 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
     public function setAutoSendSave($autoSendSave)
     {
         return $this->setData(self::AUTO_SEND_SAVE, $autoSendSave);
-    }
-
-    /**
-     * Set batch send
-     * @param string $batchSend
-     * @return ProfileInterface
-     */
-    public function setBatchSend($batchSend)
-    {
-        return $this->setData(self::BATCH_SEND, $batchSend);
-    }
-
-    /**
-     * Get batch send
-     * @return string|null
-     */
-    public function getBatchSend()
-    {
-        return $this->getData(self::BATCH_SEND);
     }
 
     /**

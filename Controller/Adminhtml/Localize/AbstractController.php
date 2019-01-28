@@ -67,7 +67,7 @@ abstract class AbstractController extends \Magento\Backend\App\Action
         $request = $this->getRequest();
         $redirectPage = $this->getRedirectPath();
 
-        /** @var \Magento\Backend\Model\View\Result\Redirect\Interceptor $resultFactory */
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultFactory */
         $resultFactory = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
         if (!$request->isPost()) {
@@ -93,13 +93,7 @@ abstract class AbstractController extends \Magento\Backend\App\Action
         }
 
         try {
-            if ($profile->getBatchSend()) {
-                $this->projectService->createByModels($models, $profile);
-            } else {
-                foreach ($models as $model) {
-                    $this->projectService->createByModels([$model], $profile);
-                }
-            }
+            $this->projectService->createByModels($models, $profile);
         } catch (SmartCatHttpException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
 

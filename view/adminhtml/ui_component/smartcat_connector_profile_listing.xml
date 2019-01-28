@@ -123,14 +123,6 @@
 				<dataType>select</dataType>
 			</settings>
 		</column>
-		<column name="batch_send" component="Magento_Ui/js/grid/columns/select" sortOrder="90">
-			<settings>
-				<filter>select</filter>
-				<label translate="true">Batch Send</label>
-				<options class="SmartCat\Connector\Model\Config\Source\YesNoOption"/>
-				<dataType>select</dataType>
-			</settings>
-		</column>
 		<actionsColumn class="SmartCat\Connector\Ui\Component\Listing\Column\ProfileActions" name="actions" sortOrder="999">
 			<settings>
 				<indexField>id</indexField>

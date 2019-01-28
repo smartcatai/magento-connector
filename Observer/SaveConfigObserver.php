@@ -48,6 +48,9 @@ class SaveConfigObserver implements ObserverInterface
         $this->messageManager = $messageManager;
     }
 
+    /**
+     * @param EventObserver $observer
+     */
     public function execute(EventObserver $observer)
     {
         try {

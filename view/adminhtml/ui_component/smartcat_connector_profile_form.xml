@@ -191,24 +191,5 @@
 				</validation>
 			</settings>
 		</field>
-		<field formElement="checkbox" name="batch_send" sortOrder="70">
-			<argument name="data" xsi:type="array">
-				<item name="config" xsi:type="array">
-					<item name="source" xsi:type="string">Profile</item>
-					<item name="valueMap" xsi:type="array">
-						<item name="true" xsi:type="string">1</item>
-						<item name="false" xsi:type="string">0</item>
-					</item>
-				</item>
-			</argument>
-			<settings>
-				<dataType>boolean</dataType>
-				<label translate="true">Send all products in one batch</label>
-				<dataScope>batch_send</dataScope>
-				<validation>
-					<rule name="required-entry" xsi:type="boolean">false</rule>
-				</validation>
-			</settings>
-		</field>
 	</fieldset>
 </form>
