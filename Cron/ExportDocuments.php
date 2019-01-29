@@ -56,6 +56,10 @@ class ExportDocuments
      */
     public function execute()
     {
+        if (!$this->smartCatService->checkCredentials()) {
+            return;
+        }
+
         $entities = $this->projectEntityService->getExportingEntities();
 
         foreach ($entities as $entity) {

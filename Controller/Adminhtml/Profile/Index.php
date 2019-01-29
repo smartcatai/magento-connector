@@ -59,9 +59,9 @@ class Index extends Action
             $this->messageManager->addComplexErrorMessage(
                 'urlMessage',
                 [
-                    'text' => "Smartcat credentials are wrong. Login failed. Please check it on ",
+                    'text' => "Smartcat credentials are incorrect. Please check configuration settings ",
                     'url' => $this->getConfigUrl(),
-                    'urlText' => "this page",
+                    'urlText' => "here",
                 ]
             );
         }

@@ -21,30 +21,25 @@
 
 namespace SmartCat\Connector\Cron;
 
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\LocalizedException;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Project;
-use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Service\ProjectService;
 
 class BuildStatistics
 {
     private $smartCatService;
-    private $projectRepository;
-    private $searchCriteriaBuilder;
+    private $projectService;
     private $errorHandler;
 
     public function __construct(
         ErrorHandler $errorHandler,
-        ProjectRepository $projectRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
+        ProjectService $projectService,
         SmartCatFacade $smartCatService
     ) {
         $this->errorHandler = $errorHandler;
         $this->smartCatService = $smartCatService;
-        $this->projectRepository = $projectRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->projectService = $projectService;
     }
 
     /**
@@ -54,18 +49,15 @@ class BuildStatistics
      */
     public function execute()
     {
-        $projectManager = $this->smartCatService->getProjectManager();
-
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter(Project::IS_STATS_BUILDED, false)
-            ->create();
-
-        try {
-            $projects = $this->projectRepository->getList($searchCriteria)->getItems();
-        } catch (LocalizedException $e) {
-            $this->errorHandler->handleError($e, "Error occurred");
+        if (!$this->smartCatService->checkCredentials()) {
+            $this->errorHandler->logError("SmartCat Login Error: Network error, or Login/Password is incorrect");
             return;
         }
+
+        $projectManager = $this->smartCatService->getProjectManager();
+        $smartCatProject = null;
+
+        $projects = $this->projectService->getNotBuildedProjects();
 
         /** @var Project $project */
         foreach ($projects as $project) {
@@ -102,12 +94,7 @@ class BuildStatistics
                 }
             }
 
-            try {
-                $this->projectRepository->save($project);
-            } catch (LocalizedException $e) {
-                $this->errorHandler->handleError($e, "Error occurred");
-                return;
-            }
+            $this->projectService->update($project);
         }
     }
 }

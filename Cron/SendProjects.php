@@ -64,6 +64,10 @@ class SendProjects
 
     public function execute()
     {
+        if (!$this->smartCatService->checkCredentials()) {
+            return;
+        }
+
         $projects = $this->projectService->getWaitingProjects();
 
         foreach ($projects as $project) {

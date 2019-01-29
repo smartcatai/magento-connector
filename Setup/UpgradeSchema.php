@@ -47,6 +47,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
         if (version_compare($context->getVersion(), "1.1.0", "<")) {
             $this->ver110($setup);
         }
+
+        if (version_compare($context->getVersion(), "1.1.1", "<")) {
+            $this->ver111($setup);
+        }
     }
 
     /**
@@ -55,21 +59,21 @@ class UpgradeSchema implements UpgradeSchemaInterface
     private function ver102(SchemaSetupInterface $setup)
     {
         $setup->getConnection()->dropForeignKey(
-            $setup->getTable(Module::PROJECT_TABLE_NAME),
+            $setup->getTable('smartcat_connector_project'),
             $setup->getFkName(
-                Module::PROJECT_TABLE_NAME,
-                Project::PROFILE_ID,
-                Module::PROFILE_TABLE_NAME,
-                Profile::ID
+                'smartcat_connector_project',
+                'profile_id',
+                'smartcat_connector_profile',
+                'id'
             )
         );
 
         $this->setForeignKey(
             $setup,
-            Module::PROJECT_TABLE_NAME,
-            Project::PROFILE_ID,
-            Module::PROFILE_TABLE_NAME,
-            Profile::ID,
+            'smartcat_connector_project',
+            'profile_id',
+            'smartcat_connector_profile',
+            'id',
             Table::ACTION_CASCADE
         );
     }
@@ -80,24 +84,44 @@ class UpgradeSchema implements UpgradeSchemaInterface
      */
     private function ver110(SchemaSetupInterface $setup)
     {
-        if ($setup->tableExists(Module::MANUFACTURER . '_project_product')) {
-            $setup->getConnection()->dropTable(Module::MANUFACTURER . '_project_product');
+        if ($setup->tableExists('smartcat_connector_project_product')) {
+            $setup->getConnection()->dropTable('smartcat_connector_project_product');
         }
 
-        $setup->getConnection()->dropColumn(
-            $setup->getTable(Module::PROFILE_TABLE_NAME),
-            'batch_send'
-        );
-
-        $this->initTable($setup, Module::PROJECT_ENTITY_TABLE_NAME, $this->getProjectEntityColumns());
+        $this->initTable($setup, 'smartcat_connector_project_entity', $this->getProjectEntityColumns());
 
         $this->setForeignKey(
             $setup,
-            Module::PROJECT_ENTITY_TABLE_NAME,
-            ProjectEntity::PROJECT_ID,
-            Module::PROJECT_TABLE_NAME,
-            Project::ID,
+            'smartcat_connector_project_entity',
+            'project_id',
+            'smartcat_connector_project',
+            'id',
             Table::ACTION_CASCADE
+        );
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function ver111(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->dropColumn(
+            $setup->getTable('smartcat_connector_profile'),
+            'batch_send'
+        );
+
+        $setup->getConnection()->changeColumn(
+            $setup->getTable('smartcat_connector_project'),
+            'deadline',
+            'deadline',
+            [
+                'type' => Table::TYPE_TIMESTAMP,
+                'size' => null,
+                'options' => [
+                    'nullable' => true,
+                ],
+                'comment' => 'Deadline Date',
+            ]
         );
     }
 

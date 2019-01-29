@@ -57,6 +57,10 @@ class RequestExport
      */
     public function execute()
     {
+        if (!$this->smartCatService->checkCredentials()) {
+            return;
+        }
+
         $smartCatProject = null;
         $projectManager = $this->smartCatService->getProjectManager();
         $projects = $this->projectService->getOpenedProjects();

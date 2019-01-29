@@ -28,13 +28,14 @@ use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use SmartCat\Connector\Model\ResourceModel\Project\CollectionFactory as ProjectCollectionFactory;
 use Magento\Framework\Reflection\DataObjectProcessor;
-use Magento\Store\Model\StoreManagerInterface;
 use SmartCat\Connector\Api\ProjectRepositoryInterface;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
 use SmartCat\Connector\Api\Data\ProjectInterfaceFactory;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\DataObjectHelper;
-use SmartCat\Connector\Module;
+use Magento\Framework\Api\FilterBuilder;
+use Magento\Framework\Api\Search\FilterGroupBuilder;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -47,9 +48,10 @@ class ProjectRepository implements ProjectRepositoryInterface
     protected $dataObjectProcessor;
     protected $resource;
 
-    private $storeManager;
     private $collectionProcessor;
-
+    private $filterBuilder;
+    private $filterGroupBuilder;
+    private $searchCriteriaBuilder;
 
     /**
      * @param ResourceProject $resource
@@ -58,8 +60,10 @@ class ProjectRepository implements ProjectRepositoryInterface
      * @param ProjectCollectionFactory $projectCollectionFactory
      * @param ProjectSearchResultsInterfaceFactory $searchResultsFactory
      * @param DataObjectHelper $dataObjectHelper
+     * @param FilterBuilder $filterBuilder
+     * @param FilterGroupBuilder $filterGroupBuilder
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param DataObjectProcessor $dataObjectProcessor
-     * @param StoreManagerInterface $storeManager
      * @param CollectionProcessorInterface $collectionProcessor
      * @param JoinProcessorInterface $extensionAttributesJoinProcessor
      */
@@ -70,8 +74,10 @@ class ProjectRepository implements ProjectRepositoryInterface
         ProjectCollectionFactory $projectCollectionFactory,
         ProjectSearchResultsInterfaceFactory $searchResultsFactory,
         DataObjectHelper $dataObjectHelper,
+        FilterBuilder $filterBuilder,
+        FilterGroupBuilder $filterGroupBuilder,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
         DataObjectProcessor $dataObjectProcessor,
-        StoreManagerInterface $storeManager,
         CollectionProcessorInterface $collectionProcessor,
         JoinProcessorInterface $extensionAttributesJoinProcessor
     ) {
@@ -80,9 +86,11 @@ class ProjectRepository implements ProjectRepositoryInterface
         $this->projectCollectionFactory = $projectCollectionFactory;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->dataObjectHelper = $dataObjectHelper;
+        $this->filterBuilder = $filterBuilder;
+        $this->filterGroupBuilder = $filterGroupBuilder;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->dataProjectFactory = $dataProjectFactory;
         $this->dataObjectProcessor = $dataObjectProcessor;
-        $this->storeManager = $storeManager;
         $this->collectionProcessor = $collectionProcessor;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
     }
@@ -93,10 +101,6 @@ class ProjectRepository implements ProjectRepositoryInterface
     public function save(
         \SmartCat\Connector\Api\Data\ProjectInterface $project
     ) {
-        /* if (empty($project->getStoreId())) {
-            $storeId = $this->storeManager->getStore()->getId();
-            $project->setStoreId($storeId);
-        } */
         try {
             $this->resource->save($project);
         } catch (\Exception $exception) {
@@ -129,9 +133,6 @@ class ProjectRepository implements ProjectRepositoryInterface
     ) {
         $collection = $this->projectCollectionFactory->create();
 
-        //$condition = sprintf("%s.%s = %s.%s", Module::PROJECT_TABLE_NAME, Project::PROFILE_ID, Module::PROFILE_TABLE_NAME, Profile::PROFILE_ID);
-        //$collection->join(Module::PROFILE_TABLE_NAME, $condition);
-        
         $this->collectionProcessor->process($criteria, $collection);
         
         $searchResults = $this->searchResultsFactory->create();
@@ -148,7 +149,6 @@ class ProjectRepository implements ProjectRepositoryInterface
         \SmartCat\Connector\Api\Data\ProjectInterface $project
     ) {
         try {
-            // TODO add removing directories of this project
             $this->resource->delete($project);
         } catch (\Exception $exception) {
             throw new CouldNotDeleteException(__(
@@ -174,5 +174,74 @@ class ProjectRepository implements ProjectRepositoryInterface
     public function create($data = [])
     {
         return $this->projectFactory->create($data);
+    }
+
+    /**
+     * @return array|Project[]
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getOpenedProjects()
+    {
+        $searchCriteria = $this->searchCriteriaBuilder
+            ->addFilter(Project::STATUS, [Project::STATUS_CREATED, Project::STATUS_IN_PROGRESS], "in")
+            ->create();
+
+        $projects = $this->getList($searchCriteria)->getItems();
+
+
+        return $projects;
+    }
+
+    /**
+     * @return array|Project[]
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getNotBuildedProjects()
+    {
+        $nullGroup = $this->filterBuilder
+            ->setField(Project::IS_STATS_BUILDED)
+            ->setConditionType('null')
+            ->create();
+
+        $falseGroup = $this->filterBuilder
+            ->setField(Project::IS_STATS_BUILDED)
+            ->setConditionType('eq')
+            ->setValue(0)
+            ->create();
+
+        $filterOr = $this->filterGroupBuilder
+            ->addFilter($falseGroup)
+            ->addFilter($nullGroup)
+            ->create();
+
+        $inGroup = $this->filterBuilder
+            ->setField(Project::STATUS)
+            ->setConditionType('in')
+            ->setValue([Project::STATUS_IN_PROGRESS, Project::STATUS_COMPLETED, Project::STATUS_CREATED])
+            ->create();
+
+        $filterOr2 = $this->filterGroupBuilder
+            ->addFilter($inGroup)
+            ->create();
+
+        $searchCriteria = $this->searchCriteriaBuilder->setFilterGroups([$filterOr, $filterOr2])->create();
+        $projects = $this->getList($searchCriteria)->getItems();
+
+        return $projects;
+    }
+
+    /**
+     * @return array|Project[]
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getWaitingProjects()
+    {
+        $searchCriteria = $this->searchCriteriaBuilder
+            ->addFilter(Project::STATUS, Project::STATUS_WAITING)
+            ->create();
+
+        $projects = $this->getList($searchCriteria)->getItems();
+
+        return $projects;
     }
 }

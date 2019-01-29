@@ -21,7 +21,6 @@
 
 namespace SmartCat\Connector\Service;
 
-use Magento\Framework\Api\SearchCriteriaBuilder;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
 use SmartCat\Connector\Exception\SmartCatHttpException;
 use SmartCat\Connector\Helper\ErrorHandler;
@@ -40,7 +39,6 @@ class ProjectService
     private $errorHandler;
     private $strategyLoader;
     private $projectEntityService;
-    private $searchCriteriaBuilder;
 
     /**
      * ProjectService constructor.
@@ -49,22 +47,19 @@ class ProjectService
      * @param StrategyLoader $strategyLoader
      * @param ErrorHandler $errorHandler
      * @param ProjectEntityService $projectEntityService
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
     public function __construct(
         ProjectRepository $projectRepository,
         ProfileRepository $profileRepository,
         StrategyLoader $strategyLoader,
         ErrorHandler $errorHandler,
-        ProjectEntityService $projectEntityService,
-        SearchCriteriaBuilder $searchCriteriaBuilder
+        ProjectEntityService $projectEntityService
     ) {
         $this->projectRepository = $projectRepository;
         $this->profileRepository = $profileRepository;
         $this->errorHandler = $errorHandler;
         $this->strategyLoader = $strategyLoader;
         $this->projectEntityService = $projectEntityService;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -162,12 +157,8 @@ class ProjectService
      */
     public function getOpenedProjects()
     {
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter(Project::STATUS, [Project::STATUS_CREATED, Project::STATUS_IN_PROGRESS], "in")
-            ->create();
-
         try {
-            $projects = $this->projectRepository->getList($searchCriteria)->getItems();
+            $projects = $this->projectRepository->getOpenedProjects();
         } catch (Throwable $e) {
             $this->errorHandler->logError("An error occurred on getOpenedProjects: {$e->getMessage()}");
             return [];
@@ -179,14 +170,25 @@ class ProjectService
     /**
      * @return array|Project[]
      */
+    public function getNotBuildedProjects()
+    {
+        try {
+            $projects = $this->projectRepository->getNotBuildedProjects();
+        } catch (Throwable $e) {
+            $this->errorHandler->logError("An error occurred on getNotBuildedProjects: {$e->getMessage()}");
+            return [];
+        }
+
+        return $projects;
+    }
+
+    /**
+     * @return array|Project[]
+     */
     public function getWaitingProjects()
     {
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter(Project::STATUS, Project::STATUS_WAITING)
-            ->create();
-
         try {
-            $projects = $this->projectRepository->getList($searchCriteria)->getItems();
+            $projects = $this->projectRepository->getWaitingProjects();
         } catch (Throwable $e) {
             $this->errorHandler->logError("An error occurred on getWaitingProjects: {$e->getMessage()}");
             return [];

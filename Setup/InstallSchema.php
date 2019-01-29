@@ -40,15 +40,15 @@ class InstallSchema implements InstallSchemaInterface
     public function install(SchemaSetupInterface $installer, ModuleContextInterface $context)
     {
         $installer->startSetup();
-        $this->initTable($installer, Module::PROJECT_TABLE_NAME, $this->getProjectColumns());
-        $this->initTable($installer, Module::PROFILE_TABLE_NAME, $this->getProfileColumns());
+        $this->initTable($installer, 'smartcat_connector_project', $this->getProjectColumns());
+        $this->initTable($installer, 'smartcat_connector_profile', $this->getProfileColumns());
 
         $this->setForeignKey(
             $installer,
-            Module::PROJECT_TABLE_NAME,
-            Project::PROFILE_ID,
-            Module::PROFILE_TABLE_NAME,
-            Profile::ID
+            'smartcat_connector_project',
+            'profile_id',
+            'smartcat_connector_profile',
+            'id'
         );
 
         $installer->endSetup();
@@ -60,7 +60,7 @@ class InstallSchema implements InstallSchemaInterface
     private function getProjectColumns()
     {
         return [
-            Project::ID => [
+            'id' => [
                 'type' => Table::TYPE_INTEGER,
                 'size' => null,
                 'options' => [
@@ -71,7 +71,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Project ID',
             ],
-            Project::GUID => [
+            'guid' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 40,
                 'options' => [
@@ -79,7 +79,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Project GUID',
             ],
-            Project::ELEMENT => [
+            'element' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -87,7 +87,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Element',
             ],
-            Project::PROFILE_ID => [
+            'profile_id' => [
                 'type' => Table::TYPE_INTEGER,
                 'size' => null,
                 'options' => [
@@ -96,7 +96,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Profile',
             ],
-            Project::TRANSLATE => [
+            'translate' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -104,7 +104,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Translate',
             ],
-            Project::STATUS => [
+            'status' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 15,
                 'options' => [
@@ -112,13 +112,13 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Status',
             ],
-            Project::PRICE => [
+            'price' => [
                 'type' => Table::TYPE_FLOAT,
                 'size' => null,
                 'options' => [],
                 'comment' => 'Price',
             ],
-            Project::DEADLINE => [
+            'deadline' => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [
@@ -126,13 +126,13 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Deadline Date',
             ],
-            Project::COMMENT => [
+            'comment' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => null,
                 'options' => [],
                 'comment' => 'Comment',
             ],
-            Project::IS_STATS_BUILDED => [
+            'is_stats_builded' => [
                 'type' => Table::TYPE_BOOLEAN,
                 'size' => null,
                 'options' => [
@@ -140,7 +140,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Is Statistics Builded',
             ],
-            Project::CREATED_AT => [
+            'created_at' => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [
@@ -149,7 +149,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Created At',
             ],
-            Project::UPDATED_AT => [
+            'updated_at' => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [
@@ -167,7 +167,7 @@ class InstallSchema implements InstallSchemaInterface
     private function getProfileColumns()
     {
         return [
-            Profile::ID => [
+            'id' => [
                 'type' => Table::TYPE_INTEGER,
                 'size' => null,
                 'options' => [
@@ -178,7 +178,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Profile ID',
             ],
-            Profile::VENDOR => [
+            'vendor' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -186,7 +186,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Vendor',
             ],
-            Profile::STAGES => [
+            'stages' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -194,7 +194,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Stages',
             ],
-            Profile::SOURCE_LANG => [
+            'source_lang' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => null,
                 'options' => [
@@ -202,7 +202,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Source Language',
             ],
-            Profile::TARGET_LANG => [
+            'target_lang' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => null,
                 'options' => [
@@ -210,7 +210,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Target Language',
             ],
-            Profile::NAME => [
+            'name' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -218,7 +218,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Profile Name',
             ],
-            Profile::PROJECT_GUID => [
+            'project_guid' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => 255,
                 'options' => [
@@ -226,7 +226,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Project id to send in',
             ],
-            Profile::AUTO_SEND_NEW => [
+            'auto_send_new' => [
                 'type' => Table::TYPE_BOOLEAN,
                 'size' => null,
                 'options' => [
@@ -235,7 +235,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Auto Send New',
             ],
-            Profile::AUTO_SEND_SAVE => [
+            'auto_send_save' => [
                 'type' => Table::TYPE_BOOLEAN,
                 'size' => null,
                 'options' => [
@@ -253,7 +253,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Auto Send Save',
             ],
-            Profile::EXCLUDED_ATTRIBUTES => [
+            'excluded_attributes' => [
                 'type' => Table::TYPE_TEXT,
                 'size' => null,
                 'options' => [
@@ -261,7 +261,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Excluded attributes',
             ],
-            Profile::CREATED_AT => [
+            'created_at' => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [
@@ -270,7 +270,7 @@ class InstallSchema implements InstallSchemaInterface
                 ],
                 'comment' => 'Created At',
             ],
-            Profile::UPDATED_AT => [
+            'updated_at' => [
                 'type' => Table::TYPE_TIMESTAMP,
                 'size' => null,
                 'options' => [
