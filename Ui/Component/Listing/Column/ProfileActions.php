@@ -21,20 +21,23 @@
 
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
+use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Profile;
 
 class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
 {
-
     const URL_PATH_DELETE = 'smartcat_connector/profile/delete';
     const URL_PATH_EDIT = 'smartcat_connector/profile/edit';
     const URL_PATH_DETAILS = 'smartcat_connector/profile/details';
-    protected $urlBuilder;
+
+    private $urlBuilder;
+    private $smartCatService;
 
     /**
      * @param \Magento\Framework\View\Element\UiComponent\ContextInterface $context
      * @param \Magento\Framework\View\Element\UiComponentFactory $uiComponentFactory
      * @param \Magento\Framework\UrlInterface $urlBuilder
+     * @param SmartCatFacade $smartCatService
      * @param array $components
      * @param array $data
      */
@@ -42,10 +45,12 @@ class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
         \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
         \Magento\Framework\View\Element\UiComponentFactory $uiComponentFactory,
         \Magento\Framework\UrlInterface $urlBuilder,
+        SmartCatFacade $smartCatService,
         array $components = [],
         array $data = []
     ) {
         $this->urlBuilder = $urlBuilder;
+        $this->smartCatService = $smartCatService;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -61,15 +66,6 @@ class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
             foreach ($dataSource['data']['items'] as & $item) {
                 if (isset($item[Profile::ID])) {
                     $item[$this->getData(Profile::NAME)] = [
-                        'edit' => [
-                            'href' => $this->urlBuilder->getUrl(
-                                static::URL_PATH_EDIT,
-                                [
-                                    Profile::ID => $item[Profile::ID]
-                                ]
-                            ),
-                            'label' => __('Edit')
-                        ],
                         'delete' => [
                             'href' => $this->urlBuilder->getUrl(
                                 static::URL_PATH_DELETE,
@@ -87,6 +83,22 @@ class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
                             ]
                         ]
                     ];
+
+                    if ($this->smartCatService->checkCredentials()) {
+                        $edit = [
+                            'edit' => [
+                                'href' => $this->urlBuilder->getUrl(
+                                    static::URL_PATH_EDIT,
+                                    [
+                                        Profile::ID => $item[Profile::ID]
+                                    ]
+                                ),
+                                'label' => __('Edit')
+                            ],
+                        ];
+                        $item[$this->getData(Profile::NAME)] =
+                            array_merge($edit, $item[$this->getData(Profile::NAME)]);
+                    }
                 }
             }
         }
