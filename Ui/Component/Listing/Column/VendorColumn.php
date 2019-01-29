@@ -55,7 +55,6 @@ class VendorColumn extends Column
      *
      * @param array $dataSource
      * @return array
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function prepareDataSource(array $dataSource)
     {
@@ -74,20 +73,17 @@ class VendorColumn extends Column
                     ];
                 }
             } catch (\Throwable $e) {
-                return $dataSource;
-            }
-
-            if (empty($vendors)) {
-                return $dataSource;
             }
 
             foreach ($dataSource['data']['items'] as &$item) {
                 if ($this->getData('name') == 'vendor') {
-                    $vendorId = array_search($item['vendor'], array_column($vendors, 'id'));
-                    if ($vendorId !== false) {
-                        $item[$this->getData('name')] = $vendors[$vendorId]['name'];
-                    } else {
+                    if (trim($item['vendor']) === 0 || !trim($item['vendor'])) {
                         $item[$this->getData('name')] = __('Translate internally');
+                    } else {
+                        $vendorId = array_search($item['vendor'], array_column($vendors, 'id'));
+                        if ($vendorId !== false) {
+                            $item[$this->getData('name')] = $vendors[$vendorId]['name'];
+                        }
                     }
                 }
             }

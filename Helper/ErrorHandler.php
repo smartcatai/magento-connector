@@ -24,6 +24,7 @@ namespace SmartCat\Connector\Helper;
 use Http\Client\Common\Exception\ClientErrorException;
 use Http\Client\Common\Exception\ServerErrorException;
 use Magento\Framework\Exception\LocalizedException;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectRepository;
@@ -79,9 +80,7 @@ class ErrorHandler
     public function handleError(Throwable $e, $message = '')
     {
         if (($e instanceof ClientErrorException) || ($e instanceof ServerErrorException)) {
-            $response = $e->getResponse();
-            $body = str_replace('\r\n', ' ', $response->getBody()->getContents());
-            $message = "{$message}: {$response->getStatusCode()} {$body}";
+            $message = $this->getMessageByStatusCode($e->getResponse(), $message);
         } else {
             $message = "{$message}: {$e->getMessage()}";
         }
@@ -105,5 +104,28 @@ class ErrorHandler
     public function logInfo($message)
     {
         $this->logger->info($message);
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @param $message
+     * @return \Magento\Framework\Phrase
+     */
+    private function getMessageByStatusCode(ResponseInterface $response, $message)
+    {
+        switch ($response->getStatusCode()) {
+            case 401:
+                $message = __("Smartcat credentials are incorrect. Please check configuration settings.");
+                break;
+            case 404:
+                $message = __("Smartcat project not found.");
+                break;
+            default:
+                $body = str_replace('\r\n', ' ', $response->getBody()->getContents());
+                $message = "{$message}: {$response->getStatusCode()} {$body}";
+                break;
+        }
+
+        return $message;
     }
 }

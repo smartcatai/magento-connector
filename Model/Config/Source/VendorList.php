@@ -46,7 +46,7 @@ class VendorList implements ArrayInterface
     public function toOptionArray()
     {
         $vendors = [
-            ['label' => __('Translate internally'), 'value' => '']
+            ['label' => __('Translate internally'), 'value' => '0']
         ];
 
         try {
