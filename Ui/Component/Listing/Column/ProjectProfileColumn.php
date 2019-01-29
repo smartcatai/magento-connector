@@ -21,35 +21,35 @@
 
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use Magento\Catalog\Model\Category\AttributeRepository;
-use Magento\Framework\Api\SearchCriteriaBuilder;
+use SmartCat\Connector\Model\ProfileRepository;
 
-class AttributesColumn extends Column
+class ProjectProfileColumn extends Column
 {
-    private $attributeRepository;
-    private $searchCriteriaBuilder;
+    /**
+     * @var ProfileRepository
+     */
+    private $profileRepository;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param AttributeRepository $attributeRepository
+     * @param ProfileRepository $profileRepository
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        AttributeRepository $attributeRepository,
+        ProfileRepository $profileRepository,
         array $components = [],
         array $data = []
     ) {
-        $this->attributeRepository = $attributeRepository;
+        $this->profileRepository = $profileRepository;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -58,28 +58,15 @@ class AttributesColumn extends Column
      *
      * @param array $dataSource
      * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function prepareDataSource(array $dataSource)
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') == 'excluded_attributes') {
-                    if (!$item[$this->getData('name')]) {
-                        $item[$this->getData('name')] = __('No excluded attributes');
-                        continue;
-                    }
-
-                    $codes = explode(',', $item[$this->getData('name')]);
-                    foreach ($codes as &$code) {
-                        try {
-                            $attribute = $this->attributeRepository->get($code);
-                        } catch (NoSuchEntityException $e) {
-                            continue;
-                        }
-
-                        $code = $attribute->getDefaultFrontendLabel();
-                    }
-                    $item[$this->getData('name')] = implode(', ', $codes);
+                if ($this->getData('name') == 'profile_id') {
+                    $profile = $this->profileRepository->getById($item['profile_id']);
+                    $item[$this->getData('name')] = $profile->getName();
                 }
             }
         }

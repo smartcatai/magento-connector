@@ -24,32 +24,30 @@ namespace SmartCat\Connector\Ui\Component\Listing\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\ProfileRepository;
+use SmartCat\Connector\Helper\ConfigurationHelper;
+use SmartCat\Connector\Model\Project;
 
-class ProjectProfile extends Column
+class SmartCatProjectColumn extends Column
 {
-    /**
-     * @var ProfileRepository
-     */
-    protected $profileRepository;
+    private $configurationHelper;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param ProfileRepository $profileRepository
+     * @param ConfigurationHelper $configurationHelper
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        ProfileRepository $profileRepository,
+        ConfigurationHelper $configurationHelper,
         array $components = [],
         array $data = []
     ) {
-        $this->profileRepository = $profileRepository;
+        $this->configurationHelper = $configurationHelper;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -58,19 +56,31 @@ class ProjectProfile extends Column
      *
      * @param array $dataSource
      * @return array
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function prepareDataSource(array $dataSource)
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') == 'profile_id') {
-                    $profile = $this->profileRepository->getById($item['profile_id']);
-                    $item[$this->getData('name')] = $profile->getName();
+                if (isset($item[Project::GUID])) {
+                    $item[$this->getData('name')] = [
+                        'open' => [
+                            'href' => $this->getProjectUrl($item[Project::GUID]),
+                            'label' => __('Smartcat project'),
+                        ]
+                    ];
                 }
             }
         }
 
         return $dataSource;
+    }
+
+    /**
+     * @param $projectGuid
+     * @return string
+     */
+    private function getProjectUrl($projectGuid)
+    {
+        return "https://{$this->configurationHelper->getServer()}/project/{$projectGuid}";
     }
 }
