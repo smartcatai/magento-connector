@@ -61,12 +61,6 @@ class StringHelper
      */
     public static function limitImplode(array $strings, $limit = 94, $glue = ', ')
     {
-        $string = implode($glue, $strings);
-
-        if (strlen($string) > $limit) {
-            $string = substr($string, 0, $limit);
-        }
-
-        return $string;
+        return substr(implode($glue, $strings), 0, $limit);
     }
 }

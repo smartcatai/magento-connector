@@ -22,9 +22,10 @@
 namespace SmartCat\Connector\Model;
 
 use SmartCat\Connector\Api\Data\ProfileInterface;
+use Magento\Framework\Model\AbstractModel;
 use \DateTime;
 
-class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileInterface
+class Profile extends AbstractModel implements ProfileInterface
 {
     protected $_eventPrefix = 'smartcat_connector_profile';
 
@@ -53,38 +54,6 @@ class Profile extends \Magento\Framework\Model\AbstractModel implements ProfileI
     public function setProfileId($profileId)
     {
         return $this;
-    }
-
-    /**
-     * Get excluded attributes
-     * @return string
-     */
-    public function getExcludedAttributes()
-    {
-        return $this->getData(self::EXCLUDED_ATTRIBUTES);
-    }
-
-    /**
-     * Get excluded attributes array
-     * @return array
-     */
-    public function getExcludedAttributesArray()
-    {
-        return explode(',', $this->getExcludedAttributes());
-    }
-
-    /**
-     * Set excluded attributes
-     * @param string|array $excludedAttributes
-     * @return ProfileInterface
-     */
-    public function setExcludedAttributes($excludedAttributes)
-    {
-        if (is_array($excludedAttributes)) {
-            $excludedAttributes = implode(',', $excludedAttributes);
-        }
-        
-        return $this->setData(self::EXCLUDED_ATTRIBUTES, $excludedAttributes);
     }
 
     /**

@@ -102,11 +102,6 @@
 				<label translate="true">Name</label>
 			</settings>
 		</column>
-		<column name="excluded_attributes" class="SmartCat\Connector\Ui\Component\Listing\Column\AttributesColumn" sortOrder="60">
-			<settings>
-				<label translate="true">Excluded Attributes</label>
-			</settings>
-		</column>
 		<column name="auto_send_new" component="Magento_Ui/js/grid/columns/select" sortOrder="70">
 			<settings>
 				<filter>select</filter>
