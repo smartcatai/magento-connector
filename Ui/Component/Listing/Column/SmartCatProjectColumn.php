@@ -65,6 +65,7 @@ class SmartCatProjectColumn extends Column
                     $item[$this->getData('name')] = [
                         'open' => [
                             'href' => $this->getProjectUrl($item[Project::GUID]),
+                            'target' => '_blank',
                             'label' => __('Smartcat project'),
                         ]
                     ];
