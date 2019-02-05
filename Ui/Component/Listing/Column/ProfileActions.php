@@ -65,7 +65,7 @@ class ProfileActions extends \Magento\Ui\Component\Listing\Columns\Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
                 if (isset($item[Profile::ID])) {
-                    $item[$this->getData(Profile::NAME)] = [
+                    $item[$this->getData('name')] = [
                         'delete' => [
                             'href' => $this->urlBuilder->getUrl(
                                 static::URL_PATH_DELETE,

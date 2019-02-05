@@ -75,11 +75,18 @@
 				<label translate="true">Elements</label>
 			</settings>
 		</column>
-		<column name="profile_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectProfile" sortOrder="30">
+		<column name="profile_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectProfileColumn" sortOrder="30">
 			<settings>
 				<label translate="true">Profile</label>
 			</settings>
 		</column>
+		<actionsColumn name="sc_project" class="SmartCat\Connector\Ui\Component\Listing\Column\SmartCatProjectColumn" sortOrder="31">
+			<settings>
+				<label translate="true">Smartcat project</label>
+				<resizeEnabled>false</resizeEnabled>
+				<resizeDefaultWidth>107</resizeDefaultWidth>
+			</settings>
+		</actionsColumn>
 		<column name="translate" sortOrder="40">
 			<settings>
 				<label translate="true">Translation</label>

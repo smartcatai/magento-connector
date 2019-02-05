@@ -49,7 +49,7 @@ class WorkFlowColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') =='stages') {
+                if ($this->getData('name') == 'stages') {
                     $codes = explode(',', $item[$this->getData('name')]);
                     foreach ($codes as &$code) {
                         $index = array_search($code, array_column($this->translation->toOptionArray(), 'value'));
