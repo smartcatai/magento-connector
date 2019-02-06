@@ -76,19 +76,6 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     public function setSourceLang($sourceLang);
 
     /**
-     * Get excluded attributes
-     * @return string|null
-     */
-    public function getExcludedAttributes();
-
-    /**
-     * Set excluded attributes
-     * @param string $excludedAttributes
-     * @return \SmartCat\Connector\Api\Data\ProfileInterface
-     */
-    public function setExcludedAttributes($excludedAttributes);
-
-    /**
      * Get target_lang
      * @return string|null
      */

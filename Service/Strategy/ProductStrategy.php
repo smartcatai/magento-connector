@@ -112,15 +112,12 @@ class ProductStrategy extends AbstractStrategy
 
         /** @var Product $product */
         $product = $this->productRepository->getById($entity->getEntityId());
-        $profile = $this->profileService->getProfileByProjectId($entity->getProjectId());
-
-        $exceptAttributes = array_merge($this->excludedAttributes, $profile->getExcludedAttributesArray());
 
         foreach ($product->getAttributes() as $attribute) {
             $attributeCode = $attribute->getAttributeCode();
 
             if (in_array($attribute->getFrontendInput(), ['text', 'textarea'])
-                && !in_array($attributeCode, $exceptAttributes)) {
+                && !in_array($attributeCode, $this->excludedAttributes)) {
                 $data = $product->getData($attributeCode);
 
                 if (is_array($data) || !trim($data)) {

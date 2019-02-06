@@ -137,22 +137,6 @@
 				</validation>
 			</settings>
 		</field>
-		<field formElement="multiselect" name="excluded_attributes" sortOrder="65">
-			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\AttributesList</item>
-				<item name="config" xsi:type="array">
-					<item name="source" xsi:type="string">Profile</item>
-				</item>
-			</argument>
-			<settings>
-				<dataType>text</dataType>
-				<label translate="true">Excluded Attributes</label>
-				<dataScope>excluded_attributes</dataScope>
-				<validation>
-					<rule name="required-entry" xsi:type="boolean">false</rule>
-				</validation>
-			</settings>
-		</field>
 		<field formElement="checkbox" name="auto_send_new" sortOrder="70">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
