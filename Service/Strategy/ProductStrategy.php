@@ -155,10 +155,7 @@ class ProductStrategy extends AbstractStrategy
      * @param string $content
      * @param ProjectEntity $entity
      * @return bool
-     * @throws CouldNotSaveException
      * @throws NoSuchEntityException
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\StateException
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
@@ -171,13 +168,13 @@ class ProductStrategy extends AbstractStrategy
         if ($entity->getAttribute() == $this->parametersTag) {
             $attributes = $this->decodeJsonParameters($content);
 
-            $product = $this->productRepository->getById($entity->getEntityId(), false, $storeID);
+            /** @var Product $product */
+            $product = $this->productRepository->getById($entity->getEntityId());
 
             foreach ($attributes as $attributeCode => $attributeContent) {
-                $product->setData($attributeCode, $attributeContent);
+                $product->addAttributeUpdate($attributeCode, $attributeContent, $storeID);
             }
 
-            $this->productRepository->save($product);
             return true;
         }
 
