@@ -23,6 +23,7 @@ namespace SmartCat\Connector\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer as EventObserver;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\Manager;
 use Psr\Log\LoggerInterface;
 use SmartCat\Connector\Helper\SmartCatFacade;
@@ -30,34 +31,29 @@ use SmartCat\Connector\Helper\SmartCatFacade;
 class SaveConfigObserver implements ObserverInterface
 {
     private $logger;
-    private $messageManager;
     private $smartCat;
 
     /**
      * @param LoggerInterface $logger
      * @param SmartCatFacade $smartCat
-     * @param Manager $messageManager
      */
-    public function __construct(
-        LoggerInterface $logger,
-        SmartCatFacade $smartCat,
-        Manager $messageManager
-    ) {
+    public function __construct(LoggerInterface $logger, SmartCatFacade $smartCat)
+    {
         $this->logger = $logger;
         $this->smartCat = $smartCat;
-        $this->messageManager = $messageManager;
     }
 
     /**
      * @param EventObserver $observer
+     * @throws LocalizedException
      */
     public function execute(EventObserver $observer)
     {
         try {
             $this->smartCat->getAccountManager()->accountGetAccountInfo();
         } catch (\Throwable $e) {
-            $this->messageManager->addErrorMessage(__('Smartcat credentials are wrong. Please check. Login failed'));
-            $this->logger->info('Smartcat credentials are wrong. Please check. Login failed');
+            $this->logger->info('Smartcat credentials are incorrect. Login failed.');
+            throw new LocalizedException(__('Smartcat credentials are incorrect. Login failed.'));
         }
     }
 }
