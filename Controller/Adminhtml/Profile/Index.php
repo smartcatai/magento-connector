@@ -60,22 +60,15 @@ class Index extends Action
                 'urlMessage',
                 [
                     'text' => "Smartcat credentials are incorrect. Please check configuration settings ",
-                    'url' => $this->getConfigUrl(),
+                    'url' => $this->getUrl('adminhtml/system_config/edit/section/smartcat_localization/'),
                     'urlText' => "here",
                 ]
             );
         }
 
         $resultPage = $this->resultPageFactory->create();
-            $resultPage->getConfig()->getTitle()->prepend(__("Profiles"));
-            return $resultPage;
-    }
+        $resultPage->getConfig()->getTitle()->prepend(__("Profiles"));
 
-    /**
-     * @return string
-     */
-    private function getConfigUrl()
-    {
-        return $this->getUrl('adminhtml/system_config/edit/section/smartcat_localization/');
+        return $resultPage;
     }
 }
