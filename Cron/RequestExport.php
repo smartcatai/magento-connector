@@ -113,12 +113,15 @@ class RequestExport
 
     /**
      * @param ProjectModel $smartCatProject
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function setStatuses(ProjectModel $smartCatProject)
     {
         foreach ($smartCatProject->getDocuments() as $document) {
             $projectEntity = $this->projectEntityService->getEntityById($document->getExternalId());
+
+            if (!$projectEntity) {
+                continue;
+            }
 
             if (!in_array($projectEntity->getStatus(), ProjectEntity::getSelfStatuses())) {
                 $projectEntity->setStatus($document->getStatus());
