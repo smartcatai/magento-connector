@@ -113,6 +113,11 @@ class SendProjects
 
             foreach ($smartcatDocuments as $smartcatDocument) {
                 $projectEntity = $this->projectEntityService->getEntityById($smartcatDocument->getExternalId());
+
+                if (!$projectEntity) {
+                    continue;
+                }
+
                 $projectEntity
                     ->setStatus($smartcatDocument->getStatus())
                     ->setDocumentId($smartcatDocument->getId());
@@ -174,9 +179,9 @@ class SendProjects
         foreach ($projectDocuments as $projectDocument) {
             $index = array_search($projectDocument->getFile()['fileName'], $smartCatNameDocuments);
 
-            try {
-                $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
-            } catch (Throwable $e) {
+            $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
+
+            if (!$entity) {
                 $this->errorHandler->logError("SmartCat update project error: {$e->getMessage()}");
                 continue;
             }
