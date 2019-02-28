@@ -124,7 +124,6 @@ class CategoryStrategy extends AbstractStrategy
      * @param $jsonContent
      * @param ProjectEntity $entity
      * @return bool
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function setContent($jsonContent, ProjectEntity $entity): bool
@@ -143,15 +142,15 @@ class CategoryStrategy extends AbstractStrategy
             if (count($index) == 2) {
                 /** @var Category $category */
                 $category = $this->categoryRepository->get($index[1], $storeID);
+
                 $category
-                    ->setStoreId($storeID)
                     ->setData('name', $content["name"])
                     ->setData('description', $content["description"])
                     ->setData('meta_description', $content["meta_description"])
                     ->setData('meta_title', $content["meta_title"])
                     ->setData('meta_keywords', $content["meta_keywords"]);
 
-                $this->categoryRepository->save($category);
+                $category->save();
             }
         }
 
