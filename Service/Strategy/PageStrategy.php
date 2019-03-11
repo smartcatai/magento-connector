@@ -42,7 +42,9 @@ class PageStrategy extends AbstractStrategy
     /**
      * PageStrategy constructor.
      * @param ProjectEntityService $projectEntityService
+     * @param StoreService $storeService
      * @param PageRepository $pageRepository
+     * @param PageFactory $pageFactory
      */
     public function __construct(
         ProjectEntityService $projectEntityService,

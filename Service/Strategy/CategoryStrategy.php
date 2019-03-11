@@ -120,6 +120,13 @@ class CategoryStrategy extends AbstractStrategy
         return 'category';
     }
 
+    public function getName(array $strings)
+    {
+        $strings = ['Categories'];
+
+        return parent::getName($strings);
+    }
+
     /**
      * @param string $content
      * @param ProjectEntity $entity
