@@ -90,13 +90,12 @@
 				<label translate="true">Status</label>
 			</settings>
 		</column>
-		<actionsColumn name="sc_project" class="SmartCat\Connector\Ui\Component\Listing\Column\SmartCatProjectColumn" sortOrder="51">
+		<column name="sc_project" class="SmartCat\Connector\Ui\Component\Listing\Column\SmartCatProjectColumn" sortOrder="51">
 			<settings>
+				<bodyTmpl>ui/grid/cells/html</bodyTmpl>
 				<label translate="true">Smartcat project</label>
-				<resizeEnabled>false</resizeEnabled>
-				<resizeDefaultWidth>107</resizeDefaultWidth>
 			</settings>
-		</actionsColumn>
+		</column>
 		<column name="deadline" sortOrder="60">
 			<settings>
 				<filter>dateRange</filter>

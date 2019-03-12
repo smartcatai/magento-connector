@@ -62,13 +62,7 @@ class SmartCatProjectColumn extends Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
                 if (isset($item[Project::GUID])) {
-                    $item[$this->getData('name')] = [
-                        'open' => [
-                            'href' => $this->getProjectUrl($item[Project::GUID]),
-                            'target' => '_blank',
-                            'label' => __('Smartcat project'),
-                        ]
-                    ];
+                    $item[$this->getData('name')] = $this->getHtml($item[Project::GUID]);
                 }
             }
         }
@@ -83,5 +77,16 @@ class SmartCatProjectColumn extends Column
     private function getProjectUrl($projectGuid)
     {
         return "https://{$this->configurationHelper->getServer()}/project/{$projectGuid}";
+    }
+
+    /**
+     * @param $projectGuid
+     * @return string
+     */
+    private function getHtml($projectGuid)
+    {
+        $text = __('Go to Smartcat');
+
+        return "<a href='{$this->getProjectUrl($projectGuid)}' target='_blank'>{$text}</a>";
     }
 }
