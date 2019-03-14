@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml\ProjectEntity;
+namespace SmartCat\Connector\Controller\Adminhtml\Dashboard;
 
 class Index extends \Magento\Backend\App\Action
 {

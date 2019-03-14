@@ -26,6 +26,7 @@ use Magento\Cms\Model\BlockFactory;
 use Magento\Cms\Model\BlockRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -44,16 +45,18 @@ class BlockStrategy extends AbstractStrategy
      * @param StoreService $storeService
      * @param BlockRepository $blockRepository
      * @param BlockFactory $blockFactory
+     * @param UrlInterface $urlManager
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
         StoreService $storeService,
         BlockRepository $blockRepository,
-        BlockFactory $blockFactory
+        BlockFactory $blockFactory,
+        UrlInterface $urlManager
     ) {
         $this->blockRepository = $blockRepository;
         $this->blockFactory = $blockFactory;
-        parent::__construct($projectEntityService, $storeService);
+        parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
     /**
@@ -167,5 +170,28 @@ class BlockStrategy extends AbstractStrategy
         }
 
         return false;
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityName($entityId)
+    {
+        try {
+            return $this->blockRepository->getById($entityId)->getData('name');
+        } catch (\Throwable $e) {
+        }
+
+        return '';
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId)
+    {
+        return $this->urlManager->getUrl('cms/block/edit', ['block_id' => $entityId]);
     }
 }

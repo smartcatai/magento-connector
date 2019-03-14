@@ -21,7 +21,7 @@
 
 namespace SmartCat\Connector\Service\Strategy;
 
-use Magento\Store\Model\StoreManager;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Helper\StringHelper;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -32,16 +32,22 @@ abstract class AbstractStrategy implements StrategyInterface
 {
     protected $projectEntityService;
     protected $storeService;
+    protected $urlManager;
 
     /**
      * AbstractStrategy constructor.
      * @param ProjectEntityService $projectEntityService
      * @param StoreService $storeService
+     * @param UrlInterface $urlManager
      */
-    public function __construct(ProjectEntityService $projectEntityService, StoreService $storeService)
-    {
+    public function __construct(
+        ProjectEntityService $projectEntityService,
+        StoreService $storeService,
+        UrlInterface $urlManager
+    ) {
         $this->projectEntityService = $projectEntityService;
         $this->storeService = $storeService;
+        $this->urlManager = $urlManager;
     }
 
     /**
@@ -84,7 +90,6 @@ abstract class AbstractStrategy implements StrategyInterface
     /**
      * @param Project $project
      * @return array|mixed
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getDocumentModels(Project $project)
     {

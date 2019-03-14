@@ -45,22 +45,55 @@
                 <label translate="true">ID</label>
             </settings>
         </column>
-
-        <column name="status" sortOrder="20">
+        <column name="entity_id" class="SmartCat\Connector\Ui\Component\Listing\Column\EntityColumn" sortOrder="20">
+            <settings>
+                <label translate="true">Element</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+            </settings>
+        </column>
+        <column name="profile_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectProfileColumn" sortOrder="30">
+            <settings>
+                <label translate="true">Profile</label>
+            </settings>
+        </column>
+        <column name="source_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="40">
+            <settings>
+                <filter>select</filter>
+                <options class="SmartCat\Connector\Model\Config\Source\LanguagesList"/>
+                <label translate="true">Source Language</label>
+                <dataType>select</dataType>
+            </settings>
+        </column>
+        <column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\TargetLangColumn" sortOrder="50">
+            <settings>
+                <filter>select</filter>
+                <options class="SmartCat\Connector\Model\Config\Source\LanguagesList"/>
+                <label translate="true">Target Language</label>
+                <dataType>select</dataType>
+            </settings>
+        </column>
+        <column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\DocumentStatusColumn" sortOrder="60">
             <settings>
                 <label translate="true">Status</label>
             </settings>
         </column>
-
-        <column name="projectTable.comment" sortOrder="30">
+        <column name="deadline" sortOrder="70">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <dateFormat>Y-MM-dd HH:mm</dateFormat>
+                <label translate="true">Deadline</label>
+            </settings>
+        </column>
+        <column name="comment" sortOrder="80">
             <settings>
                 <label translate="true">Comment</label>
             </settings>
         </column>
-
-        <column name="profile_id" sortOrder="30">
+        <column name="sc_document" class="SmartCat\Connector\Ui\Component\Listing\Column\SmartCatDocumentColumn" sortOrder="90">
             <settings>
-                <label translate="true">Profile</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+                <label translate="true">Smartcat project</label>
             </settings>
         </column>
     </columns>

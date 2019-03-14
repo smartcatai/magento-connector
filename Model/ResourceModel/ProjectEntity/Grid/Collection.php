@@ -21,41 +21,37 @@
 
 namespace SmartCat\Connector\Model\ResourceModel\ProjectEntity\Grid;
 
+use Magento\Framework\Api\Search\AggregationInterface;
 use Magento\Framework\Api\Search\SearchResultInterface;
-// your mane table collection
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\View\Element\UiComponent\DataProvider\Document;
-use SmartCat\Connector\Model\ResourceModel\ProjectEntity\Collection as GridCollection;
-use Magento\Framework\Data\Collection\EntityFactoryInterface;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Event\ManagerInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Magento\Sales\Ui\Component\DataProvider\Document;
+use Psr\Log\LoggerInterface;
+use SmartCat\Connector\Model\ResourceModel\ProjectEntity\Collection as EntityCollection;
 
-/**
- * Class Collection
- * Collection for displaying grid
- */
-class Collection extends GridCollection implements SearchResultInterface
+class Collection extends EntityCollection implements SearchResultInterface
 {
+    /**
+     * @var AggregationInterface
+     */
     private $aggregations;
 
     /**
-     * Resource initialization
-     * @param EntityFactoryInterface   $entityFactory,
-     * @param LoggerInterface          $logger,
-     * @param FetchStrategyInterface   $fetchStrategy,
-     * @param ManagerInterface         $eventManager,
-     * @param StoreManagerInterface    $storeManager,
-     * @param String                   $mainTable,
-     * @param String                   $eventPrefix,
-     * @param String                   $eventObject,
-     * @param String                   $resourceModel,
-     * @param $model = 'Magento\Framework\View\Element\UiComponent\DataProvider\Document',
-     * @param $connection = null,
-     * @param AbstractDb              $resource = null
-     * @return $this
+     * @param EntityFactoryInterface $entityFactory
+     * @param LoggerInterface $logger
+     * @param FetchStrategyInterface $fetchStrategy
+     * @param ManagerInterface $eventManager
+     * @param string $mainTable
+     * @param string $eventPrefix
+     * @param string $eventObject
+     * @param string $resourceModel
+     * @param string $model
+     * @param AdapterInterface|string|null $connection
+     * @param AbstractDb $resource
      */
     public function __construct(
         EntityFactoryInterface $entityFactory,
@@ -67,7 +63,7 @@ class Collection extends GridCollection implements SearchResultInterface
         $eventObject,
         $resourceModel,
         $model = Document::class,
-        $connection = null,
+        AdapterInterface $connection = null,
         AbstractDb $resource = null
     ) {
         parent::__construct(
@@ -94,18 +90,19 @@ class Collection extends GridCollection implements SearchResultInterface
 
     /**
      * @param AggregationInterface $aggregations
-     *
      * @return $this
      */
     public function setAggregations($aggregations)
     {
         $this->aggregations = $aggregations;
+
+        return $this;
     }
 
     /**
      * Get search criteria.
      *
-     * @return \Magento\Framework\Api\SearchCriteriaInterface|null
+     * @return SearchCriteriaInterface|null
      */
     public function getSearchCriteria()
     {
@@ -115,14 +112,11 @@ class Collection extends GridCollection implements SearchResultInterface
     /**
      * Set search criteria.
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     *
+     * @param SearchCriteriaInterface $searchCriteria
      * @return $this
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function setSearchCriteria(
-        \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria = null
-    ) {
+    public function setSearchCriteria(SearchCriteriaInterface $searchCriteria = null)
+    {
         return $this;
     }
 
@@ -140,9 +134,7 @@ class Collection extends GridCollection implements SearchResultInterface
      * Set total count.
      *
      * @param int $totalCount
-     *
      * @return $this
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function setTotalCount($totalCount)
     {
@@ -153,24 +145,10 @@ class Collection extends GridCollection implements SearchResultInterface
      * Set items list.
      *
      * @param \Magento\Framework\Api\ExtensibleDataInterface[] $items
-     *
      * @return $this
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function setItems(array $items = null)
     {
         return $this;
-    }
-
-    protected function _getAllIdsSelect($limit = null, $offset = null)
-    {
-        $idsSelect = clone $this->getSelect();
-        $idsSelect->reset(\Magento\Framework\DB\Select::ORDER);
-        $idsSelect->reset(\Magento\Framework\DB\Select::LIMIT_COUNT);
-        $idsSelect->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET);
-        $idsSelect->reset(\Magento\Framework\DB\Select::COLUMNS);
-        $idsSelect->columns($this->getResource()->getIdFieldName(), 'main_table');
-        $idsSelect->limit($limit, $offset);
-        return $idsSelect;
     }
 }

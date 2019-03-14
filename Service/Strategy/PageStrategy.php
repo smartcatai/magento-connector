@@ -26,6 +26,7 @@ use Magento\Cms\Model\PageFactory;
 use Magento\Cms\Model\PageRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\UrlInterface;
 use Magento\Store\Model\Store;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
@@ -42,17 +43,21 @@ class PageStrategy extends AbstractStrategy
     /**
      * PageStrategy constructor.
      * @param ProjectEntityService $projectEntityService
+     * @param StoreService $storeService
      * @param PageRepository $pageRepository
+     * @param PageFactory $pageFactory
+     * @param UrlInterface $urlManager
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
         StoreService $storeService,
         PageRepository $pageRepository,
-        PageFactory $pageFactory
+        PageFactory $pageFactory,
+        UrlInterface $urlManager
     ) {
         $this->pageRepository = $pageRepository;
         $this->pageFactory = $pageFactory;
-        parent::__construct($projectEntityService, $storeService);
+        parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
     /**
@@ -164,7 +169,7 @@ class PageStrategy extends AbstractStrategy
                 ->setContentHeading($parameters['content_heading'])
                 ->setContent($parameters['content'])
                 ->setIsActive(true)
-                ->setIdentifier($page->getIdentifier() . '_' . $entity->getLanguage())
+                ->setIdentifier($page->getIdentifier())
                 ->setPageLayout($page->getPageLayout());
 
             $this->pageRepository->save($newPage);
@@ -173,5 +178,28 @@ class PageStrategy extends AbstractStrategy
         }
 
         return false;
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityName($entityId)
+    {
+        try {
+            return $this->pageRepository->getById($entityId)->getData('name');
+        } catch (\Throwable $e) {
+        }
+
+        return '';
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId)
+    {
+        return $this->urlManager->getUrl('cms/page/edit', ['page_id' => $entityId]);
     }
 }

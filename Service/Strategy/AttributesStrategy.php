@@ -25,6 +25,7 @@ use Magento\Eav\Model\Attribute;
 use Magento\Eav\Model\AttributeRepository;
 use Magento\Eav\Model\Entity\Attribute\FrontendLabelFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -45,18 +46,20 @@ class AttributesStrategy extends AbstractStrategy
      * @param ProjectEntityService $projectEntityService
      * @param FrontendLabelFactory $attributeFrontendLabelFactory
      * @param StoreService $storeService
+     * @param UrlInterface $urlManager
      */
     public function __construct(
         AttributeRepository $attributeRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ProjectEntityService $projectEntityService,
         FrontendLabelFactory $attributeFrontendLabelFactory,
-        StoreService $storeService
+        StoreService $storeService,
+        UrlInterface $urlManager
     ) {
         $this->attributeRepository = $attributeRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->attributeFrontendLabelFactory = $attributeFrontendLabelFactory;
-        parent::__construct($projectEntityService, $storeService);
+        parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
     /**
@@ -157,5 +160,23 @@ class AttributesStrategy extends AbstractStrategy
                 $this->attributeRepository->save($attributesList[$index]);
             }
         }
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityName($entityId)
+    {
+        return 'All attributes';
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId)
+    {
+        return $this->urlManager->getUrl('catalog/product_attribute/index');
     }
 }

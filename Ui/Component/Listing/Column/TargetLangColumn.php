@@ -19,23 +19,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model\Config\Source;
+namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
-use Magento\Framework\Option\ArrayInterface;
-use SmartCat\Connector\Model\Project;
+use Magento\Ui\Component\Listing\Columns\Column;
+use SmartCat\Connector\Model\ProjectEntity;
+use SmartCat\Connector\Helper\LanguageDictionary;
 
-class ProjectStatusList implements ArrayInterface
+class TargetLangColumn extends Column
 {
-    public function toOptionArray()
+    /**
+     * Prepare Data Source
+     *
+     * @param array $dataSource
+     * @return array
+     */
+    public function prepareDataSource(array $dataSource)
     {
-        return [
-            ['value' => Project::STATUS_WAITING,'label' => __('Waiting')],
-            ['value' => Project::STATUS_CREATED,'label' => __('Created')],
-            ['value' => Project::STATUS_IN_PROGRESS,'label' => __('In Progress')],
-            ['value' => Project::STATUS_COMPLETED,'label' => __('Completed')],
-            ['value' => Project::STATUS_REJECTED,'label' => __('Rejected')],
-            ['value' => Project::STATUS_CANCELED,'label' => __('Canceled')],
-            ['value' => Project::STATUS_FAILED,'label' => __('Failed')],
-        ];
+        if (isset($dataSource['data']['items'])) {
+            foreach ($dataSource['data']['items'] as &$item) {
+                $codes = explode('|', $item[ProjectEntity::TYPE]);
+                if (count($codes) == 3) {
+                    $item[$this->getData('name')] = LanguageDictionary::getNameByCode($codes[2]);
+                }
+            }
+        }
+
+        return $dataSource;
     }
 }

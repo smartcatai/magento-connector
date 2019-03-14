@@ -21,11 +21,36 @@
 
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Helper\LanguageDictionary;
+use SmartCat\Connector\Model\Config\Source\StatusList;
 
-class LanguageColumn extends Column
+class DocumentStatusColumn extends Column
 {
+    /** @var StatusList */
+    private $statusList;
+
+    /**
+     * Constructor
+     *
+     * @param ContextInterface $context
+     * @param UiComponentFactory $uiComponentFactory
+     * @param StatusList $statusList
+     * @param array $components
+     * @param array $data
+     */
+    public function __construct(
+        ContextInterface $context,
+        UiComponentFactory $uiComponentFactory,
+        StatusList $statusList,
+        array $components = [],
+        array $data = []
+    ) {
+        $this->statusList = $statusList;
+        parent::__construct($context, $uiComponentFactory, $components, $data);
+    }
+
     /**
      * Prepare Data Source
      *
@@ -34,14 +59,16 @@ class LanguageColumn extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
+        $statusList = $this->statusList->toOptionArray();
+
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if (in_array($this->getData('name'), ['source_lang', 'target_lang'])) {
-                    $codes = explode(',', $item[$this->getData('name')]);
-                    foreach ($codes as &$code) {
-                        $code = LanguageDictionary::getNameByCode($code);
-                    }
-                    $item[$this->getData('name')] = implode(', ', $codes);
+                if ($this->getData('name') == 'status') {
+                    $index = array_search(
+                        $item[$this->getData('name')],
+                        array_column($statusList, 'value')
+                    );
+                    $item[$this->getData('name')] = $statusList[$index]['label'];
                 }
             }
         }
