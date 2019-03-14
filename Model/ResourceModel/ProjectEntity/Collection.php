@@ -22,8 +22,10 @@
 namespace SmartCat\Connector\Model\ResourceModel\ProjectEntity;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ResourceModel\ProjectEntity as ProjectEntityResourceModel;
 use SmartCat\Connector\Model\ProjectEntity;
+use SmartCat\Connector\Module;
 
 class Collection extends AbstractCollection
 {
@@ -35,5 +37,16 @@ class Collection extends AbstractCollection
     public function _construct()
     {
         $this->_init(ProjectEntity::class, ProjectEntityResourceModel::class);
+    }
+
+    protected function _initSelect()
+    {
+        parent::_initSelect();
+
+        $this->getSelect()->joinLeft(
+            ['projectTable' => $this->getTable(Module::PROJECT_TABLE_NAME)],
+            'main_table.' . ProjectEntity::PROJECT_ID . ' = projectTable.' . Project::ID,
+            '*'
+        );
     }
 }

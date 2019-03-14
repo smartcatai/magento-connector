@@ -45,5 +45,23 @@
                 <label translate="true">ID</label>
             </settings>
         </column>
+
+        <column name="status" sortOrder="20">
+            <settings>
+                <label translate="true">Status</label>
+            </settings>
+        </column>
+
+        <column name="projectTable.comment" sortOrder="30">
+            <settings>
+                <label translate="true">Comment</label>
+            </settings>
+        </column>
+
+        <column name="profile_id" sortOrder="30">
+            <settings>
+                <label translate="true">Profile</label>
+            </settings>
+        </column>
     </columns>
 </listing>

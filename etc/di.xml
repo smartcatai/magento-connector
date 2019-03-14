@@ -25,6 +25,8 @@
 	<preference for="SmartCat\Connector\Api\Data\ProjectEntitySearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
 	<virtualType name="SmartCat\Connector\Model\ResourceModel\ProjectEntity\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
 		<arguments>
+			<argument name="eventPrefix" xsi:type="string">smartcat_connector_project_entity_grid_collection</argument>
+			<argument name="eventObject" xsi:type="string">project_entity_grid_collection</argument>
 			<argument name="mainTable" xsi:type="string">smartcat_connector_project_entity</argument>
 			<argument name="resourceModel" xsi:type="string">SmartCat\Connector\Model\ResourceModel\ProjectEntity\Collection</argument>
 		</arguments>
