@@ -120,6 +120,10 @@ class CategoryStrategy extends AbstractStrategy
         return 'category';
     }
 
+    /**
+     * @param array $strings
+     * @return string
+     */
     public function getName(array $strings)
     {
         $strings = ['Categories'];

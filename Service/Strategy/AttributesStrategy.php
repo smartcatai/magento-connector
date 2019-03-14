@@ -117,6 +117,17 @@ class AttributesStrategy extends AbstractStrategy
     }
 
     /**
+     * @param array $strings
+     * @return string
+     */
+    public function getName(array $strings)
+    {
+        $strings = ['Attributes'];
+
+        return parent::getName($strings);
+    }
+
+    /**
      * @param string $content
      * @param ProjectEntity $entity
      * @return bool
