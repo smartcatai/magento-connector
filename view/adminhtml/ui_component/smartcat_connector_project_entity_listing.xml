@@ -36,6 +36,52 @@
         </settings>
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
+        <filters name="listing_filters">
+            <filterSelect name="profile_id" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+                <settings>
+                    <options class="SmartCat\Connector\Model\Config\Source\ProfilesList"/>
+                    <caption translate="true">Select...</caption>
+                    <label translate="true">Profile</label>
+                    <dataScope>profile_id</dataScope>
+                    <imports>
+                        <link name="visible">componentType = column, index = ${ $.index }:visible</link>
+                    </imports>
+                </settings>
+            </filterSelect>
+            <filterSelect name="status" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+                <settings>
+                    <options class="SmartCat\Connector\Model\Config\Source\ProjectEntityStatusList"/>
+                    <caption translate="true">Select...</caption>
+                    <label translate="true">Status</label>
+                    <dataScope>status</dataScope>
+                    <imports>
+                        <link name="visible">componentType = column, index = ${ $.index }:visible</link>
+                    </imports>
+                </settings>
+            </filterSelect>
+            <filterSelect name="source_lang" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+                <settings>
+                    <options class="SmartCat\Connector\Model\Config\Source\LanguagesList"/>
+                    <caption translate="true">Select...</caption>
+                    <label translate="true">Source Language</label>
+                    <dataScope>source_lang</dataScope>
+                    <imports>
+                        <link name="visible">componentType = column, index = ${ $.index }:visible</link>
+                    </imports>
+                </settings>
+            </filterSelect>
+            <filterSelect name="target_lang" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+                <settings>
+                    <options class="SmartCat\Connector\Model\Config\Source\LanguagesList"/>
+                    <caption translate="true">Select...</caption>
+                    <label translate="true">Target Language</label>
+                    <dataScope>target_lang</dataScope>
+                    <imports>
+                        <link name="visible">componentType = column, index = ${ $.index }:visible</link>
+                    </imports>
+                </settings>
+            </filterSelect>
+        </filters>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="smartcat_connector_project_entity_columns">
@@ -51,25 +97,19 @@
                 <bodyTmpl>ui/grid/cells/html</bodyTmpl>
             </settings>
         </column>
-        <column name="profile_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectProfileColumn" sortOrder="30">
+        <column name="name" sortOrder="30">
             <settings>
                 <label translate="true">Profile</label>
             </settings>
         </column>
         <column name="source_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="40">
             <settings>
-                <filter>select</filter>
-                <options class="SmartCat\Connector\Model\Config\Source\LanguagesList"/>
                 <label translate="true">Source Language</label>
-                <dataType>select</dataType>
             </settings>
         </column>
-        <column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\TargetLangColumn" sortOrder="50">
+        <column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="50">
             <settings>
-                <filter>select</filter>
-                <options class="SmartCat\Connector\Model\Config\Source\LanguagesList"/>
                 <label translate="true">Target Language</label>
-                <dataType>select</dataType>
             </settings>
         </column>
         <column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\DocumentStatusColumn" sortOrder="60">

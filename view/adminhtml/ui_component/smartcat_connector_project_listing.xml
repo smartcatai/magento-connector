@@ -50,7 +50,7 @@
 			</filterSelect>
 			<filterSelect name="status" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
 				<settings>
-					<options class="SmartCat\Connector\Model\Config\Source\StatusList"/>
+					<options class="SmartCat\Connector\Model\Config\Source\ProjectStatusList"/>
 					<caption translate="true">Select...</caption>
 					<label translate="true">Status</label>
 					<dataScope>status</dataScope>

@@ -78,7 +78,7 @@ class EntityColumn extends Column
     {
         $entityInfo = explode('|', $item[ProjectEntity::TYPE]);
 
-        if (count($entityInfo) != 3) {
+        if (count($entityInfo) != 2) {
             return '';
         }
 

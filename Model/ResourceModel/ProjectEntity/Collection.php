@@ -52,7 +52,14 @@ class Collection extends AbstractCollection
             )->joinLeft(
                 ['profileTable' => $this->getTable(Module::PROFILE_TABLE_NAME)],
                 'projectTable.' . Project::PROFILE_ID . ' = profileTable.' . Profile::ID,
-                ['source_lang']
+                ['source_lang', 'name']
             );
+
+        $this
+            ->addFilterToMap('comment', 'projectTable.comment')
+            ->addFilterToMap('deadline', 'projectTable.deadline')
+            ->addFilterToMap('source_lang', 'profileTable.source_lang')
+            ->addFilterToMap('target_lang', 'main_table.target_lang')
+            ->addFilterToMap('name', 'profileTable.name');
     }
 }

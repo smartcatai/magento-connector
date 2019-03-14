@@ -40,6 +40,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
         SchemaSetupInterface $setup,
         ModuleContextInterface $context
     ) {
+        $setup->startSetup();
+
         if (version_compare($context->getVersion(), "1.0.2", "<")) {
             $this->ver102($setup);
         }
@@ -51,6 +53,12 @@ class UpgradeSchema implements UpgradeSchemaInterface
         if (version_compare($context->getVersion(), "1.1.1", "<")) {
             $this->ver111($setup);
         }
+
+        if (version_compare($context->getVersion(), "1.2.0", "<")) {
+            $this->ver120($setup);
+        }
+
+        $setup->endSetup();
     }
 
     /**
@@ -121,6 +129,25 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'nullable' => true,
                 ],
                 'comment' => 'Deadline Date',
+            ]
+        );
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function ver120(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('smartcat_connector_project_entity'),
+            'target_lang',
+            [
+                'type' => Table::TYPE_TEXT,
+                'size' => 255,
+                'options' => [
+                    'nullable' => false
+                ],
+                'comment' => 'Document target language'
             ]
         );
     }

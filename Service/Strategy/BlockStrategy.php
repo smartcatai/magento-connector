@@ -92,7 +92,7 @@ class BlockStrategy extends AbstractStrategy
         $block = $this->blockRepository->getById($entity->getEntityId());
 
         $data = $this->encodeJsonParameters($block);
-        $fileName = "{$block->getTitle()}({$entity->getLanguage()}).json";
+        $fileName = "{$block->getTitle()}({$entity->getTargetLang()}).json";
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -145,7 +145,7 @@ class BlockStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;
@@ -162,7 +162,7 @@ class BlockStrategy extends AbstractStrategy
                 ->setContent($parameters['content'])
                 ->setTitle($parameters['title'])
                 ->setIsActive(true)
-                ->setIdentifier($block->getIdentifier() . '_' . $entity->getLanguage());
+                ->setIdentifier($block->getIdentifier() . '_' . $entity->getTargetLang());
 
             $this->blockRepository->save($newBlock);
 

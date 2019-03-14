@@ -22,21 +22,17 @@
 namespace SmartCat\Connector\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
-use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
 
-class StatusList implements ArrayInterface
+class ProjectEntityStatusList implements ArrayInterface
 {
     public function toOptionArray()
     {
         return [
-            ['value' => Project::STATUS_WAITING,'label' => __('Waiting')],
-            ['value' => Project::STATUS_CREATED,'label' => __('Created')],
-            ['value' => Project::STATUS_IN_PROGRESS,'label' => __('In Progress')],
-            ['value' => Project::STATUS_COMPLETED,'label' => __('Waiting export')],
-            ['value' => Project::STATUS_REJECTED,'label' => __('Rejected')],
-            ['value' => Project::STATUS_CANCELED,'label' => __('Canceled')],
-            ['value' => Project::STATUS_FAILED,'label' => __('Failed')],
+            ['value' => ProjectEntity::STATUS_CREATED,'label' => __('Created')],
+            ['value' => ProjectEntity::STATUS_IN_PROGRESS,'label' => __('In Progress')],
+            ['value' => ProjectEntity::STATUS_COMPLETED,'label' => __('Waiting export')],
+            ['value' => ProjectEntity::STATUS_FAILED,'label' => __('Failed')],
             ['value' => ProjectEntity::STATUS_SAVED,'label' => __('Completed')],
             ['value' => ProjectEntity::STATUS_EXPORT,'label' => __('On export')],
             ['value' => ProjectEntity::STATUS_NEW,'label' => __('Waiting')],

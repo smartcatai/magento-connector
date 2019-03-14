@@ -130,7 +130,7 @@ class ProductStrategy extends AbstractStrategy
         }
 
         $data = json_encode($attributes);
-        $fileName = "{$product->getSku()}({$entity->getLanguage()}).json";
+        $fileName = "{$product->getSku()}({$entity->getTargetLang()}).json";
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -183,7 +183,7 @@ class ProductStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;

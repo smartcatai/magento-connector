@@ -24,11 +24,11 @@ namespace SmartCat\Connector\Ui\Component\Listing\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\Config\Source\StatusList;
+use SmartCat\Connector\Model\Config\Source\ProjectEntityStatusList;
 
 class DocumentStatusColumn extends Column
 {
-    /** @var StatusList */
+    /** @var ProjectEntityStatusList */
     private $statusList;
 
     /**
@@ -36,14 +36,14 @@ class DocumentStatusColumn extends Column
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param StatusList $statusList
+     * @param ProjectEntityStatusList $statusList
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        StatusList $statusList,
+        ProjectEntityStatusList $statusList,
         array $components = [],
         array $data = []
     ) {

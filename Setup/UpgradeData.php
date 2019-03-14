@@ -32,5 +32,30 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
+        $setup->startSetup();
+
+        if (version_compare($context->getVersion(), "1.2.0", "<")) {
+            $this->ver120($setup);
+        }
+
+        $setup->endSetup();
+    }
+
+    /**
+     * @param ModuleDataSetupInterface $setup
+     */
+    private function ver120(ModuleDataSetupInterface $setup)
+    {
+        $setup->getConnection()->query(
+            "
+                  UPDATE smartcat_connector_project_entity SET target_lang = (SELECT SUBSTRING_INDEX(type, '|', -1));
+                "
+        );
+
+        $setup->getConnection()->query(
+            "
+                  UPDATE smartcat_connector_project_entity SET type = (SELECT SUBSTRING_INDEX(type, '|', 2));
+                "
+        );
     }
 }

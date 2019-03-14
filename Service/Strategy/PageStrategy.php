@@ -92,7 +92,7 @@ class PageStrategy extends AbstractStrategy
         $page = $this->pageRepository->getById($entity->getEntityId());
 
         $data = $this->encodeJsonParameters($page);
-        $fileName = "{$page->getTitle()}({$entity->getLanguage()}).json";
+        $fileName = "{$page->getTitle()}({$entity->getTargetLang()}).json";
 
          return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -149,7 +149,7 @@ class PageStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;

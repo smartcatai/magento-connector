@@ -19,31 +19,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Ui\Component\Listing\Column;
+namespace SmartCat\Connector\Setup;
 
-use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\ProjectEntity;
-use SmartCat\Connector\Helper\LanguageDictionary;
+use Magento\Framework\Setup\UninstallInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
+use SmartCat\Connector\Module;
 
-class TargetLangColumn extends Column
+class Uninstall implements UninstallInterface
 {
-    /**
-     * Prepare Data Source
-     *
-     * @param array $dataSource
-     * @return array
-     */
-    public function prepareDataSource(array $dataSource)
+    public function uninstall(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['items'] as &$item) {
-                $codes = explode('|', $item[ProjectEntity::TYPE]);
-                if (count($codes) == 3) {
-                    $item[$this->getData('name')] = LanguageDictionary::getNameByCode($codes[2]);
-                }
-            }
-        }
+        $setup->startSetup();
 
-        return $dataSource;
+        $setup->getConnection()->dropTable($setup->getTable(Module::PROJECT_ENTITY_TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Module::PROJECT_TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Module::PROFILE_TABLE_NAME));
+
+        $setup->endSetup();
     }
 }

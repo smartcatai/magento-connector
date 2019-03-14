@@ -106,7 +106,7 @@ class AttributesStrategy extends AbstractStrategy
         }
 
         $data = json_encode($data);
-        $fileName = "({$entity->getLanguage()}).json";
+        $fileName = "({$entity->getTargetLang()}).json";
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -128,7 +128,7 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;
