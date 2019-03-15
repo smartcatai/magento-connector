@@ -187,7 +187,7 @@ class PageStrategy extends AbstractStrategy
     public function getEntityName($entityId)
     {
         try {
-            return $this->pageRepository->getById($entityId)->getData('name');
+            return $this->pageRepository->getById($entityId)->getTitle();
         } catch (\Throwable $e) {
         }
 

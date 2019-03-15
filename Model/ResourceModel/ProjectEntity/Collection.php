@@ -60,6 +60,7 @@ class Collection extends AbstractCollection
             ->addFilterToMap('deadline', 'projectTable.deadline')
             ->addFilterToMap('source_lang', 'profileTable.source_lang')
             ->addFilterToMap('target_lang', 'main_table.target_lang')
+            ->addFilterToMap('status', 'main_table.status')
             ->addFilterToMap('name', 'profileTable.name');
     }
 }
