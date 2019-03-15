@@ -21,34 +21,33 @@
 
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\Config\Source\ProjectStatusList;
+use SmartCat\Connector\Helper\ConfigurationHelper;
+use SmartCat\Connector\Model\ProjectEntity;
 
-class ProjectStatusColumn extends Column
+class SmartCatDocumentColumn extends Column
 {
-    /** @var ProjectStatusList */
-    private $statusList;
+    private $configurationHelper;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param ProjectStatusList $statusList
+     * @param ConfigurationHelper $configurationHelper
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        ProjectStatusList $statusList,
+        ConfigurationHelper $configurationHelper,
         array $components = [],
         array $data = []
     ) {
-        $this->statusList = $statusList;
+        $this->configurationHelper = $configurationHelper;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -60,20 +59,40 @@ class ProjectStatusColumn extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        $statusList = $this->statusList->toOptionArray();
-
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') == 'status') {
-                    $index = array_search(
-                        $item[$this->getData('name')],
-                        array_column($statusList, 'value')
-                    );
-                    $item[$this->getData('name')] = $statusList[$index]['label'];
+                if (isset($item[ProjectEntity::DOCUMENT_ID])) {
+                    $item[$this->getData('name')] = $this->getHtml($item[ProjectEntity::DOCUMENT_ID]);
                 }
             }
         }
 
         return $dataSource;
+    }
+
+    /**
+     * @param $documentId
+     * @return string
+     */
+    private function getProjectUrl($documentId)
+    {
+        $doc = explode('_', $documentId);
+
+        if (count($doc) != 2) {
+            return '#';
+        }
+
+        return "https://{$this->configurationHelper->getServer()}/Editor?DocumentId={$doc[0]}&LanguageId={$doc[1]}";
+    }
+
+    /**
+     * @param $projectGuid
+     * @return string
+     */
+    private function getHtml($projectGuid)
+    {
+        $text = __('Go to Smartcat');
+
+        return "<a href='{$this->getProjectUrl($projectGuid)}' target='_blank'>{$text}</a>";
     }
 }

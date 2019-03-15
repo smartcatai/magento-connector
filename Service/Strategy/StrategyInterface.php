@@ -69,4 +69,16 @@ interface StrategyInterface
      * @return bool
      */
     public function setContent($content, ProjectEntity $entity): bool;
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityName($entityId);
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId);
 }

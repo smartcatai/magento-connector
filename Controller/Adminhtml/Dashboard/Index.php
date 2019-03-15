@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml\Project;
+namespace SmartCat\Connector\Controller\Adminhtml\Dashboard;
 
 class Index extends \Magento\Backend\App\Action
 {
@@ -47,7 +47,7 @@ class Index extends \Magento\Backend\App\Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-            $resultPage->getConfig()->getTitle()->prepend(__("Dashboard"));
-            return $resultPage;
+        $resultPage->getConfig()->getTitle()->prepend(__("Dashboard"));
+        return $resultPage;
     }
 }
