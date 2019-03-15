@@ -33,6 +33,7 @@ class AttributeBlock extends Container
     /**
      * @param \Magento\Backend\Block\Widget\Context $context
      * @param ProfileService $profileService
+     * @param LocalizeButton $localizeButton
      * @param array $data
      */
     public function __construct(
