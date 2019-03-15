@@ -121,6 +121,17 @@ class CategoryStrategy extends AbstractStrategy
     }
 
     /**
+     * @param array $strings
+     * @return string
+     */
+    public function getName(array $strings)
+    {
+        $strings = ['Categories'];
+
+        return parent::getName($strings);
+    }
+
+    /**
      * @param $jsonContent
      * @param ProjectEntity $entity
      * @return bool

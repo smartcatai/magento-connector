@@ -50,6 +50,10 @@ abstract class AbstractStrategy implements StrategyInterface
      */
     public function getName(array $strings)
     {
+        if (empty($strings)) {
+            $strings = [uniqid()];
+        }
+
         $stringNames = StringHelper::limitImplode($strings);
 
         return StringHelper::whitespaceSpecChars($stringNames);
