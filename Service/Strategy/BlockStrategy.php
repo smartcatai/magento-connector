@@ -179,7 +179,7 @@ class BlockStrategy extends AbstractStrategy
     public function getEntityName($entityId)
     {
         try {
-            return $this->blockRepository->getById($entityId)->getData('name');
+            return $this->blockRepository->getById($entityId)->getTitle();
         } catch (\Throwable $e) {
         }
 
