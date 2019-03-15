@@ -33,7 +33,7 @@ class Index
      */
     public function afterExecute(Attribute\Index $subject, $result)
     {
-        //$result->addContent($result->getLayout()->createBlock(Product\AttributeBlock::class));
+        $result->addContent($result->getLayout()->createBlock(Product\AttributeBlock::class));
 
         return $result;
     }
