@@ -79,20 +79,25 @@ class SmartCatDocumentColumn extends Column
         $doc = explode('_', $documentId);
 
         if (count($doc) != 2) {
-            return '#';
+            return null;
         }
 
         return "https://{$this->configurationHelper->getServer()}/Editor?DocumentId={$doc[0]}&LanguageId={$doc[1]}";
     }
 
     /**
-     * @param $projectGuid
+     * @param $documentId
      * @return string
      */
-    private function getHtml($projectGuid)
+    private function getHtml($documentId)
     {
         $text = __('Go to Smartcat');
+        $url = $this->getProjectUrl($documentId);
 
-        return "<a href='{$this->getProjectUrl($projectGuid)}' target='_blank'>{$text}</a>";
+        if ($url) {
+            return "<a href='{$url}' target='_blank'>{$text}</a>";
+        }
+
+        return '';
     }
 }
