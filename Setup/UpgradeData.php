@@ -47,15 +47,11 @@ class UpgradeData implements UpgradeDataInterface
     private function ver120(ModuleDataSetupInterface $setup)
     {
         $setup->getConnection()->query(
-            "
-                  UPDATE smartcat_connector_project_entity SET target_lang = (SELECT SUBSTRING_INDEX(type, '|', -1));
-                "
+            "UPDATE smartcat_connector_project_entity SET target_lang = (SELECT SUBSTRING_INDEX(type, '|', -1));"
         );
 
         $setup->getConnection()->query(
-            "
-                  UPDATE smartcat_connector_project_entity SET type = (SELECT SUBSTRING_INDEX(type, '|', 2));
-                "
+            "UPDATE smartcat_connector_project_entity SET type = (SELECT SUBSTRING_INDEX(type, '|', 2));"
         );
     }
 }

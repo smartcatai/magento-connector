@@ -84,6 +84,10 @@ class EntityColumn extends Column
 
         $strategy = $this->strategyLoader->getStrategyByType($entityInfo[0]);
 
+        if (!$strategy) {
+            return '';
+        }
+
         $type = ucfirst($entityInfo[0]);
         $url = $strategy->getUrlToEntity($item[ProjectEntity::ENTITY_ID]);
         $text = $strategy->getEntityName($item[ProjectEntity::ENTITY_ID]);
