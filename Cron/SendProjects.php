@@ -182,7 +182,6 @@ class SendProjects
             $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
 
             if (!$entity) {
-                $this->errorHandler->logError("SmartCat update project error: {$e->getMessage()}");
                 continue;
             }
 
