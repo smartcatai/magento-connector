@@ -24,6 +24,7 @@ namespace SmartCat\Connector\Service\Strategy;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -50,16 +51,18 @@ class ProductStrategy extends AbstractStrategy
      * @param StoreService $storeService
      * @param ProfileService $profileService
      * @param ProductRepository $productRepository
+     * @param UrlInterface $urlManager
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
         StoreService $storeService,
         ProfileService $profileService,
-        ProductRepository $productRepository
+        ProductRepository $productRepository,
+        UrlInterface $urlManager
     ) {
         $this->productRepository = $productRepository;
         $this->profileService = $profileService;
-        parent::__construct($projectEntityService, $storeService);
+        parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
     /**
@@ -127,7 +130,7 @@ class ProductStrategy extends AbstractStrategy
         }
 
         $data = json_encode($attributes);
-        $fileName = "{$product->getSku()}({$entity->getLanguage()}).json";
+        $fileName = "{$product->getSku()}({$entity->getTargetLang()}).json";
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -150,6 +153,29 @@ class ProductStrategy extends AbstractStrategy
     }
 
     /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId)
+    {
+        return $this->urlManager->getUrl('catalog/product/edit', ['id' => $entityId]);
+    }
+
+    /**
+     * @param $entityId
+     * @return string|null
+     */
+    public function getEntityName($entityId)
+    {
+        try {
+            return $this->productRepository->getById($entityId, false, 1)->getName();
+        } catch (\Throwable $e) {
+        }
+
+        return '';
+    }
+
+    /**
      * @param string $content
      * @param ProjectEntity $entity
      * @return bool
@@ -157,7 +183,7 @@ class ProductStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;

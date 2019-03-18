@@ -21,37 +21,21 @@
 
 namespace SmartCat\Connector\Setup;
 
-use Magento\Framework\Setup\UpgradeDataInterface;
+use Magento\Framework\Setup\UninstallInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
+use SmartCat\Connector\Module;
 
-class UpgradeData implements UpgradeDataInterface
+class Uninstall implements UninstallInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
+    public function uninstall(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();
 
-        if (version_compare($context->getVersion(), "1.2.0", "<")) {
-            $this->ver120($setup);
-        }
+        $setup->getConnection()->dropTable($setup->getTable(Module::PROJECT_ENTITY_TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Module::PROJECT_TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Module::PROFILE_TABLE_NAME));
 
         $setup->endSetup();
-    }
-
-    /**
-     * @param ModuleDataSetupInterface $setup
-     */
-    private function ver120(ModuleDataSetupInterface $setup)
-    {
-        $setup->getConnection()->query(
-            "UPDATE smartcat_connector_project_entity SET target_lang = (SELECT SUBSTRING_INDEX(type, '|', -1));"
-        );
-
-        $setup->getConnection()->query(
-            "UPDATE smartcat_connector_project_entity SET type = (SELECT SUBSTRING_INDEX(type, '|', 2));"
-        );
     }
 }

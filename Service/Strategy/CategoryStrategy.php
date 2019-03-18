@@ -24,6 +24,7 @@ namespace SmartCat\Connector\Service\Strategy;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryFactory;
 use Magento\Catalog\Model\CategoryRepository;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -42,16 +43,18 @@ class CategoryStrategy extends AbstractStrategy
      * @param StoreService $storeService
      * @param CategoryRepository $categoryRepository
      * @param CategoryFactory $categoryFactory
+     * @param UrlInterface $urlManager
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
         StoreService $storeService,
         CategoryRepository $categoryRepository,
-        CategoryFactory $categoryFactory
+        CategoryFactory $categoryFactory,
+        UrlInterface $urlManager
     ) {
         $this->categoryRepository = $categoryRepository;
         $this->categoryFactory = $categoryFactory;
-        parent::__construct($projectEntityService, $storeService);
+        parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
     /**
@@ -107,7 +110,7 @@ class CategoryStrategy extends AbstractStrategy
         }
 
         $data = json_encode($data);
-        $fileName = "({$entity->getLanguage()}).json";
+        $fileName = "({$entity->getTargetLang()}).json";
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -128,7 +131,7 @@ class CategoryStrategy extends AbstractStrategy
      */
     public function setContent($jsonContent, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;
@@ -155,5 +158,23 @@ class CategoryStrategy extends AbstractStrategy
         }
 
         return true;
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityName($entityId)
+    {
+        return 'All categories';
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId)
+    {
+        return $this->urlManager->getUrl('catalog/category/index');
     }
 }

@@ -21,15 +21,14 @@
 
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\Config\Source\ProjectStatusList;
+use SmartCat\Connector\Model\Config\Source\ProjectEntityStatusList;
 
-class ProjectStatusColumn extends Column
+class DocumentStatusColumn extends Column
 {
-    /** @var ProjectStatusList */
+    /** @var ProjectEntityStatusList */
     private $statusList;
 
     /**
@@ -37,14 +36,14 @@ class ProjectStatusColumn extends Column
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param ProjectStatusList $statusList
+     * @param ProjectEntityStatusList $statusList
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        ProjectStatusList $statusList,
+        ProjectEntityStatusList $statusList,
         array $components = [],
         array $data = []
     ) {

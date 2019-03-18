@@ -26,6 +26,7 @@ use Magento\Cms\Model\BlockFactory;
 use Magento\Cms\Model\BlockRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -44,16 +45,18 @@ class BlockStrategy extends AbstractStrategy
      * @param StoreService $storeService
      * @param BlockRepository $blockRepository
      * @param BlockFactory $blockFactory
+     * @param UrlInterface $urlManager
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
         StoreService $storeService,
         BlockRepository $blockRepository,
-        BlockFactory $blockFactory
+        BlockFactory $blockFactory,
+        UrlInterface $urlManager
     ) {
         $this->blockRepository = $blockRepository;
         $this->blockFactory = $blockFactory;
-        parent::__construct($projectEntityService, $storeService);
+        parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
     /**
@@ -89,7 +92,7 @@ class BlockStrategy extends AbstractStrategy
         $block = $this->blockRepository->getById($entity->getEntityId());
 
         $data = $this->encodeJsonParameters($block);
-        $fileName = "{$block->getTitle()}({$entity->getLanguage()}).json";
+        $fileName = "{$block->getTitle()}({$entity->getTargetLang()}).json";
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -142,7 +145,7 @@ class BlockStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;
@@ -159,7 +162,7 @@ class BlockStrategy extends AbstractStrategy
                 ->setContent($parameters['content'])
                 ->setTitle($parameters['title'])
                 ->setIsActive(true)
-                ->setIdentifier($block->getIdentifier() . '_' . $entity->getLanguage());
+                ->setIdentifier($block->getIdentifier() . '_' . $entity->getTargetLang());
 
             $this->blockRepository->save($newBlock);
 
@@ -167,5 +170,28 @@ class BlockStrategy extends AbstractStrategy
         }
 
         return false;
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityName($entityId)
+    {
+        try {
+            return $this->blockRepository->getById($entityId)->getTitle();
+        } catch (\Throwable $e) {
+        }
+
+        return '';
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId)
+    {
+        return $this->urlManager->getUrl('cms/block/edit', ['block_id' => $entityId]);
     }
 }

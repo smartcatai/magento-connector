@@ -66,8 +66,9 @@ class ProjectEntityService
         foreach ($profile->getTargetLangArray() as $targetLang) {
             $projectEntity = $this->projectEntityRepository->create();
             $projectEntity
-                ->setType($type . "|" . $targetLang)
+                ->setType($type)
                 ->setStatus(ProjectEntity::STATUS_NEW)
+                ->setTargetLang($targetLang)
                 ->setProjectId($project->getId());
 
             if ($entity instanceof AbstractModel) {
@@ -186,7 +187,7 @@ class ProjectEntityService
         $documentModel
             ->setBilingualFileImportSettings($bilingualFileImportSettings)
             ->setExternalId($entity->getId())
-            ->setTargetLanguages([$entity->getLanguage()]);
+            ->setTargetLanguages([$entity->getTargetLang()]);
         $documentModel->attachFile($filePath, $fileName);
 
         return $documentModel;

@@ -21,33 +21,33 @@
 
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
+use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
-use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Helper\ConfigurationHelper;
-use SmartCat\Connector\Model\Project;
+use SmartCat\Connector\Model\ProjectEntity;
+use SmartCat\Connector\Service\Strategy\StrategyLoader;
 
-class SmartCatProjectColumn extends Column
+class EntityColumn extends Column
 {
-    private $configurationHelper;
+    private $strategyLoader;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param ConfigurationHelper $configurationHelper
+     * @param StrategyLoader $strategyLoader
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        ConfigurationHelper $configurationHelper,
+        StrategyLoader $strategyLoader,
         array $components = [],
         array $data = []
     ) {
-        $this->configurationHelper = $configurationHelper;
+        $this->strategyLoader = $strategyLoader;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -61,14 +61,8 @@ class SmartCatProjectColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if (isset($item[Project::GUID])) {
-                    $item[$this->getData('name')] = [
-                        'open' => [
-                            'href' => $this->getProjectUrl($item[Project::GUID]),
-                            'target' => '_blank',
-                            'label' => __('Smartcat project'),
-                        ]
-                    ];
+                if ($this->getData('name') == ProjectEntity::ENTITY_ID) {
+                    $item[$this->getData('name')] = $this->getColumnHtml($item);
                 }
             }
         }
@@ -77,11 +71,27 @@ class SmartCatProjectColumn extends Column
     }
 
     /**
-     * @param $projectGuid
+     * @param $item
      * @return string
      */
-    private function getProjectUrl($projectGuid)
+    private function getColumnHtml($item)
     {
-        return "https://{$this->configurationHelper->getServer()}/project/{$projectGuid}";
+        $entityInfo = explode('|', $item[ProjectEntity::TYPE]);
+
+        if (count($entityInfo) != 2) {
+            return '';
+        }
+
+        $strategy = $this->strategyLoader->getStrategyByType($entityInfo[0]);
+
+        if (!$strategy) {
+            return '';
+        }
+
+        $type = ucfirst($entityInfo[0]);
+        $url = $strategy->getUrlToEntity($item[ProjectEntity::ENTITY_ID]);
+        $text = $strategy->getEntityName($item[ProjectEntity::ENTITY_ID]);
+
+        return "{$type}: <a href='{$url}' target='_blank'>{$text}</a>";
     }
 }
