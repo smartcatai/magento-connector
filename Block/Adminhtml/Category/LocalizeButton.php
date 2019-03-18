@@ -63,6 +63,7 @@ class LocalizeButton implements ButtonProviderInterface
     private function getAddProductButtonOptions()
     {
         $splitButtonOptions = [];
+        $defaultFirst = true;
 
         $profiles = $this->profileService->getAllProfiles();
 
@@ -70,8 +71,10 @@ class LocalizeButton implements ButtonProviderInterface
             $splitButtonOptions[$profile->getId()] = [
                 'label' => $profile->getName(),
                 'onclick' => "setLocation('" . $this->getUrl($profile->getId()) . "')",
-                'default' => false,
+                'default' => $defaultFirst,
             ];
+
+            $defaultFirst = false;
         }
 
         return $splitButtonOptions;
