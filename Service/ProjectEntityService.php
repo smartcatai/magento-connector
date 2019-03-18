@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Service;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Model\AbstractModel;
 use SmartCat\Client\Model\BilingualFileImportSettingsModel;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
@@ -57,6 +58,7 @@ class ProjectEntityService
     /**
      * @param Project $project
      * @param AbstractModel $entity
+     * @param Profile $profile
      * @param string $type
      */
     public function create(Project $project, $entity, Profile $profile, $type)
@@ -153,12 +155,17 @@ class ProjectEntityService
 
     /**
      * @param $entityId
-     * @return ProjectEntity
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @return ProjectEntity|null
      */
     public function getEntityById($entityId)
     {
-        return $this->projectEntityRepository->getById($entityId);
+        try {
+            $projectEntity = $this->projectEntityRepository->getById($entityId);
+        } catch (NoSuchEntityException $e) {
+            return null;
+        }
+
+        return $projectEntity;
     }
 
     /**
