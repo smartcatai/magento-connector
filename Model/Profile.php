@@ -76,6 +76,25 @@ class Profile extends AbstractModel implements ProfileInterface
     }
 
     /**
+     * Get vendor
+     * @return string
+     */
+    public function getVendorName()
+    {
+        return $this->getData(self::VENDOR_NAME);
+    }
+
+    /**
+     * Set vendor
+     * @param string $vendorName
+     * @return ProfileInterface
+     */
+    public function setVendorName($vendorName)
+    {
+        return $this->setData(self::VENDOR_NAME, $vendorName);
+    }
+
+    /**
      * Get source_lang
      * @return string
      */

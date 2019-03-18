@@ -25,6 +25,7 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
 use SmartCat\Connector\Helper\SmartCatFacade;
+use SmartCat\Connector\Model\Profile;
 
 class VendorColumn extends Column
 {
@@ -76,19 +77,49 @@ class VendorColumn extends Column
             }
 
             foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') == 'vendor') {
-                    if (trim($item['vendor']) === 0 || !trim($item['vendor'])) {
+                if ($this->getData('name') == Profile::VENDOR) {
+                    if (trim($item[Profile::VENDOR]) === 0 || !trim($item[Profile::VENDOR])) {
                         $item[$this->getData('name')] = __('Translate internally');
                     } else {
-                        $vendorId = array_search($item['vendor'], array_column($vendors, 'id'));
-                        if ($vendorId !== false) {
-                            $item[$this->getData('name')] = $vendors[$vendorId]['name'];
-                        }
+                        $item[$this->getData('name')] = $this->vendorOrId($vendors, $item);
                     }
                 }
             }
         }
 
         return $dataSource;
+    }
+
+    /**
+     * @param $vendorId
+     * @param $vendorsArray
+     * @return mixed
+     */
+    private function vendorSearch($vendorId, $vendorsArray)
+    {
+        $vendor = array_search($vendorId, array_column($vendorsArray, 'id'));
+        if ($vendor !== false) {
+            return $vendorsArray[$vendor]['name'];
+        }
+
+        return $vendorId;
+    }
+
+    /**
+     * @param $vendorsArray
+     * @param $item
+     * @return mixed
+     */
+    private function vendorOrId($vendorsArray, $item)
+    {
+        if (!empty($vendorsArray)) {
+            return $this->vendorSearch($item[Profile::VENDOR], $vendorsArray);
+        } else {
+            if (trim($item[Profile::VENDOR_NAME])) {
+                return $item[Profile::VENDOR_NAME];
+            } else {
+                return $item[Profile::VENDOR];
+            }
+        }
     }
 }
