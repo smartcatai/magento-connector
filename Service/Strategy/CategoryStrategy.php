@@ -121,13 +121,12 @@ class CategoryStrategy extends AbstractStrategy
     }
 
     /**
-     * @param string $content
+     * @param $jsonContent
      * @param ProjectEntity $entity
      * @return bool
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function setContent($content, ProjectEntity $entity): bool
+    public function setContent($jsonContent, ProjectEntity $entity): bool
     {
         $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
 
@@ -135,29 +134,26 @@ class CategoryStrategy extends AbstractStrategy
             return false;
         }
 
-        /** @var Category[] $categories */
-        $categories = $this->categoryFactory->create()
-            ->addAttributeToSelect('*')
-            ->setProductStoreId($storeID);
-
-        $data = $this->decodeJsonParameters($content);
-
-        $categoryIds = array_map(function (Category $category) {
-            return $category->getId();
-        }, $categories);
+        $data = $this->decodeJsonParameters($jsonContent);
 
         foreach ($data as $id => $content) {
-            $index = array_search(explode('_', $id)[1], $categoryIds);
+            $index = explode('_', $id);
 
-            if ($index !== false) {
-                $categories[$index]->setName($content["name"])
+            if (count($index) == 2) {
+                /** @var Category $category */
+                $category = $this->categoryRepository->get($index[1], $storeID);
+
+                $category
+                    ->setData('name', $content["name"])
                     ->setData('description', $content["description"])
                     ->setData('meta_description', $content["meta_description"])
                     ->setData('meta_title', $content["meta_title"])
                     ->setData('meta_keywords', $content["meta_keywords"]);
 
-                $this->categoryRepository->save($categories[$index]);
+                $category->save();
             }
         }
+
+        return true;
     }
 }
