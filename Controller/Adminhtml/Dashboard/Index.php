@@ -21,21 +21,30 @@
 
 namespace SmartCat\Connector\Controller\Adminhtml\Dashboard;
 
-class Index extends \Magento\Backend\App\Action
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
+use SmartCat\Connector\Helper\SmartCatFacade;
+
+class Index extends Action
 {
     private $resultPageFactory;
+    private $smartCatService;
 
     /**
      * Constructor
      *
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
+     * @param SmartCatFacade $smartCatService
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
+        Context $context,
+        PageFactory $resultPageFactory,
+        SmartCatFacade $smartCatService
     ) {
         $this->resultPageFactory = $resultPageFactory;
+        $this->smartCatService = $smartCatService;
         parent::__construct($context);
     }
 
@@ -46,8 +55,20 @@ class Index extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        if (!$this->smartCatService->checkCredentials()) {
+            $this->messageManager->addComplexErrorMessage(
+                'urlMessage',
+                [
+                    'text' => "Smartcat credentials are incorrect. Please check configuration settings ",
+                    'url' => $this->getUrl('adminhtml/system_config/edit/section/smartcat_localization/'),
+                    'urlText' => "here",
+                ]
+            );
+        }
+
         $resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->prepend(__("Dashboard"));
+
         return $resultPage;
     }
 }

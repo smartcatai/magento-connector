@@ -84,8 +84,21 @@ class ProfileService
         $data[Profile::TARGET_LANG] = implode(',', $data[Profile::TARGET_LANG]);
         $data[Profile::STAGES] = implode(',', $data[Profile::STAGES]);
 
-        if (!empty($data[Profile::EXCLUDED_ATTRIBUTES])) {
-            $data[Profile::EXCLUDED_ATTRIBUTES] = implode(',', $data[Profile::EXCLUDED_ATTRIBUTES]);
+        if (!empty($data[Profile::VENDOR]) && $data[Profile::VENDOR] != 0) {
+            try {
+                $vendorsList = $this->smartCatService->getDirectoriesManager()
+                    ->directoriesGet(['type' => 'vendor'])
+                    ->getItems();
+
+                foreach ($vendorsList as $vendor) {
+                    if ($vendor->getId() == $data[Profile::VENDOR]) {
+                        $data[Profile::VENDOR_NAME] = $vendor->getName();
+                        break;
+                    }
+                }
+            } catch (\Throwable $e) {
+                $data[Profile::VENDOR_NAME] = null;
+            }
         }
 
         if (empty($data[Profile::NAME])) {

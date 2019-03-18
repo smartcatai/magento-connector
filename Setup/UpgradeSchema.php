@@ -54,6 +54,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->ver111($setup);
         }
 
+        if (version_compare($context->getVersion(), "1.1.2", "<")) {
+            $this->ver112($setup);
+        }
+
         if (version_compare($context->getVersion(), "1.2.0", "<")) {
             $this->ver120($setup);
         }
@@ -129,6 +133,25 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'nullable' => true,
                 ],
                 'comment' => 'Deadline Date',
+            ]
+        );
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function ver112(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('smartcat_connector_profile'),
+            'vendor_name',
+            [
+                'type' => Table::TYPE_TEXT,
+                'size' => null,
+                'options' => [
+                    'nullable' => true,
+                ],
+                'comment' => 'Vendor Name',
             ]
         );
     }
