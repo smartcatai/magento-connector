@@ -21,20 +21,14 @@
 
 namespace SmartCat\Connector\Cron;
 
-use Http\Client\Common\Exception\ClientErrorException;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use SmartCat\Client\Model\CreateProjectModel;
-use SmartCat\Client\Model\DocumentModel;
-use SmartCat\Client\Model\ProjectChangesModel;
 use SmartCat\Connector\Helper\ErrorHandler;
-use SmartCat\Connector\Helper\SmartCatFacade;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
-use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Module;
 use SmartCat\Connector\Service\ProfileService;
 use SmartCat\Connector\Service\ProjectEntityService;
 use SmartCat\Connector\Service\ProjectService;
+use SmartCat\Connector\Service\SmartCatService;
 use \Throwable;
 
 class SendProjects
@@ -42,15 +36,13 @@ class SendProjects
     private $smartCatService;
     private $projectService;
     private $errorHandler;
-    private $searchCriteriaBuilder;
     private $projectEntityService;
     private $profileService;
 
     public function __construct(
-        SmartCatFacade $smartCatService,
+        SmartCatService $smartCatService,
         ProjectService $projectService,
         ProfileService $profileService,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
         ErrorHandler $errorHandler,
         ProjectEntityService $projectEntityService
     ) {
@@ -58,7 +50,6 @@ class SendProjects
         $this->errorHandler = $errorHandler;
         $this->projectService = $projectService;
         $this->profileService = $profileService;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->projectEntityService = $projectEntityService;
     }
 
@@ -87,42 +78,14 @@ class SendProjects
     }
 
     /**
-     * @param \SmartCat\Connector\Api\Data\ProjectInterface|Project $project
+     * @param Project $project
      * @param Profile $profile
      */
     private function createProject(Project $project, Profile $profile)
     {
-        // Create and send project model to smartcat api
-        $projectManager = $this->smartCatService->getProjectManager();
-
-        $newProjectModel = (new CreateProjectModel())
-            ->setName($project->getElement())
-            ->setDescription('Magento SmartCat Connector. Product: ' . $project->getUniqueId())
-            ->setSourceLanguage($profile->getSourceLang())
-            ->setTargetLanguages($profile->getTargetLangArray())
-            ->setWorkflowStages($profile->getStagesArray())
-            ->setExternalTag(Module::EXTERNAL_TAG)
-            ->setAssignToVendor(false);
-
         try {
-            $projectModel = $projectManager->projectCreateProject($newProjectModel);
-            $smartcatDocuments = $projectManager->projectAddDocument([
-                'projectId' => $projectModel->getId(),
-                'documentModel' => $this->projectService->getProjectDocumentModels($project)
-            ]);
-
-            foreach ($smartcatDocuments as $smartcatDocument) {
-                $projectEntity = $this->projectEntityService->getEntityById($smartcatDocument->getExternalId());
-
-                if (!$projectEntity) {
-                    continue;
-                }
-
-                $projectEntity
-                    ->setStatus($smartcatDocument->getStatus())
-                    ->setDocumentId($smartcatDocument->getId());
-                $this->projectEntityService->update($projectEntity);
-            }
+            $projectModel = $this->smartCatService->createProject($project, $profile);
+            $this->smartCatService->addDocuments($projectModel, $project);
         } catch (Throwable $e) {
             $this->errorHandler->handleProjectError($e, $project, "SmartCat create project error");
             return;
@@ -140,13 +103,8 @@ class SendProjects
 
         // If Vendor ID exists - update project and set vendor
         if ($profile->getVendor()) {
-            $projectChanges = (new ProjectChangesModel())
-                ->setName($projectModel->getName())
-                ->setDescription($projectModel->getDescription())
-                ->setExternalTag(Module::EXTERNAL_TAG)
-                ->setVendorAccountIds([$profile->getVendor()]);
             try {
-                $projectManager->projectUpdateProject($projectModel->getId(), $projectChanges);
+                $this->smartCatService->updateProject($projectModel, Module::EXTERNAL_TAG, $profile->getVendor());
             } catch (Throwable $e) {
                 $this->errorHandler->handleProjectError($e, $project, "SmartCat error update project to vendor");
                 return;
@@ -155,67 +113,24 @@ class SendProjects
     }
 
     /**
-     * @param \SmartCat\Connector\Api\Data\ProjectInterface|Project $project
+     * @param Project $project
      * @param Profile $profile
      */
     private function updateProject(Project $project, Profile $profile)
     {
-        $projectManager = $this->smartCatService->getProjectManager();
-        $documentManager = $this->smartCatService->getDocumentManager();
-
         try {
-            $projectModel = $projectManager->projectGet($profile->getProjectGuid());
-            $smartCatDocuments = $projectModel->getDocuments();
+            $projectModel = $this->smartCatService->getProject($profile->getProjectGuid());
             $projectDocuments = $this->projectService->getProjectDocumentModels($project);
 
-            $smartCatNameDocuments = array_map(function (DocumentModel $value) {
-                return $value->getName();
-            }, $smartCatDocuments);
+            $this->smartCatService->updateDocuments(
+                $projectModel->getDocuments(),
+                $projectDocuments,
+                $projectModel->getId()
+            );
         } catch (Throwable $e) {
             $this->errorHandler->handleProjectError($e, $project, "SmartCat update project error");
             return;
         }
-
-        foreach ($projectDocuments as $projectDocument) {
-            $index = array_search($projectDocument->getFile()['fileName'], $smartCatNameDocuments);
-
-            $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
-
-            if (!$entity) {
-                continue;
-            }
-
-            try {
-                if ($index !== false) {
-                    /** @var DocumentModel $resDocument */
-                    $resDocument = $documentManager->documentUpdate([
-                        'documentId' => $smartCatDocuments[$index]->getId(),
-                        'uploadedFile' => $projectDocument->getFile()
-                    ]);
-                } else {
-                    $resDocument = $projectManager->projectAddDocument([
-                        'projectId' => $projectModel->getId(),
-                        'documentModel' => [$projectDocument]
-                    ]);
-                }
-
-                $project->setIsStatisticsBuilded(false);
-                $entity
-                    ->setStatus($resDocument->getStatus())
-                    ->setDocumentId($resDocument->getId());
-            } catch (Throwable $e) {
-                $this->errorHandler->logError("SmartCat update project error: {$e->getMessage()}");
-
-                if ($e instanceof ClientErrorException) {
-                    continue;
-                }
-
-                $entity->setStatus(ProjectEntity::STATUS_FAILED);
-            }
-            $this->projectEntityService->update($entity);
-        }
-
-        $projectDocuments = $this->projectService->getProjectDocumentModels($project);
 
         if (empty($projectDocuments)) {
             $project->setStatus($projectModel->getStatus());
@@ -226,12 +141,8 @@ class SendProjects
         }
 
         if ($projectModel->getExternalTag() != Module::EXTERNAL_TAG) {
-            $projectChanges = (new ProjectChangesModel())
-                ->setName($projectModel->getName())
-                ->setDescription($projectModel->getDescription())
-                ->setExternalTag(Module::EXTERNAL_TAG);
             try {
-                $projectManager->projectUpdateProject($projectModel->getId(), $projectChanges);
+                $this->smartCatService->updateProject($projectModel, Module::EXTERNAL_TAG);
             } catch (Throwable $e) {
                 $this->errorHandler->handleProjectError($e, $project, "SmartCat error update project external tag");
                 return;
