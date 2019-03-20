@@ -72,7 +72,7 @@ class ExportDocuments
                     ? ProjectEntity::STATUS_COMPLETED : ProjectEntity::STATUS_FAILED;
                 $entity->setStatus($status);
                 $this->errorHandler
-                    ->logError("SmartCat API Error: An error occurred on document export {$e->getMessage()}");
+                    ->logError("Document export error: Task id {$entity->getTaskId()} {$e->getMessage()}");
                 $this->projectEntityService->update($entity);
                 continue;
             }
@@ -88,7 +88,7 @@ class ExportDocuments
                 $strategy->setContent($content, $entity);
             } catch (Throwable $e) {
                 $this->errorHandler
-                    ->logError("Can't save content to entity {$entity->getId()}");
+                    ->logError("Can't save content to entity {$entity->getId()}. Error: {$e->getMessage()}");
 
                 if ($e instanceof NoSuchEntityException) {
                     $entity->setStatus(ProjectEntity::STATUS_FAILED);
