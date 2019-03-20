@@ -134,6 +134,7 @@
             <settings>
                 <bodyTmpl>ui/grid/cells/html</bodyTmpl>
                 <label translate="true">Smartcat project</label>
+                <sortable>false</sortable>
             </settings>
         </column>
     </columns>
