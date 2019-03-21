@@ -200,10 +200,28 @@ class SendProjects
                     ]);
                 }
 
+                $this->errorHandler->logInfo("resDocument: " . json_encode($resDocument));
+                
                 $project->setIsStatisticsBuilded(false);
-                $entity
-                    ->setStatus($resDocument->getStatus())
-                    ->setDocumentId($resDocument->getId());
+
+                if (is_array($resDocument)) {
+                    foreach ($resDocument as $smartcatDocument) {
+                        $projectEntity = $this->projectEntityService->getEntityById($smartcatDocument->getExternalId());
+
+                        if (!$projectEntity) {
+                            continue;
+                        }
+
+                        $projectEntity
+                            ->setStatus($smartcatDocument->getStatus())
+                            ->setDocumentId($smartcatDocument->getId());
+                        $this->projectEntityService->update($projectEntity);
+                    }
+                } else {
+                    $entity
+                        ->setStatus($resDocument->getStatus())
+                        ->setDocumentId($resDocument->getId());
+                }
             } catch (Throwable $e) {
                 $this->errorHandler->logError("SmartCat update project {$project->getId()} error: {$e->getMessage()}");
 
