@@ -71,17 +71,21 @@ class SendProjects
 
         $projects = $this->projectService->getWaitingProjects();
 
+        $this->errorHandler->logInfo("SC_DEBUG: Waiting projects = " . count($projects));
+
         foreach ($projects as $project) {
             try {
                 $profile = $this->profileService->getProfileByProject($project);
 
                 if ($project->getGuid()) {
+                    $this->errorHandler->logInfo("SC_DEBUG: Update project {$project->getId()}");
                     $this->updateProject($project, $profile);
                 } else {
+                    $this->errorHandler->logInfo("SC_DEBUG: Create project {$project->getId()}");
                     $this->createProject($project, $profile);
                 }
             } catch (Throwable $e) {
-                $this->errorHandler->handleError($e, "SmartCat sending project error");
+                $this->errorHandler->handleProjectError($e, $project, "SmartCat sending project error:");
                 continue;
             }
         }
