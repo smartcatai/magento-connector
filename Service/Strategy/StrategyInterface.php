@@ -27,6 +27,8 @@ use SmartCat\Connector\Model\ProjectEntity;
 
 interface StrategyInterface
 {
+    const EXTENSION = '.json';
+
     /**
      * @return string[]
      */

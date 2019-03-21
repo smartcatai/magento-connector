@@ -110,7 +110,7 @@ class CategoryStrategy extends AbstractStrategy
         }
 
         $data = json_encode($data);
-        $fileName = "({$entity->getTargetLang()}).json";
+        $fileName = "({$entity->getTargetLang()})" . self::EXTENSION;
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }

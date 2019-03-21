@@ -92,7 +92,7 @@ class BlockStrategy extends AbstractStrategy
         $block = $this->blockRepository->getById($entity->getEntityId());
 
         $data = $this->encodeJsonParameters($block);
-        $fileName = "{$block->getTitle()}({$entity->getTargetLang()}).json";
+        $fileName = "{$block->getTitle()}({$entity->getTargetLang()})"  . self::EXTENSION;
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
