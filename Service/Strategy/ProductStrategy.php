@@ -130,7 +130,7 @@ class ProductStrategy extends AbstractStrategy
         }
 
         $data = json_encode($attributes);
-        $fileName = "{$product->getSku()}({$entity->getTargetLang()}).json";
+        $fileName = "{$product->getSku()}({$entity->getTargetLang()})" . self::EXTENSION;
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }

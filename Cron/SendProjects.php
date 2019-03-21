@@ -35,6 +35,7 @@ use SmartCat\Connector\Module;
 use SmartCat\Connector\Service\ProfileService;
 use SmartCat\Connector\Service\ProjectEntityService;
 use SmartCat\Connector\Service\ProjectService;
+use SmartCat\Connector\Service\Strategy\StrategyInterface;
 use \Throwable;
 
 class SendProjects
@@ -169,7 +170,7 @@ class SendProjects
             $projectDocuments = $this->projectService->getProjectDocumentModels($project);
 
             $smartCatDocumentNames = array_map(function (DocumentModel $value) {
-                return $value->getName();
+                return $value->getName() . StrategyInterface::EXTENSION;
             }, $smartCatDocuments);
         } catch (Throwable $e) {
             $this->errorHandler->handleProjectError($e, $project, "SmartCat update project error");
