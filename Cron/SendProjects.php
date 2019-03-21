@@ -224,6 +224,7 @@ class SendProjects
                     $entity
                         ->setStatus($resDocument->getStatus())
                         ->setDocumentId($resDocument->getId());
+                    $this->projectEntityService->update($entity);
                 }
             } catch (Throwable $e) {
                 if ($e instanceof ClientErrorException) {
@@ -242,9 +243,7 @@ class SendProjects
             $this->projectEntityService->update($entity);
         }
 
-        $projectDocuments = $this->projectService->getProjectDocumentModels($project);
-
-        if (empty($projectDocuments)) {
+        if (!empty($projectDocuments)) {
             $project->setStatus($projectModel->getStatus());
         }
 
