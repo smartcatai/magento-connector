@@ -221,12 +221,17 @@ class SendProjects
                         ->setDocumentId($resDocument->getId());
                 }
             } catch (Throwable $e) {
-                $this->errorHandler->logError("SmartCat update project {$project->getId()} error: {$e->getMessage()}");
-
                 if ($e instanceof ClientErrorException) {
+                    $this->errorHandler->logError(sprintf(
+                        "SmartCat update project %s error: %s %s",
+                        $project->getId(),
+                        $e->getResponse()->getStatusCode(),
+                        $e->getResponse()->getBody()->getContents()
+                    ));
                     continue;
                 }
 
+                $this->errorHandler->logError("SmartCat update project {$project->getId()} error: {$e->getMessage()}");
                 $entity->setStatus(ProjectEntity::STATUS_FAILED);
             }
             $this->projectEntityService->update($entity);
