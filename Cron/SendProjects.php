@@ -168,8 +168,8 @@ class SendProjects
             $smartCatDocuments = $projectModel->getDocuments();
             $projectDocuments = $this->projectService->getProjectDocumentModels($project);
 
-            $smartCatDocumentExternalIds = array_map(function (DocumentModel $value) {
-                return $value->getExternalId();
+            $smartCatDocumentNames = array_map(function (DocumentModel $value) {
+                return $value->getName();
             }, $smartCatDocuments);
         } catch (Throwable $e) {
             $this->errorHandler->handleProjectError($e, $project, "SmartCat update project error");
@@ -177,7 +177,7 @@ class SendProjects
         }
 
         foreach ($projectDocuments as $projectDocument) {
-            $index = array_search($projectDocument->getExternalId(), $smartCatDocumentExternalIds);
+            $index = array_search($projectDocument->getFile()['fileName'], $smartCatDocumentNames);
 
             $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
 
@@ -200,8 +200,6 @@ class SendProjects
                     ]);
                 }
 
-                $this->errorHandler->logInfo("resDocument: " . json_encode($resDocument));
-                
                 $project->setIsStatisticsBuilded(false);
 
                 if (is_array($resDocument)) {
