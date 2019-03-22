@@ -205,7 +205,7 @@ class SendProjects
 
                 if (is_array($resDocument)) {
                     foreach ($resDocument as $smartcatDocument) {
-                        $projectEntity = $this->projectEntityService->getEntityById($smartcatDocument->getExternalId());
+                        $projectEntity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
 
                         if (!$projectEntity) {
                             continue;
@@ -234,7 +234,9 @@ class SendProjects
             $this->projectEntityService->update($entity);
         }
 
-        if (!empty($projectDocuments)) {
+        /** Если документов в статусе New больше не осталось - тогда меняем статус проекта */
+        $projectDocuments = $this->projectService->getProjectDocumentModels($project);
+        if (empty($projectDocuments)) {
             $project->setStatus($projectModel->getStatus());
         }
 
