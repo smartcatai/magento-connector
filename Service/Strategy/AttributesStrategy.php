@@ -152,7 +152,8 @@ class AttributesStrategy extends AbstractStrategy
             ->getList('catalog_product', $searchCriteria)
             ->getItems();
 
-        $attributeNames = array_map(function (Attribute $attribute) {
+        $attributeNames = array_map(function ($attribute) {
+            /** @var $attribute Attribute */
             return $attribute->getName();
         }, $attributesList);
 
