@@ -117,11 +117,11 @@
                 <label translate="true">Status</label>
             </settings>
         </column>
-        <column name="deadline" sortOrder="70">
+        <column name="deadline" component="Magento_Ui/js/grid/columns/date" sortOrder="70">
             <settings>
                 <filter>dateRange</filter>
                 <dataType>date</dataType>
-                <dateFormat>Y-MM-dd HH:mm</dateFormat>
+                <dateFormat>Y-MM-dd HH:mm UTC</dateFormat>
                 <label translate="true">Deadline</label>
             </settings>
         </column>
