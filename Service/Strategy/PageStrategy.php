@@ -23,7 +23,7 @@ namespace SmartCat\Connector\Service\Strategy;
 
 use Magento\Cms\Model\Page;
 use Magento\Cms\Model\PageFactory;
-use Magento\Cms\Model\PageRepository;
+use SmartCat\Connector\Model\PageRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
@@ -158,18 +158,27 @@ class PageStrategy extends AbstractStrategy
 
         if ($entity->getAttribute() == $this->parametersTag) {
             $parameters = $this->decodeJsonParameters($content);
-            $newPage = $this->pageFactory->create();
+            $duplicate = $this->pageRepository->getListByIdentifier($page->getIdentifier(), $storeID);
+
+            if (!empty($duplicate)) {
+                $newPage = $duplicate[0];
+            } else {
+                $newPage = $this->pageFactory->create();
+
+                $newPage
+                    ->setStoreId([$storeID])
+                    ->setIsActive(true)
+                    ->setIdentifier($page->getIdentifier())
+                    ->setPageLayout($page->getPageLayout());
+            }
+
             $newPage
-                ->setStoreId([$storeID])
                 ->setTitle($parameters['title'])
                 ->setMetaTitle($parameters['meta_title'])
                 ->setMetaDescription($parameters['meta_description'])
                 ->setMetaKeywords($parameters['meta_keywords'])
                 ->setContentHeading($parameters['content_heading'])
-                ->setContent($parameters['content'])
-                ->setIsActive(true)
-                ->setIdentifier($page->getIdentifier())
-                ->setPageLayout($page->getPageLayout());
+                ->setContent($parameters['content']);
 
             $this->pageRepository->save($newPage);
 
