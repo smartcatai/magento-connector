@@ -21,33 +21,33 @@
 
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
+use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
-use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Helper\ConfigurationHelper;
 use SmartCat\Connector\Model\ProjectEntity;
+use SmartCat\Connector\Service\Strategy\StrategyLoader;
 
-class SmartCatDocumentColumn extends Column
+class ElementColumn extends Column
 {
-    private $configurationHelper;
+    private $strategyLoader;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param ConfigurationHelper $configurationHelper
+     * @param StrategyLoader $strategyLoader
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        ConfigurationHelper $configurationHelper,
+        StrategyLoader $strategyLoader,
         array $components = [],
         array $data = []
     ) {
-        $this->configurationHelper = $configurationHelper;
+        $this->strategyLoader = $strategyLoader;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -61,10 +61,8 @@ class SmartCatDocumentColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if ($item[$this->getData('name')] == ProjectEntity::DOCUMENT_ID) {
-                    if (isset($item[$this->getData('name')])) {
-                        $item[$this->getData('name')] = $this->getHtml($item[$this->getData('name')]);
-                    }
+                if ($this->getData('name') == ProjectEntity::ENTITY_ID) {
+                    $item[$this->getData('name')] = $this->getColumnHtml($item);
                 }
             }
         }
@@ -73,33 +71,20 @@ class SmartCatDocumentColumn extends Column
     }
 
     /**
-     * @param $documentId
+     * @param $item
      * @return string
      */
-    private function getProjectUrl($documentId)
+    private function getColumnHtml($item)
     {
-        $doc = explode('_', $documentId);
+        $strategy = $this->strategyLoader->getStrategyByType($item[ProjectEntity::ENTITY]);
 
-        if (count($doc) != 2) {
-            return null;
+        if (!$strategy) {
+            return '';
         }
 
-        return "https://{$this->configurationHelper->getServer()}/Editor?DocumentId={$doc[0]}&LanguageId={$doc[1]}";
-    }
+        $url = $strategy->getUrlToEntity($item[ProjectEntity::ENTITY_ID]);
+        $text = $strategy->getEntityName($item[ProjectEntity::ENTITY_ID]);
 
-    /**
-     * @param $documentId
-     * @return string
-     */
-    private function getHtml($documentId)
-    {
-        $text = __('Go to Smartcat');
-        $url = $this->getProjectUrl($documentId);
-
-        if ($url) {
-            return "<a href='{$url}' target='_blank'>{$text}</a>";
-        }
-
-        return '';
+        return "<a href='{$url}' target='_blank'>{$text}</a>";
     }
 }

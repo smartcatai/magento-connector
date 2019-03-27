@@ -53,5 +53,13 @@ class UpgradeData implements UpgradeDataInterface
         $setup->getConnection()->query(
             "UPDATE smartcat_connector_project_entity SET type = (SELECT SUBSTRING_INDEX(type, '|', 2));"
         );
+
+        $setup->getConnection()->query(
+            "UPDATE smartcat_connector_project_entity SET entity = (SELECT SUBSTRING_INDEX(type, '|', 1));"
+        );
+
+        $setup->getConnection()->query(
+            "UPDATE smartcat_connector_project_entity SET type = (SELECT SUBSTRING_INDEX(type, '|', -1));"
+        );
     }
 }

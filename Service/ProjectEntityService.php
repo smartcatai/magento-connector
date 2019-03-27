@@ -60,13 +60,15 @@ class ProjectEntityService
      * @param AbstractModel $entity
      * @param Profile $profile
      * @param string $type
+     * @param $entityName
      */
-    public function create(Project $project, $entity, Profile $profile, $type)
+    public function create(Project $project, $entity, Profile $profile, $type, $entityName)
     {
         foreach ($profile->getTargetLangArray() as $targetLang) {
             $projectEntity = $this->projectEntityRepository->create();
             $projectEntity
                 ->setType($type)
+                ->setEntity($entityName)
                 ->setStatus(ProjectEntity::STATUS_NEW)
                 ->setTargetLang($targetLang)
                 ->setProjectId($project->getId());
@@ -146,7 +148,7 @@ class ProjectEntityService
             ->addFilter(ProjectEntity::STATUS, ProjectEntity::STATUS_NEW);
 
         if ($type) {
-            $searchCriteria->addFilter(ProjectEntity::TYPE, $type . '|%', 'like');
+            $searchCriteria->addFilter(ProjectEntity::TYPE, $type);
         }
 
         $list = $this->projectEntityRepository->getList($searchCriteria->create())->getItems();

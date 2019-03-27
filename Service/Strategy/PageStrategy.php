@@ -74,7 +74,7 @@ class PageStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . $this->parametersTag);
+        $this->projectEntityService->create($project, $model, $profile, self::getType(), $this->parametersTag);
     }
 
     /**
@@ -156,7 +156,7 @@ class PageStrategy extends AbstractStrategy
 
         $page = $this->pageRepository->getById($entity->getEntityId());
 
-        if ($entity->getAttribute() == $this->parametersTag) {
+        if ($entity->getType() == $this->parametersTag) {
             $parameters = $this->decodeJsonParameters($content);
             $duplicate = $this->pageRepository->getListByIdentifier($page->getIdentifier(), $storeID);
 

@@ -74,4 +74,19 @@ class StrategyLoader
 
         return null;
     }
+
+    /**
+     * @return array
+     */
+    public function getEntityNames()
+    {
+        $names = [];
+
+        /** @var StrategyInterface $strategy */
+        foreach ($this->strategies as $strategy) {
+            $names[] = $strategy::getType();
+        }
+
+        return $names;
+    }
 }

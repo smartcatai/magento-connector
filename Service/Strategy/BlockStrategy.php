@@ -75,7 +75,7 @@ class BlockStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . $this->parametersTag);
+        $this->projectEntityService->create($project, $model, $profile, self::getType(), $this->parametersTag);
     }
 
     /**
@@ -153,7 +153,7 @@ class BlockStrategy extends AbstractStrategy
 
         $block = $this->blockRepository->getById($entity->getEntityId());
 
-        if ($entity->getAttribute() == $this->parametersTag) {
+        if ($entity->getType() == $this->parametersTag) {
             $parameters = $this->decodeJsonParameters($content);
             $newBlock = $this->blockFactory->create();
 
