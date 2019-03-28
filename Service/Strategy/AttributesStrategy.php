@@ -163,13 +163,14 @@ class AttributesStrategy extends AbstractStrategy
             $index = array_search($name, $attributeNames);
 
             if ($index !== false) {
+                $attribute = clone $attributesList[$index];
                 $frontendLabels = array_merge(
-                    $attributesList[$index]->getFrontendLabels(),
+                    $attribute->getFrontendLabels(),
                     [$this->attributeFrontendLabelFactory->create()->setStoreId($storeID)->setLabel($label)]
                 );
-                $attributesList[$index]->setFrontendLabels($frontendLabels);
+                $attribute->setFrontendLabels($frontendLabels);
 
-                $this->attributeRepository->save($attributesList[$index]);
+                $this->attributeRepository->save($attribute);
             }
         }
     }
