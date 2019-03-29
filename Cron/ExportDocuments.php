@@ -90,9 +90,6 @@ class ExportDocuments
                 $this->errorHandler
                     ->logError("Can't save content to entity {$entity->getId()}. Error: {$e->getMessage()}");
 
-                $this->errorHandler
-                    ->logError($e->getTraceAsString());
-
                 if ($e instanceof NoSuchEntityException) {
                     $entity->setStatus(ProjectEntity::STATUS_FAILED);
                     $this->projectEntityService->update($entity);

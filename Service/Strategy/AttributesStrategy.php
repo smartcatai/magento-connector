@@ -102,7 +102,9 @@ class AttributesStrategy extends AbstractStrategy
             ->getItems();
 
         foreach ($attributesList as $attribute) {
-            $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel(0)]);
+            if ($attribute->getDefaultFrontendLabel()) {
+                $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel(0)]);
+            }
         }
 
         $data = json_encode($data);
@@ -162,7 +164,7 @@ class AttributesStrategy extends AbstractStrategy
         foreach ($data as $name => $label) {
             $index = array_search($name, $attributeNames);
 
-            if ($index !== false) {
+            if ($index !== false && trim($label)) {
                 $attribute = clone $attributesList[$index];
                 $frontendLabels = array_merge(
                     $attribute->getFrontendLabels(),
