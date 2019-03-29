@@ -22,38 +22,39 @@
 namespace SmartCat\Connector\Model;
 
 use Magento\Cms\Api\Data;
-use Magento\Cms\Model\Page;
-use Magento\Cms\Model\PageFactory;
+use Magento\Cms\Model\Block;
+use Magento\Cms\Model\BlockFactory;
+use Magento\Cms\Model\ResourceModel\Block as ResourceBlock;
+use Magento\Cms\Model\ResourceModel\Block\CollectionFactory as BlockCollectionFactory;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Reflection\DataObjectProcessor;
-use Magento\Cms\Model\ResourceModel\Page as ResourcePage;
-use Magento\Cms\Model\ResourceModel\Page\CollectionFactory as PageCollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
 
-class PageRepository extends \Magento\Cms\Model\PageRepository
+class BlockRepository extends \Magento\Cms\Model\BlockRepository
 {
     private $searchCriteriaBuilder;
 
     /**
-     * @param ResourcePage $resource
-     * @param PageFactory $pageFactory
-     * @param Data\PageInterfaceFactory $dataPageFactory
-     * @param PageCollectionFactory $pageCollectionFactory
-     * @param Data\PageSearchResultsInterfaceFactory $searchResultsFactory
+     * BlockRepository constructor.
+     * @param ResourceBlock $resource
+     * @param BlockFactory $blockFactory
+     * @param Data\BlockInterfaceFactory $dataBlockFactory
+     * @param BlockCollectionFactory $blockCollectionFactory
+     * @param Data\BlockSearchResultsInterfaceFactory $searchResultsFactory
      * @param DataObjectHelper $dataObjectHelper
      * @param DataObjectProcessor $dataObjectProcessor
      * @param StoreManagerInterface $storeManager
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param CollectionProcessorInterface $collectionProcessor
+     * @param CollectionProcessorInterface|null $collectionProcessor
      */
     public function __construct(
-        ResourcePage $resource,
-        PageFactory $pageFactory,
-        Data\PageInterfaceFactory $dataPageFactory,
-        PageCollectionFactory $pageCollectionFactory,
-        Data\PageSearchResultsInterfaceFactory $searchResultsFactory,
+        ResourceBlock $resource,
+        BlockFactory $blockFactory,
+        Data\BlockInterfaceFactory $dataBlockFactory,
+        BlockCollectionFactory $blockCollectionFactory,
+        Data\BlockSearchResultsInterfaceFactory $searchResultsFactory,
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
         StoreManagerInterface $storeManager,
@@ -61,12 +62,11 @@ class PageRepository extends \Magento\Cms\Model\PageRepository
         CollectionProcessorInterface $collectionProcessor = null
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-
         parent::__construct(
             $resource,
-            $pageFactory,
-            $dataPageFactory,
-            $pageCollectionFactory,
+            $blockFactory,
+            $dataBlockFactory,
+            $blockCollectionFactory,
             $searchResultsFactory,
             $dataObjectHelper,
             $dataObjectProcessor,
@@ -78,17 +78,17 @@ class PageRepository extends \Magento\Cms\Model\PageRepository
     /**
      * @param $identifier
      * @param null $storeId
-     * @return array|Data\PageInterface[]
+     * @return array|Data\BlockInterface[]
      */
     public function getListByIdentifier($identifier, $storeId = null)
     {
-        $searchCriteria = $this->searchCriteriaBuilder->addFilter(Page::IDENTIFIER, $identifier)->create();
+        $searchCriteria = $this->searchCriteriaBuilder->addFilter(Block::IDENTIFIER, $identifier)->create();
 
         $items = $this->getList($searchCriteria)->getItems();
 
         if ($storeId) {
             $items = array_filter($items, function ($item) use ($storeId) {
-                /** @var Page $item */
+                /** @var Block $item */
                 return in_array($storeId, $item->getStoreId());
             });
         }
