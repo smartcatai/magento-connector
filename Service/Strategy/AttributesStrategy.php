@@ -175,6 +175,8 @@ class AttributesStrategy extends AbstractStrategy
                 $this->attributeRepository->save($attribute);
             }
         }
+
+        return true;
     }
 
     /**
