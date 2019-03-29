@@ -179,6 +179,8 @@ class AttributesStrategy extends AbstractStrategy
                 }
             }
         }
+
+        return true;
     }
 
     /**
