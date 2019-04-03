@@ -76,7 +76,7 @@ class ElementColumn extends Column
      */
     private function getColumnHtml($item)
     {
-        $strategy = $this->strategyLoader->getStrategyByType($item[ProjectEntity::ENTITY]);
+        $strategy = $this->strategyLoader->getStrategyByType(strtolower($item[ProjectEntity::ENTITY]));
 
         if (!$strategy) {
             return '';
