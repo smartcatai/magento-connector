@@ -61,7 +61,7 @@ class SmartCatDocumentColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if ($item[$this->getData('name')] == ProjectEntity::DOCUMENT_ID) {
+                if ($this->getData('name') == ProjectEntity::DOCUMENT_ID) {
                     if (isset($item[$this->getData('name')])) {
                         $item[$this->getData('name')] = $this->getHtml($item[$this->getData('name')]);
                     }
