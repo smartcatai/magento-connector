@@ -137,10 +137,6 @@ class SendProjects
             ->setGuid($projectModel->getId())
             ->setStatus($projectModel->getStatus());
 
-        if ($projectModel->getDeadline()) {
-            $project->setDeadline($projectModel->getDeadline()->format('U'));
-        }
-
         $this->projectService->update($project);
 
         // If Vendor ID exists - update project and set vendor
@@ -256,6 +252,8 @@ class SendProjects
         if ($projectModel->getExternalTag() != Module::EXTERNAL_TAG) {
             $projectChanges = (new ProjectChangesModel())
                 ->setName($projectModel->getName())
+                ->setDeadline($projectModel->getDeadline())
+                ->setClientId($projectModel->getClientId())
                 ->setDescription($projectModel->getDescription())
                 ->setExternalTag(Module::EXTERNAL_TAG);
             try {
