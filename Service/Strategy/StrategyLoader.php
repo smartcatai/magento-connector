@@ -65,9 +65,11 @@ class StrategyLoader
 
     public function getStrategyByType($type)
     {
+        $type = strtolower($type);
+
         /** @var StrategyInterface $strategy */
         foreach ($this->strategies as $strategy) {
-            if ($type === $strategy::getType()) {
+            if ($type === strtolower($strategy::getType())) {
                 return $strategy;
             }
         }
