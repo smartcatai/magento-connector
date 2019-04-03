@@ -23,7 +23,7 @@ namespace SmartCat\Connector\Service\Strategy;
 
 use Magento\Cms\Model\Block;
 use Magento\Cms\Model\BlockFactory;
-use Magento\Cms\Model\BlockRepository;
+use SmartCat\Connector\Model\BlockRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
@@ -75,7 +75,7 @@ class BlockStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . $this->parametersTag);
+        $this->projectEntityService->create($project, $model, $profile, self::getType(), $this->parametersTag);
     }
 
     /**
@@ -153,16 +153,24 @@ class BlockStrategy extends AbstractStrategy
 
         $block = $this->blockRepository->getById($entity->getEntityId());
 
-        if ($entity->getAttribute() == $this->parametersTag) {
+        if ($entity->getType() == $this->parametersTag) {
             $parameters = $this->decodeJsonParameters($content);
-            $newBlock = $this->blockFactory->create();
+            $newIdentifier = $block->getIdentifier() . '_' . $entity->getTargetLang();
+            $duplicate = $this->blockRepository->getListByIdentifier($newIdentifier);
+
+            if (!empty($duplicate)) {
+                $newBlock = $duplicate[0];
+            } else {
+                $newBlock = $this->blockFactory->create();
+                $newBlock
+                    ->setIsActive(true)
+                    ->setStoreId([$storeID])
+                    ->setIdentifier($newIdentifier);
+            }
 
             $newBlock
-                ->setStoreId([$storeID])
                 ->setContent($parameters['content'])
-                ->setTitle($parameters['title'])
-                ->setIsActive(true)
-                ->setIdentifier($block->getIdentifier() . '_' . $entity->getTargetLang());
+                ->setTitle($parameters['title']);
 
             $this->blockRepository->save($newBlock);
 

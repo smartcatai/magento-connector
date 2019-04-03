@@ -31,6 +31,7 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     const TASK_ID = 'task_id';
     const ID = 'id';
     const TARGET_LANG = 'target_lang';
+    const ENTITY = 'entity';
 
     const STATUS_NEW = 'new';
     const STATUS_SENDED = 'sended';
@@ -202,19 +203,22 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     }
 
     /**
-     * @return string|null
-     */
-    public function getAttribute()
-    {
-        return explode('|', $this->getType())[1] ?? null;
-    }
-
-    /**
-     * @return string|null
+     * Get Entity name
+     * @return string
      */
     public function getEntity()
     {
-        return explode('|', $this->getType())[0] ?? null;
+        return $this->getData(self::ENTITY);
+    }
+
+    /**
+     * Set Entity name
+     * @param string $entity
+     * @return ProjectEntity
+     */
+    public function setEntity($entity)
+    {
+        return $this->setData(self::ENTITY, $entity);
     }
 
     /**

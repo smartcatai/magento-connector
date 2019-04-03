@@ -89,12 +89,7 @@ class ProductStrategy extends AbstractStrategy
      */
     public function attach($product, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create(
-            $project,
-            $product,
-            $profile,
-            self::getType() . '|' . $this->parametersTag
-        );
+        $this->projectEntityService->create($project, $product, $profile, self::getType(), $this->parametersTag);
     }
 
     /**
@@ -189,7 +184,7 @@ class ProductStrategy extends AbstractStrategy
             return false;
         }
 
-        if ($entity->getAttribute() == $this->parametersTag) {
+        if ($entity->getType() == $this->parametersTag) {
             $attributes = $this->decodeJsonParameters($content);
 
             /** @var Product $product */

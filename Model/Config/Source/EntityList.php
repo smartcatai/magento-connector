@@ -19,29 +19,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Ui\Component\Listing\Column;
+namespace SmartCat\Connector\Model\Config\Source;
 
-use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\ProjectEntity;
+use Magento\Framework\Option\ArrayInterface;
+use SmartCat\Connector\Service\Strategy\StrategyLoader;
 
-class EntityColumn extends Column
+class EntityList implements ArrayInterface
 {
+    private $strategyLoader;
+
     /**
-     * Prepare Data Source
-     *
-     * @param array $dataSource
+     * ProfilesList constructor.
+     * @param StrategyLoader $strategyLoader
+     */
+    public function __construct(StrategyLoader $strategyLoader)
+    {
+        $this->strategyLoader = $strategyLoader;
+    }
+
+    /**
      * @return array
      */
-    public function prepareDataSource(array $dataSource)
+    public function toOptionArray()
     {
-        if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') == ProjectEntity::ENTITY) {
-                    $item[$this->getData('name')] = ucfirst($item[$this->getData('name')]);
-                }
+        $entities = [];
+
+        $entityList = $this->strategyLoader->getEntityNames();
+
+        if (!empty($entityList)) {
+            foreach ($entityList as $entity) {
+                $entities[] = [
+                    'label' => ucfirst($entity),
+                    'value' => $entity
+                ];
             }
         }
 
-        return $dataSource;
+        return $entities;
     }
 }

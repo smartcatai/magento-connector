@@ -79,12 +79,7 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create(
-            $project,
-            $model,
-            $profile,
-            self::getType() . '|' . $this->parametersTag
-        );
+        $this->projectEntityService->create($project, $model, $profile, self::getType(), $this->parametersTag);
     }
 
     /**
