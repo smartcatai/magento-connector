@@ -59,7 +59,7 @@ class Attributes extends \Magento\Backend\App\Action
 
         try {
             $profile = $this->profileService->getProfileById($profilesIds);
-            $this->projectService->createByKey(AttributesStrategy::getType(), $profile);
+            $this->projectService->createByKey(AttributesStrategy::getEntityName(), $profile);
 
             $this->messageManager->addSuccessMessage(__('All attributes were sent to localization'));
         } catch (\Throwable $e) {

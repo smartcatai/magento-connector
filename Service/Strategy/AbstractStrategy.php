@@ -54,7 +54,7 @@ abstract class AbstractStrategy implements StrategyInterface
      * @param string[] $strings
      * @return string
      */
-    public function getName(array $strings)
+    public function getElementNames(array $strings)
     {
         if (empty($strings)) {
             $strings = [uniqid()];
@@ -98,7 +98,7 @@ abstract class AbstractStrategy implements StrategyInterface
     public function getDocumentModels(Project $project)
     {
         $documentModels = [];
-        $entities = $this->projectEntityService->getNewProjectEntities($project, self::getType());
+        $entities = $this->projectEntityService->getNewProjectEntities($project, self::getEntityName());
 
         foreach ($entities as $entity) {
             $documentModel = $this->getDocumentModel($entity);

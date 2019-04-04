@@ -78,7 +78,7 @@ class ProjectService
         $strategy = $this->strategyLoader->getStrategyByModel(get_class($models[0]));
 
         try {
-            $project = $this->create($strategy->getName($models), $profile);
+            $project = $this->create($strategy->getElementNames($models), $profile);
             foreach ($models as $model) {
                 $strategy->attach($model, $project, $profile);
             }
@@ -102,7 +102,7 @@ class ProjectService
         $strategy = $this->strategyLoader->getStrategyByType($key);
 
         try {
-            $project = $this->create($strategy->getName([]), $profile);
+            $project = $this->create($strategy->getElementNames([]), $profile);
             $strategy->attach(null, $project, $profile);
         } catch (Throwable $e) {
             $message = $this->errorHandler->handleError($e, "Error save project to db");

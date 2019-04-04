@@ -62,7 +62,7 @@ class ProjectEntityService
      * @param string $type
      * @param $entityName
      */
-    public function create(Project $project, $entity, Profile $profile, $type, $entityName)
+    public function create(Project $project, $entity, Profile $profile, $entityName, $type)
     {
         foreach ($profile->getTargetLangArray() as $targetLang) {
             $projectEntity = $this->projectEntityRepository->create();

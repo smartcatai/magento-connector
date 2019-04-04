@@ -58,12 +58,12 @@ interface StrategyInterface
      * @param \Magento\Framework\Model\AbstractModel[] $models
      * @return string
      */
-    public function getName(array $models);
+    public function getElementNames(array $models);
 
     /**
      * @return string
      */
-    public static function getType();
+    public static function getEntityName();
 
     /**
      * @param string $content
@@ -76,7 +76,7 @@ interface StrategyInterface
      * @param $entityId
      * @return string
      */
-    public function getEntityName($entityId);
+    public function getEntityNormalName($entityId);
 
     /**
      * @param $entityId

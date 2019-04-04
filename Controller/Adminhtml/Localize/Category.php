@@ -58,7 +58,7 @@ class Category extends \Magento\Backend\App\Action
 
         try {
             $profile = $this->profileService->getProfileById($profilesIds);
-            $this->projectService->createByKey(CategoryStrategy::getType(), $profile);
+            $this->projectService->createByKey(CategoryStrategy::getEntityName(), $profile);
 
             $this->messageManager->addSuccessMessage(__('All categories were sent to localization'));
         } catch (\Throwable $e) {
