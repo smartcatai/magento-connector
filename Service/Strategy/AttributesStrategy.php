@@ -37,7 +37,7 @@ class AttributesStrategy extends AbstractStrategy
     private $attributeRepository;
     private $searchCriteriaBuilder;
     private $attributeFrontendLabelFactory;
-    private $parametersTag = 'all';
+    private $typeTag = 'all';
 
     /**
      * AttributesStrategy constructor.
@@ -78,7 +78,7 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create($project, $model, $profile, self::getType(), $this->parametersTag);
+        $this->projectEntityService->create($project, $model, $profile, self::getEntityName(), $this->typeTag);
     }
 
     /**
@@ -109,7 +109,7 @@ class AttributesStrategy extends AbstractStrategy
     /**
      * @return string
      */
-    public static function getType()
+    public static function getEntityName()
     {
         return 'attributes';
     }
@@ -118,11 +118,11 @@ class AttributesStrategy extends AbstractStrategy
      * @param array $strings
      * @return string
      */
-    public function getName(array $strings)
+    public function getElementNames(array $strings)
     {
         $strings = ['Attributes'];
 
-        return parent::getName($strings);
+        return parent::getElementNames($strings);
     }
 
     /**
@@ -173,7 +173,7 @@ class AttributesStrategy extends AbstractStrategy
      * @param $entityId
      * @return string
      */
-    public function getEntityName($entityId)
+    public function getEntityNormalName($entityId)
     {
         return 'All attributes';
     }
