@@ -55,6 +55,10 @@ class EntityList implements ArrayInterface
             }
         }
 
+        usort($entities, function ($a, $b) {
+            return strnatcmp($a['label'], $b['label']);
+        });
+
         return $entities;
     }
 }
