@@ -123,7 +123,7 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function getElementNames(array $strings)
     {
-        $strings = ['Attribute'];
+        $strings = ['Attributes'];
 
         return parent::getElementNames($strings);
     }
