@@ -159,7 +159,7 @@ class BlockStrategy extends AbstractStrategy
             $duplicate = $this->blockRepository->getListByIdentifier($newIdentifier);
 
             if (!empty($duplicate)) {
-                $newBlock = $duplicate[0];
+                $newBlock = array_shift($duplicate);
             } else {
                 $newBlock = $this->blockFactory->create();
                 $newBlock
