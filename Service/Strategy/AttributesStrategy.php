@@ -114,7 +114,7 @@ class AttributesStrategy extends AbstractStrategy
      */
     public static function getEntityName()
     {
-        return 'attributes';
+        return 'attribute';
     }
 
     /**
@@ -123,7 +123,7 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function getElementNames(array $strings)
     {
-        $strings = ['Attributes'];
+        $strings = ['Attribute'];
 
         return parent::getElementNames($strings);
     }

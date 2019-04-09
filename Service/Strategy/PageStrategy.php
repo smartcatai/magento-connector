@@ -161,7 +161,7 @@ class PageStrategy extends AbstractStrategy
             $duplicate = $this->pageRepository->getListByIdentifier($page->getIdentifier(), $storeID);
 
             if (!empty($duplicate)) {
-                $newPage = $duplicate[0];
+                $newPage = array_shift($duplicate);
             } else {
                 $newPage = $this->pageFactory->create();
 
