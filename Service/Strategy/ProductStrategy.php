@@ -36,7 +36,7 @@ class ProductStrategy extends AbstractStrategy
 {
     private $productRepository;
     private $profileService;
-    private $parametersTag = 'parameters';
+    private $typeTag = 'parameters';
 
     private $excludedAttributes = [
         'required_options',
@@ -76,7 +76,7 @@ class ProductStrategy extends AbstractStrategy
     /**
      * @return string
      */
-    public static function getType()
+    public static function getEntityName()
     {
         return 'product';
     }
@@ -89,12 +89,7 @@ class ProductStrategy extends AbstractStrategy
      */
     public function attach($product, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create(
-            $project,
-            $product,
-            $profile,
-            self::getType() . '|' . $this->parametersTag
-        );
+        $this->projectEntityService->create($project, $product, $profile, self::getEntityName(), $this->typeTag);
     }
 
     /**
@@ -105,7 +100,7 @@ class ProductStrategy extends AbstractStrategy
      */
     public function getDocumentModel(ProjectEntity $entity)
     {
-        if ($entity->getEntity() != self::getType()) {
+        if ($entity->getEntity() != self::getEntityName()) {
             return null;
         }
 
@@ -139,7 +134,7 @@ class ProductStrategy extends AbstractStrategy
      * @param Product[] $products
      * @return mixed|string
      */
-    public function getName(array $products)
+    public function getElementNames(array $products)
     {
         $names = [];
 
@@ -149,7 +144,7 @@ class ProductStrategy extends AbstractStrategy
             }
         }
 
-        return parent::getName($names);
+        return parent::getElementNames($names);
     }
 
     /**
@@ -165,7 +160,7 @@ class ProductStrategy extends AbstractStrategy
      * @param $entityId
      * @return string|null
      */
-    public function getEntityName($entityId)
+    public function getEntityNormalName($entityId)
     {
         try {
             return $this->productRepository->getById($entityId, false, 1)->getName();
@@ -189,7 +184,7 @@ class ProductStrategy extends AbstractStrategy
             return false;
         }
 
-        if ($entity->getAttribute() == $this->parametersTag) {
+        if ($entity->getType() == $this->typeTag) {
             $attributes = $this->decodeJsonParameters($content);
 
             /** @var Product $product */

@@ -22,35 +22,10 @@
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
 use Magento\Ui\Component\Listing\Columns\Column;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponentFactory;
 use SmartCat\Connector\Model\ProjectEntity;
-use SmartCat\Connector\Service\Strategy\StrategyLoader;
 
 class EntityColumn extends Column
 {
-    private $strategyLoader;
-
-    /**
-     * Constructor
-     *
-     * @param ContextInterface $context
-     * @param UiComponentFactory $uiComponentFactory
-     * @param StrategyLoader $strategyLoader
-     * @param array $components
-     * @param array $data
-     */
-    public function __construct(
-        ContextInterface $context,
-        UiComponentFactory $uiComponentFactory,
-        StrategyLoader $strategyLoader,
-        array $components = [],
-        array $data = []
-    ) {
-        $this->strategyLoader = $strategyLoader;
-        parent::__construct($context, $uiComponentFactory, $components, $data);
-    }
-
     /**
      * Prepare Data Source
      *
@@ -61,37 +36,12 @@ class EntityColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') == ProjectEntity::ENTITY_ID) {
-                    $item[$this->getData('name')] = $this->getColumnHtml($item);
+                if ($this->getData('name') == ProjectEntity::ENTITY) {
+                    $item[$this->getData('name')] = ucfirst($item[$this->getData('name')]);
                 }
             }
         }
 
         return $dataSource;
-    }
-
-    /**
-     * @param $item
-     * @return string
-     */
-    private function getColumnHtml($item)
-    {
-        $entityInfo = explode('|', $item[ProjectEntity::TYPE]);
-
-        if (count($entityInfo) != 2) {
-            return '';
-        }
-
-        $strategy = $this->strategyLoader->getStrategyByType($entityInfo[0]);
-
-        if (!$strategy) {
-            return '';
-        }
-
-        $type = ucfirst($entityInfo[0]);
-        $url = $strategy->getUrlToEntity($item[ProjectEntity::ENTITY_ID]);
-        $text = $strategy->getEntityName($item[ProjectEntity::ENTITY_ID]);
-
-        return "{$type}: <a href='{$url}' target='_blank'>{$text}</a>";
     }
 }

@@ -173,6 +173,19 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'comment' => 'Document target language'
             ]
         );
+
+        $setup->getConnection()->addColumn(
+            $setup->getTable('smartcat_connector_project_entity'),
+            'entity',
+            [
+                'type' => Table::TYPE_TEXT,
+                'size' => 255,
+                'options' => [
+                    'nullable' => false
+                ],
+                'comment' => 'Entity name'
+            ]
+        );
     }
 
     /**

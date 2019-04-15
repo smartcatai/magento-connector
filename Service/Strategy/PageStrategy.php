@@ -23,7 +23,7 @@ namespace SmartCat\Connector\Service\Strategy;
 
 use Magento\Cms\Model\Page;
 use Magento\Cms\Model\PageFactory;
-use Magento\Cms\Model\PageRepository;
+use SmartCat\Connector\Model\PageRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
@@ -37,7 +37,7 @@ class PageStrategy extends AbstractStrategy
 {
     private $pageRepository;
     private $pageFactory;
-    private $parametersTag = 'parameters';
+    private $typeTag = 'parameters';
 
     /**
      * PageStrategy constructor.
@@ -74,7 +74,7 @@ class PageStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . $this->parametersTag);
+        $this->projectEntityService->create($project, $model, $profile, self::getEntityName(), $this->typeTag);
     }
 
     /**
@@ -84,7 +84,7 @@ class PageStrategy extends AbstractStrategy
      */
     public function getDocumentModel(ProjectEntity $entity)
     {
-        if ($entity->getEntity() != self::getType()) {
+        if ($entity->getEntity() != self::getEntityName()) {
             return null;
         }
 
@@ -118,7 +118,7 @@ class PageStrategy extends AbstractStrategy
      * @param Page[] $models
      * @return string
      */
-    public function getName(array $models)
+    public function getElementNames(array $models)
     {
         $names = [];
 
@@ -128,13 +128,13 @@ class PageStrategy extends AbstractStrategy
             }
         }
 
-        return parent::getName($names);
+        return parent::getElementNames($names);
     }
 
     /**
      * @return string
      */
-    public static function getType()
+    public static function getEntityName()
     {
         return 'page';
     }
@@ -156,20 +156,29 @@ class PageStrategy extends AbstractStrategy
 
         $page = $this->pageRepository->getById($entity->getEntityId());
 
-        if ($entity->getAttribute() == $this->parametersTag) {
+        if ($entity->getType() == $this->typeTag) {
             $parameters = $this->decodeJsonParameters($content);
-            $newPage = $this->pageFactory->create();
+            $duplicate = $this->pageRepository->getListByIdentifier($page->getIdentifier(), $storeID);
+
+            if (!empty($duplicate)) {
+                $newPage = array_shift($duplicate);
+            } else {
+                $newPage = $this->pageFactory->create();
+
+                $newPage
+                    ->setStoreId([$storeID])
+                    ->setIsActive(true)
+                    ->setIdentifier($page->getIdentifier())
+                    ->setPageLayout($page->getPageLayout());
+            }
+
             $newPage
-                ->setStoreId([$storeID])
                 ->setTitle($parameters['title'])
                 ->setMetaTitle($parameters['meta_title'])
                 ->setMetaDescription($parameters['meta_description'])
                 ->setMetaKeywords($parameters['meta_keywords'])
                 ->setContentHeading($parameters['content_heading'])
-                ->setContent($parameters['content'])
-                ->setIsActive(true)
-                ->setIdentifier($page->getIdentifier())
-                ->setPageLayout($page->getPageLayout());
+                ->setContent($parameters['content']);
 
             $this->pageRepository->save($newPage);
 
@@ -183,7 +192,7 @@ class PageStrategy extends AbstractStrategy
      * @param $entityId
      * @return string
      */
-    public function getEntityName($entityId)
+    public function getEntityNormalName($entityId)
     {
         try {
             return $this->pageRepository->getById($entityId)->getTitle();

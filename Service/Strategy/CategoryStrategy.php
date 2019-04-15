@@ -35,7 +35,7 @@ class CategoryStrategy extends AbstractStrategy
 {
     private $categoryRepository;
     private $categoryFactory;
-    private $parametersTag = 'all';
+    private $typeTag = 'all';
 
     /**
      * CategoryStrategy constructor.
@@ -73,12 +73,7 @@ class CategoryStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create(
-            $project,
-            $model,
-            $profile,
-            self::getType() . '|' . $this->parametersTag
-        );
+        $this->projectEntityService->create($project, $model, $profile, self::getEntityName(), $this->typeTag);
     }
 
     /**
@@ -118,7 +113,7 @@ class CategoryStrategy extends AbstractStrategy
     /**
      * @return string
      */
-    public static function getType()
+    public static function getEntityName()
     {
         return 'category';
     }
@@ -127,11 +122,11 @@ class CategoryStrategy extends AbstractStrategy
      * @param array $strings
      * @return string
      */
-    public function getName(array $strings)
+    public function getElementNames(array $strings)
     {
         $strings = ['Categories'];
 
-        return parent::getName($strings);
+        return parent::getElementNames($strings);
     }
 
     /**
@@ -175,7 +170,7 @@ class CategoryStrategy extends AbstractStrategy
      * @param $entityId
      * @return string
      */
-    public function getEntityName($entityId)
+    public function getEntityNormalName($entityId)
     {
         return 'All categories';
     }

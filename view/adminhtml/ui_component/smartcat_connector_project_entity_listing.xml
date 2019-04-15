@@ -59,6 +59,17 @@
                     </imports>
                 </settings>
             </filterSelect>
+            <filterSelect name="entity" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+                <settings>
+                    <options class="SmartCat\Connector\Model\Config\Source\EntityList"/>
+                    <caption translate="true">Select...</caption>
+                    <label translate="true">Type</label>
+                    <dataScope>entity</dataScope>
+                    <imports>
+                        <link name="visible">componentType = column, index = ${ $.index }:visible</link>
+                    </imports>
+                </settings>
+            </filterSelect>
             <filterSelect name="source_lang" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
                 <settings>
                     <options class="SmartCat\Connector\Model\Config\Source\LanguagesList"/>
@@ -91,7 +102,12 @@
                 <label translate="true">ID</label>
             </settings>
         </column>
-        <column name="entity_id" class="SmartCat\Connector\Ui\Component\Listing\Column\EntityColumn" sortOrder="20">
+        <column name="entity" class="SmartCat\Connector\Ui\Component\Listing\Column\EntityColumn" sortOrder="15">
+            <settings>
+                <label translate="true">Type</label>
+            </settings>
+        </column>
+        <column name="entity_id" class="SmartCat\Connector\Ui\Component\Listing\Column\ElementColumn" sortOrder="20">
             <settings>
                 <label translate="true">Element</label>
                 <bodyTmpl>ui/grid/cells/html</bodyTmpl>
@@ -130,7 +146,7 @@
                 <label translate="true">Comment</label>
             </settings>
         </column>
-        <column name="sc_document" class="SmartCat\Connector\Ui\Component\Listing\Column\SmartCatDocumentColumn" sortOrder="90">
+        <column name="document_id" class="SmartCat\Connector\Ui\Component\Listing\Column\SmartCatDocumentColumn" sortOrder="90">
             <settings>
                 <bodyTmpl>ui/grid/cells/html</bodyTmpl>
                 <label translate="true">Smartcat project</label>
