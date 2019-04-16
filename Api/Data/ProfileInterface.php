@@ -35,6 +35,7 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     const AUTO_SEND_SAVE = 'auto_send_save';
     const EXCLUDED_ATTRIBUTES = 'excluded_attributes';
     const PROJECT_GUID = 'project_guid';
+    const VENDOR_NAME = 'vendor_name';
 
     /**
      * Get profile_id
@@ -61,6 +62,19 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
      * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
     public function setVendor($vendor);
+
+    /**
+     * Get vendor
+     * @return string|null
+     */
+    public function getVendorName();
+
+    /**
+     * Set vendor
+     * @param string $vendorName
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
+     */
+    public function setVendorName($vendorName);
 
     /**
      * Get source_lang

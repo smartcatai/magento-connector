@@ -19,22 +19,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Plugin\Catalog\Controller\Adminhtml\Product\Attribute;
+namespace SmartCat\Connector\Setup;
 
-use Magento\Catalog\Controller\Adminhtml\Product\Attribute;
-use SmartCat\Connector\Block\Adminhtml\Product;
+use Magento\Framework\Setup\UninstallInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
+use SmartCat\Connector\Module;
 
-class Index
+class Uninstall implements UninstallInterface
 {
-    /**
-     * @param Attribute\Index $subject
-     * @param \Magento\Backend\Model\View\Result\Page $result
-     * @return \Magento\Backend\Model\View\Result\Page string
-     */
-    public function afterExecute(Attribute\Index $subject, $result)
+    public function uninstall(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        $result->addContent($result->getLayout()->createBlock(Product\AttributeBlock::class));
+        $setup->startSetup();
 
-        return $result;
+        $setup->getConnection()->dropTable($setup->getTable(Module::PROJECT_ENTITY_TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Module::PROJECT_TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Module::PROFILE_TABLE_NAME));
+
+        $setup->endSetup();
     }
 }

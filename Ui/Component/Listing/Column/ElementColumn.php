@@ -21,34 +21,33 @@
 
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
-use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\Config\Source\ProjectStatusList;
+use SmartCat\Connector\Model\ProjectEntity;
+use SmartCat\Connector\Service\Strategy\StrategyLoader;
 
-class ProjectStatusColumn extends Column
+class ElementColumn extends Column
 {
-    /** @var ProjectStatusList */
-    private $statusList;
+    private $strategyLoader;
 
     /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param ProjectStatusList $statusList
+     * @param StrategyLoader $strategyLoader
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        ProjectStatusList $statusList,
+        StrategyLoader $strategyLoader,
         array $components = [],
         array $data = []
     ) {
-        $this->statusList = $statusList;
+        $this->strategyLoader = $strategyLoader;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -60,20 +59,32 @@ class ProjectStatusColumn extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        $statusList = $this->statusList->toOptionArray();
-
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') == 'status') {
-                    $index = array_search(
-                        $item[$this->getData('name')],
-                        array_column($statusList, 'value')
-                    );
-                    $item[$this->getData('name')] = $statusList[$index]['label'];
+                if ($this->getData('name') == ProjectEntity::ENTITY_ID) {
+                    $item[$this->getData('name')] = $this->getColumnHtml($item);
                 }
             }
         }
 
         return $dataSource;
+    }
+
+    /**
+     * @param $item
+     * @return string
+     */
+    private function getColumnHtml($item)
+    {
+        $strategy = $this->strategyLoader->getStrategyByType(strtolower($item[ProjectEntity::ENTITY]));
+
+        if (!$strategy) {
+            return '';
+        }
+
+        $url = $strategy->getUrlToEntity($item[ProjectEntity::ENTITY_ID]);
+        $text = $strategy->getEntityNormalName($item[ProjectEntity::ENTITY_ID]);
+
+        return "<a href='{$url}' target='_blank'>{$text}</a>";
     }
 }

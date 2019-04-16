@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Service;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Model\AbstractModel;
 use SmartCat\Client\Model\BilingualFileImportSettingsModel;
 use SmartCat\Client\Model\CreateDocumentPropertyWithFilesModel;
@@ -57,15 +58,19 @@ class ProjectEntityService
     /**
      * @param Project $project
      * @param AbstractModel $entity
+     * @param Profile $profile
      * @param string $type
+     * @param $entityName
      */
-    public function create(Project $project, $entity, Profile $profile, $type)
+    public function create(Project $project, $entity, Profile $profile, $entityName, $type)
     {
         foreach ($profile->getTargetLangArray() as $targetLang) {
             $projectEntity = $this->projectEntityRepository->create();
             $projectEntity
-                ->setType($type . "|" . $targetLang)
+                ->setType($type)
+                ->setEntity($entityName)
                 ->setStatus(ProjectEntity::STATUS_NEW)
+                ->setTargetLang($targetLang)
                 ->setProjectId($project->getId());
 
             if ($entity instanceof AbstractModel) {
@@ -143,7 +148,7 @@ class ProjectEntityService
             ->addFilter(ProjectEntity::STATUS, ProjectEntity::STATUS_NEW);
 
         if ($type) {
-            $searchCriteria->addFilter(ProjectEntity::TYPE, $type . '|%', 'like');
+            $searchCriteria->addFilter(ProjectEntity::TYPE, $type);
         }
 
         $list = $this->projectEntityRepository->getList($searchCriteria->create())->getItems();
@@ -153,12 +158,17 @@ class ProjectEntityService
 
     /**
      * @param $entityId
-     * @return ProjectEntity
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @return ProjectEntity|null
      */
     public function getEntityById($entityId)
     {
-        return $this->projectEntityRepository->getById($entityId);
+        try {
+            $projectEntity = $this->projectEntityRepository->getById($entityId);
+        } catch (NoSuchEntityException $e) {
+            return null;
+        }
+
+        return $projectEntity;
     }
 
     /**
@@ -179,7 +189,7 @@ class ProjectEntityService
         $documentModel
             ->setBilingualFileImportSettings($bilingualFileImportSettings)
             ->setExternalId($entity->getId())
-            ->setTargetLanguages([$entity->getLanguage()]);
+            ->setTargetLanguages([$entity->getTargetLang()]);
         $documentModel->attachFile($filePath, $fileName);
 
         return $documentModel;

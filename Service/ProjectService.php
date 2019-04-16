@@ -28,6 +28,7 @@ use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\ProfileRepository;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectRepository;
+use SmartCat\Connector\Service\Strategy\AbstractStrategy;
 use SmartCat\Connector\Service\Strategy\StrategyInterface;
 use SmartCat\Connector\Service\Strategy\StrategyLoader;
 use \Throwable;
@@ -77,7 +78,7 @@ class ProjectService
         $strategy = $this->strategyLoader->getStrategyByModel(get_class($models[0]));
 
         try {
-            $project = $this->create($strategy->getName($models), $profile);
+            $project = $this->create($strategy->getElementNames($models), $profile);
             foreach ($models as $model) {
                 $strategy->attach($model, $project, $profile);
             }
@@ -97,10 +98,11 @@ class ProjectService
      */
     public function createByKey($key, Profile $profile)
     {
+        /** @var AbstractStrategy $strategy */
         $strategy = $this->strategyLoader->getStrategyByType($key);
 
         try {
-            $project = $this->create($key, $profile);
+            $project = $this->create($strategy->getElementNames([]), $profile);
             $strategy->attach(null, $project, $profile);
         } catch (Throwable $e) {
             $message = $this->errorHandler->handleError($e, "Error save project to db");

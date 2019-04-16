@@ -25,9 +25,9 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
 use SmartCat\Connector\Helper\ConfigurationHelper;
-use SmartCat\Connector\Model\Project;
+use SmartCat\Connector\Model\ProjectEntity;
 
-class SmartCatProjectColumn extends Column
+class SmartCatDocumentColumn extends Column
 {
     private $configurationHelper;
 
@@ -61,14 +61,10 @@ class SmartCatProjectColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if (isset($item[Project::GUID])) {
-                    $item[$this->getData('name')] = [
-                        'open' => [
-                            'href' => $this->getProjectUrl($item[Project::GUID]),
-                            'target' => '_blank',
-                            'label' => __('Smartcat project'),
-                        ]
-                    ];
+                if ($this->getData('name') == ProjectEntity::DOCUMENT_ID) {
+                    if (isset($item[$this->getData('name')])) {
+                        $item[$this->getData('name')] = $this->getHtml($item[$this->getData('name')]);
+                    }
                 }
             }
         }
@@ -77,11 +73,33 @@ class SmartCatProjectColumn extends Column
     }
 
     /**
-     * @param $projectGuid
+     * @param $documentId
      * @return string
      */
-    private function getProjectUrl($projectGuid)
+    private function getProjectUrl($documentId)
     {
-        return "https://{$this->configurationHelper->getServer()}/project/{$projectGuid}";
+        $doc = explode('_', $documentId);
+
+        if (count($doc) != 2) {
+            return null;
+        }
+
+        return "https://{$this->configurationHelper->getServer()}/Editor?DocumentId={$doc[0]}&LanguageId={$doc[1]}";
+    }
+
+    /**
+     * @param $documentId
+     * @return string
+     */
+    private function getHtml($documentId)
+    {
+        $text = __('Go to Smartcat');
+        $url = $this->getProjectUrl($documentId);
+
+        if ($url) {
+            return "<a href='{$url}' target='_blank'>{$text}</a>";
+        }
+
+        return '';
     }
 }

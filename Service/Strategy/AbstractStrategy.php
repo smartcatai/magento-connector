@@ -21,7 +21,7 @@
 
 namespace SmartCat\Connector\Service\Strategy;
 
-use Magento\Store\Model\StoreManager;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Helper\StringHelper;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -32,24 +32,34 @@ abstract class AbstractStrategy implements StrategyInterface
 {
     protected $projectEntityService;
     protected $storeService;
+    protected $urlManager;
 
     /**
      * AbstractStrategy constructor.
      * @param ProjectEntityService $projectEntityService
      * @param StoreService $storeService
+     * @param UrlInterface $urlManager
      */
-    public function __construct(ProjectEntityService $projectEntityService, StoreService $storeService)
-    {
+    public function __construct(
+        ProjectEntityService $projectEntityService,
+        StoreService $storeService,
+        UrlInterface $urlManager
+    ) {
         $this->projectEntityService = $projectEntityService;
         $this->storeService = $storeService;
+        $this->urlManager = $urlManager;
     }
 
     /**
      * @param string[] $strings
      * @return string
      */
-    public function getName(array $strings)
+    public function getElementNames(array $strings)
     {
+        if (empty($strings)) {
+            $strings = [uniqid()];
+        }
+
         $stringNames = StringHelper::limitImplode($strings);
 
         return StringHelper::whitespaceSpecChars($stringNames);
@@ -84,12 +94,11 @@ abstract class AbstractStrategy implements StrategyInterface
     /**
      * @param Project $project
      * @return array|mixed
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getDocumentModels(Project $project)
     {
         $documentModels = [];
-        $entities = $this->projectEntityService->getNewProjectEntities($project, self::getType());
+        $entities = $this->projectEntityService->getNewProjectEntities($project, self::getEntityName());
 
         foreach ($entities as $entity) {
             $documentModel = $this->getDocumentModel($entity);

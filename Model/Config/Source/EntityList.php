@@ -22,20 +22,43 @@
 namespace SmartCat\Connector\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
-use SmartCat\Connector\Model\Project;
+use SmartCat\Connector\Service\Strategy\StrategyLoader;
 
-class ProjectStatusList implements ArrayInterface
+class EntityList implements ArrayInterface
 {
+    private $strategyLoader;
+
+    /**
+     * ProfilesList constructor.
+     * @param StrategyLoader $strategyLoader
+     */
+    public function __construct(StrategyLoader $strategyLoader)
+    {
+        $this->strategyLoader = $strategyLoader;
+    }
+
+    /**
+     * @return array
+     */
     public function toOptionArray()
     {
-        return [
-            ['value' => Project::STATUS_WAITING,'label' => __('Waiting')],
-            ['value' => Project::STATUS_CREATED,'label' => __('Created')],
-            ['value' => Project::STATUS_IN_PROGRESS,'label' => __('In Progress')],
-            ['value' => Project::STATUS_COMPLETED,'label' => __('Waiting export')],
-            ['value' => Project::STATUS_REJECTED,'label' => __('Rejected')],
-            ['value' => Project::STATUS_CANCELED,'label' => __('Canceled')],
-            ['value' => Project::STATUS_FAILED,'label' => __('Failed')]
-        ];
+        $entities = [];
+
+        $entityList = $this->strategyLoader->getEntityNames();
+
+        if (!empty($entityList)) {
+            foreach ($entityList as $entity) {
+                $entities[] = [
+                    'label' => ucfirst($entity),
+                    'value' => $entity
+                ];
+            }
+        }
+
+        usort($entities, function ($a, $b) {
+            return strnatcmp($a['label'], $b['label']);
+        });
+
+        return $entities;
     }
 }

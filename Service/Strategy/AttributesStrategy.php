@@ -25,6 +25,7 @@ use Magento\Eav\Model\Attribute;
 use Magento\Eav\Model\AttributeRepository;
 use Magento\Eav\Model\Entity\Attribute\FrontendLabelFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -36,7 +37,7 @@ class AttributesStrategy extends AbstractStrategy
     private $attributeRepository;
     private $searchCriteriaBuilder;
     private $attributeFrontendLabelFactory;
-    private $parametersTag = 'all';
+    private $typeTag = 'all';
 
     /**
      * AttributesStrategy constructor.
@@ -45,18 +46,20 @@ class AttributesStrategy extends AbstractStrategy
      * @param ProjectEntityService $projectEntityService
      * @param FrontendLabelFactory $attributeFrontendLabelFactory
      * @param StoreService $storeService
+     * @param UrlInterface $urlManager
      */
     public function __construct(
         AttributeRepository $attributeRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ProjectEntityService $projectEntityService,
         FrontendLabelFactory $attributeFrontendLabelFactory,
-        StoreService $storeService
+        StoreService $storeService,
+        UrlInterface $urlManager
     ) {
         $this->attributeRepository = $attributeRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->attributeFrontendLabelFactory = $attributeFrontendLabelFactory;
-        parent::__construct($projectEntityService, $storeService);
+        parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
     /**
@@ -75,12 +78,7 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create(
-            $project,
-            $model,
-            $profile,
-            self::getType() . '|' . $this->parametersTag
-        );
+        $this->projectEntityService->create($project, $model, $profile, self::getEntityName(), $this->typeTag);
     }
 
     /**
@@ -99,11 +97,13 @@ class AttributesStrategy extends AbstractStrategy
             ->getItems();
 
         foreach ($attributesList as $attribute) {
-            $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel(0)]);
+            if ($attribute->getDefaultFrontendLabel()) {
+                $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel(0)]);
+            }
         }
 
         $data = json_encode($data);
-        $fileName = "({$entity->getLanguage()}).json";
+        $fileName = "({$entity->getTargetLang()})" . self::EXTENSION;
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -111,9 +111,20 @@ class AttributesStrategy extends AbstractStrategy
     /**
      * @return string
      */
-    public static function getType()
+    public static function getEntityName()
     {
-        return 'attributes';
+        return 'attribute';
+    }
+
+    /**
+     * @param array $strings
+     * @return string
+     */
+    public function getElementNames(array $strings)
+    {
+        $strings = ['Attribute'];
+
+        return parent::getElementNames($strings);
     }
 
     /**
@@ -125,7 +136,7 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;
@@ -138,7 +149,8 @@ class AttributesStrategy extends AbstractStrategy
             ->getList('catalog_product', $searchCriteria)
             ->getItems();
 
-        $attributeNames = array_map(function (Attribute $attribute) {
+        $attributeNames = array_map(function ($attribute) {
+            /** @var $attribute Attribute */
             return $attribute->getName();
         }, $attributesList);
 
@@ -147,15 +159,36 @@ class AttributesStrategy extends AbstractStrategy
         foreach ($data as $name => $label) {
             $index = array_search($name, $attributeNames);
 
-            if ($index !== false) {
-                $attributesList[$index]->setFrontendLabels([
-                    $this->attributeFrontendLabelFactory->create()
-                        ->setStoreId($storeID)
-                        ->setLabel($label)
-                ]);
+            if ($index !== false && trim($label)) {
+                $attribute = clone $attributesList[$index];
+                $frontendLabels = array_merge(
+                    $attribute->getFrontendLabels(),
+                    [$this->attributeFrontendLabelFactory->create()->setStoreId($storeID)->setLabel($label)]
+                );
+                $attribute->setFrontendLabels($frontendLabels);
 
-                $this->attributeRepository->save($attributesList[$index]);
+                $this->attributeRepository->save($attribute);
             }
         }
+
+        return true;
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityNormalName($entityId)
+    {
+        return 'All attributes';
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId)
+    {
+        return $this->urlManager->getUrl('catalog/product_attribute/index');
     }
 }

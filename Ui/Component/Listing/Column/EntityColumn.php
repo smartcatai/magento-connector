@@ -19,22 +19,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Plugin\Catalog\Controller\Adminhtml\Product\Attribute;
+namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
-use Magento\Catalog\Controller\Adminhtml\Product\Attribute;
-use SmartCat\Connector\Block\Adminhtml\Product;
+use Magento\Ui\Component\Listing\Columns\Column;
+use SmartCat\Connector\Model\ProjectEntity;
 
-class Index
+class EntityColumn extends Column
 {
     /**
-     * @param Attribute\Index $subject
-     * @param \Magento\Backend\Model\View\Result\Page $result
-     * @return \Magento\Backend\Model\View\Result\Page string
+     * Prepare Data Source
+     *
+     * @param array $dataSource
+     * @return array
      */
-    public function afterExecute(Attribute\Index $subject, $result)
+    public function prepareDataSource(array $dataSource)
     {
-        $result->addContent($result->getLayout()->createBlock(Product\AttributeBlock::class));
+        if (isset($dataSource['data']['items'])) {
+            foreach ($dataSource['data']['items'] as &$item) {
+                if ($this->getData('name') == ProjectEntity::ENTITY) {
+                    $item[$this->getData('name')] = ucfirst($item[$this->getData('name')]);
+                }
+            }
+        }
 
-        return $result;
+        return $dataSource;
     }
 }

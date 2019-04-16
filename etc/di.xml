@@ -9,25 +9,40 @@
 			<argument name="resourceModel" xsi:type="string">SmartCat\Connector\Model\ResourceModel\Profile\Collection</argument>
 		</arguments>
 	</virtualType>
-	<type name="Magento\Catalog\Controller\Adminhtml\Product\Attribute\Index">
-		<plugin name="smartcat_catalog_product_attribute_index" type="SmartCat\Connector\Plugin\Catalog\Controller\Adminhtml\Product\Attribute\Index" />
-	</type>
-	<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-		<arguments>
-			<argument name="collections" xsi:type="array">
-				<item name="smartcat_connector_profile_listing_data_source" xsi:type="string">SmartCat\Connector\Model\ResourceModel\Profile\Grid\Collection</item>
-				<item name="smartcat_connector_project_listing_data_source" xsi:type="string">SmartCat\Connector\Model\ResourceModel\Project\Grid\Collection</item>
-			</argument>
-		</arguments>
-	</type>
+
 	<preference for="SmartCat\Connector\Api\ProjectRepositoryInterface" type="SmartCat\Connector\Model\ProjectRepository"/>
 	<preference for="SmartCat\Connector\Api\Data\ProjectInterface" type="SmartCat\Connector\Model\Project"/>
 	<preference for="SmartCat\Connector\Api\Data\ProjectSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
-	<preference for="SmartCat\Connector\Api\Data\ProjectEntitySearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
 	<virtualType name="SmartCat\Connector\Model\ResourceModel\Project\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
 		<arguments>
 			<argument name="mainTable" xsi:type="string">smartcat_connector_project</argument>
 			<argument name="resourceModel" xsi:type="string">SmartCat\Connector\Model\ResourceModel\Project\Collection</argument>
 		</arguments>
 	</virtualType>
+
+	<preference for="SmartCat\Connector\Api\ProjectEntityRepositoryInterface" type="SmartCat\Connector\Model\ProjectRepository"/>
+	<preference for="SmartCat\Connector\Api\Data\ProjectEntityInterface" type="SmartCat\Connector\Model\Project"/>
+	<preference for="SmartCat\Connector\Api\Data\ProjectEntitySearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+	<type name="SmartCat\Connector\Model\ResourceModel\ProjectEntity\Grid\Collection">
+		<arguments>
+			<argument name="eventPrefix" xsi:type="string">smartcat_connector_project_entity_grid_collection</argument>
+			<argument name="eventObject" xsi:type="string">project_entity_grid_collection</argument>
+			<argument name="mainTable" xsi:type="string">smartcat_connector_project_entity</argument>
+			<argument name="resourceModel" xsi:type="string">SmartCat\Connector\Model\ResourceModel\ProjectEntity</argument>
+		</arguments>
+	</type>
+
+	<type name="Magento\Catalog\Controller\Adminhtml\Product\Attribute\Index">
+		<plugin name="smartcat_catalog_product_attribute_index" type="SmartCat\Connector\Plugin\Catalog\Controller\Adminhtml\Product\Attribute\Index" />
+	</type>
+
+	<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+		<arguments>
+			<argument name="collections" xsi:type="array">
+				<item name="smartcat_connector_profile_listing_data_source" xsi:type="string">SmartCat\Connector\Model\ResourceModel\Profile\Grid\Collection</item>
+				<item name="smartcat_connector_project_listing_data_source" xsi:type="string">SmartCat\Connector\Model\ResourceModel\Project\Grid\Collection</item>
+				<item name="smartcat_connector_project_entity_listing_data_source" xsi:type="string">SmartCat\Connector\Model\ResourceModel\ProjectEntity\Grid\Collection</item>
+			</argument>
+		</arguments>
+	</type>
 </config>

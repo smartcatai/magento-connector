@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Block\Adminhtml\Category;
+namespace SmartCat\Connector\Block\Adminhtml\Attribute;
 
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
@@ -63,7 +63,6 @@ class LocalizeButton implements ButtonProviderInterface
     private function getAddProductButtonOptions()
     {
         $splitButtonOptions = [];
-        $defaultFirst = true;
 
         $profiles = $this->profileService->getAllProfiles();
 
@@ -71,10 +70,8 @@ class LocalizeButton implements ButtonProviderInterface
             $splitButtonOptions[$profile->getId()] = [
                 'label' => $profile->getName(),
                 'onclick' => "setLocation('" . $this->getUrl($profile->getId()) . "')",
-                'default' => $defaultFirst,
+                'default' => false,
             ];
-
-            $defaultFirst = false;
         }
 
         return $splitButtonOptions;
@@ -87,7 +84,7 @@ class LocalizeButton implements ButtonProviderInterface
     private function getUrl($profileId)
     {
         return $this->urlManager->getUrl(
-            'smartcat_connector/localize/category',
+            'smartcat_connector/localize/attributes',
             ['profiles' => $profileId]
         );
     }

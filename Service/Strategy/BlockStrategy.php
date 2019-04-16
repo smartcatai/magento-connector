@@ -23,9 +23,10 @@ namespace SmartCat\Connector\Service\Strategy;
 
 use Magento\Cms\Model\Block;
 use Magento\Cms\Model\BlockFactory;
-use Magento\Cms\Model\BlockRepository;
+use SmartCat\Connector\Model\BlockRepository;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -34,7 +35,7 @@ use SmartCat\Connector\Service\StoreService;
 
 class BlockStrategy extends AbstractStrategy
 {
-    private $parametersTag = 'parameters';
+    private $typeTag = 'parameters';
     private $blockRepository;
     private $blockFactory;
 
@@ -44,16 +45,18 @@ class BlockStrategy extends AbstractStrategy
      * @param StoreService $storeService
      * @param BlockRepository $blockRepository
      * @param BlockFactory $blockFactory
+     * @param UrlInterface $urlManager
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
         StoreService $storeService,
         BlockRepository $blockRepository,
-        BlockFactory $blockFactory
+        BlockFactory $blockFactory,
+        UrlInterface $urlManager
     ) {
         $this->blockRepository = $blockRepository;
         $this->blockFactory = $blockFactory;
-        parent::__construct($projectEntityService, $storeService);
+        parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
     /**
@@ -72,7 +75,7 @@ class BlockStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create($project, $model, $profile, self::getType() . '|' . $this->parametersTag);
+        $this->projectEntityService->create($project, $model, $profile, self::getEntityName(), $this->typeTag);
     }
 
     /**
@@ -82,14 +85,14 @@ class BlockStrategy extends AbstractStrategy
      */
     public function getDocumentModel(ProjectEntity $entity)
     {
-        if ($entity->getEntity() != self::getType()) {
+        if ($entity->getEntity() != self::getEntityName()) {
             return null;
         }
 
         $block = $this->blockRepository->getById($entity->getEntityId());
 
         $data = $this->encodeJsonParameters($block);
-        $fileName = "{$block->getTitle()}({$entity->getLanguage()}).json";
+        $fileName = "{$block->getTitle()}({$entity->getTargetLang()})"  . self::EXTENSION;
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -112,7 +115,7 @@ class BlockStrategy extends AbstractStrategy
      * @param Block[] $models
      * @return string
      */
-    public function getName(array $models)
+    public function getElementNames(array $models)
     {
         $names = [];
 
@@ -122,13 +125,13 @@ class BlockStrategy extends AbstractStrategy
             }
         }
 
-        return parent::getName($names);
+        return parent::getElementNames($names);
     }
 
     /**
      * @return string
      */
-    public static function getType()
+    public static function getEntityName()
     {
         return 'block';
     }
@@ -142,7 +145,7 @@ class BlockStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;
@@ -150,16 +153,24 @@ class BlockStrategy extends AbstractStrategy
 
         $block = $this->blockRepository->getById($entity->getEntityId());
 
-        if ($entity->getAttribute() == $this->parametersTag) {
+        if ($entity->getType() == $this->typeTag) {
             $parameters = $this->decodeJsonParameters($content);
-            $newBlock = $this->blockFactory->create();
+            $newIdentifier = $block->getIdentifier() . '_' . $entity->getTargetLang();
+            $duplicate = $this->blockRepository->getListByIdentifier($newIdentifier);
+
+            if (!empty($duplicate)) {
+                $newBlock = array_shift($duplicate);
+            } else {
+                $newBlock = $this->blockFactory->create();
+                $newBlock
+                    ->setIsActive(true)
+                    ->setStoreId([$storeID])
+                    ->setIdentifier($newIdentifier);
+            }
 
             $newBlock
-                ->setStoreId([$storeID])
                 ->setContent($parameters['content'])
-                ->setTitle($parameters['title'])
-                ->setIsActive(true)
-                ->setIdentifier($block->getIdentifier() . '_' . $entity->getLanguage());
+                ->setTitle($parameters['title']);
 
             $this->blockRepository->save($newBlock);
 
@@ -167,5 +178,28 @@ class BlockStrategy extends AbstractStrategy
         }
 
         return false;
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityNormalName($entityId)
+    {
+        try {
+            return $this->blockRepository->getById($entityId)->getTitle();
+        } catch (\Throwable $e) {
+        }
+
+        return '';
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId)
+    {
+        return $this->urlManager->getUrl('cms/block/edit', ['block_id' => $entityId]);
     }
 }

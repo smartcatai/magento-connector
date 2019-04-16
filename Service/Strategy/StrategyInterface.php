@@ -27,6 +27,8 @@ use SmartCat\Connector\Model\ProjectEntity;
 
 interface StrategyInterface
 {
+    const EXTENSION = '.json';
+
     /**
      * @return string[]
      */
@@ -56,12 +58,12 @@ interface StrategyInterface
      * @param \Magento\Framework\Model\AbstractModel[] $models
      * @return string
      */
-    public function getName(array $models);
+    public function getElementNames(array $models);
 
     /**
      * @return string
      */
-    public static function getType();
+    public static function getEntityName();
 
     /**
      * @param string $content
@@ -69,4 +71,16 @@ interface StrategyInterface
      * @return bool
      */
     public function setContent($content, ProjectEntity $entity): bool;
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityNormalName($entityId);
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId);
 }

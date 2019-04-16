@@ -21,7 +21,7 @@
 
 namespace SmartCat\Connector\Block\Adminhtml\Product;
 
-use SmartCat\Connector\Block\Adminhtml\Category\LocalizeButton;
+use SmartCat\Connector\Block\Adminhtml\Attribute\LocalizeButton;
 use SmartCat\Connector\Service\ProfileService;
 use Magento\Backend\Block\Widget\Container;
 
@@ -33,6 +33,7 @@ class AttributeBlock extends Container
     /**
      * @param \Magento\Backend\Block\Widget\Context $context
      * @param ProfileService $profileService
+     * @param LocalizeButton $localizeButton
      * @param array $data
      */
     public function __construct(

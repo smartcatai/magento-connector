@@ -24,6 +24,7 @@ namespace SmartCat\Connector\Service\Strategy;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryFactory;
 use Magento\Catalog\Model\CategoryRepository;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectEntity;
@@ -34,7 +35,7 @@ class CategoryStrategy extends AbstractStrategy
 {
     private $categoryRepository;
     private $categoryFactory;
-    private $parametersTag = 'all';
+    private $typeTag = 'all';
 
     /**
      * CategoryStrategy constructor.
@@ -42,16 +43,18 @@ class CategoryStrategy extends AbstractStrategy
      * @param StoreService $storeService
      * @param CategoryRepository $categoryRepository
      * @param CategoryFactory $categoryFactory
+     * @param UrlInterface $urlManager
      */
     public function __construct(
         ProjectEntityService $projectEntityService,
         StoreService $storeService,
         CategoryRepository $categoryRepository,
-        CategoryFactory $categoryFactory
+        CategoryFactory $categoryFactory,
+        UrlInterface $urlManager
     ) {
         $this->categoryRepository = $categoryRepository;
         $this->categoryFactory = $categoryFactory;
-        parent::__construct($projectEntityService, $storeService);
+        parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
     /**
@@ -70,12 +73,7 @@ class CategoryStrategy extends AbstractStrategy
      */
     public function attach($model, Project $project, Profile $profile)
     {
-        $this->projectEntityService->create(
-            $project,
-            $model,
-            $profile,
-            self::getType() . '|' . $this->parametersTag
-        );
+        $this->projectEntityService->create($project, $model, $profile, self::getEntityName(), $this->typeTag);
     }
 
     /**
@@ -107,7 +105,7 @@ class CategoryStrategy extends AbstractStrategy
         }
 
         $data = json_encode($data);
-        $fileName = "({$entity->getLanguage()}).json";
+        $fileName = "({$entity->getTargetLang()})" . self::EXTENSION;
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -115,49 +113,74 @@ class CategoryStrategy extends AbstractStrategy
     /**
      * @return string
      */
-    public static function getType()
+    public static function getEntityName()
     {
         return 'category';
     }
 
     /**
-     * @param string $content
+     * @param array $strings
+     * @return string
+     */
+    public function getElementNames(array $strings)
+    {
+        $strings = ['Categories'];
+
+        return parent::getElementNames($strings);
+    }
+
+    /**
+     * @param $jsonContent
      * @param ProjectEntity $entity
      * @return bool
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function setContent($content, ProjectEntity $entity): bool
+    public function setContent($jsonContent, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getLanguage());
+        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
 
         if ($storeID === null) {
             return false;
         }
 
-        /** @var Category[] $categories */
-        $categories = $this->categoryFactory->create()
-            ->addAttributeToSelect('*')
-            ->setProductStoreId($storeID);
-
-        $data = $this->decodeJsonParameters($content);
-
-        $categoryIds = array_map(function (Category $category) {
-            return $category->getId();
-        }, $categories);
+        $data = $this->decodeJsonParameters($jsonContent);
 
         foreach ($data as $id => $content) {
-            $index = array_search(explode('_', $id)[1], $categoryIds);
+            $index = explode('_', $id);
 
-            if ($index !== false) {
-                $categories[$index]->setName($content["name"])
+            if (count($index) == 2) {
+                /** @var Category $category */
+                $category = $this->categoryRepository->get($index[1], $storeID);
+
+                $category
+                    ->setData('name', $content["name"])
                     ->setData('description', $content["description"])
                     ->setData('meta_description', $content["meta_description"])
                     ->setData('meta_title', $content["meta_title"])
                     ->setData('meta_keywords', $content["meta_keywords"]);
 
-                $this->categoryRepository->save($categories[$index]);
+                $category->save();
             }
         }
+
+        return true;
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getEntityNormalName($entityId)
+    {
+        return 'All categories';
+    }
+
+    /**
+     * @param $entityId
+     * @return string
+     */
+    public function getUrlToEntity($entityId)
+    {
+        return $this->urlManager->getUrl('catalog/category/index');
     }
 }

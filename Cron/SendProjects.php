@@ -35,6 +35,7 @@ use SmartCat\Connector\Module;
 use SmartCat\Connector\Service\ProfileService;
 use SmartCat\Connector\Service\ProjectEntityService;
 use SmartCat\Connector\Service\ProjectService;
+use SmartCat\Connector\Service\Strategy\StrategyInterface;
 use \Throwable;
 
 class SendProjects
@@ -74,7 +75,7 @@ class SendProjects
             try {
                 $profile = $this->profileService->getProfileByProject($project);
 
-                if ($profile->getProjectGuid()) {
+                if ($project->getGuid()) {
                     $this->updateProject($project, $profile);
                 } else {
                     $this->createProject($project, $profile);
@@ -113,6 +114,11 @@ class SendProjects
 
             foreach ($smartcatDocuments as $smartcatDocument) {
                 $projectEntity = $this->projectEntityService->getEntityById($smartcatDocument->getExternalId());
+
+                if (!$projectEntity) {
+                    continue;
+                }
+
                 $projectEntity
                     ->setStatus($smartcatDocument->getStatus())
                     ->setDocumentId($smartcatDocument->getId());
@@ -126,10 +132,6 @@ class SendProjects
         $project
             ->setGuid($projectModel->getId())
             ->setStatus($projectModel->getStatus());
-
-        if ($projectModel->getDeadline()) {
-            $project->setDeadline($projectModel->getDeadline()->format('U'));
-        }
 
         $this->projectService->update($project);
 
@@ -163,8 +165,8 @@ class SendProjects
             $smartCatDocuments = $projectModel->getDocuments();
             $projectDocuments = $this->projectService->getProjectDocumentModels($project);
 
-            $smartCatNameDocuments = array_map(function (DocumentModel $value) {
-                return $value->getName();
+            $smartCatDocumentNames = array_map(function (DocumentModel $value) {
+                return $value->getName() . StrategyInterface::EXTENSION;
             }, $smartCatDocuments);
         } catch (Throwable $e) {
             $this->errorHandler->handleProjectError($e, $project, "SmartCat update project error");
@@ -172,12 +174,12 @@ class SendProjects
         }
 
         foreach ($projectDocuments as $projectDocument) {
-            $index = array_search($projectDocument->getFile()['fileName'], $smartCatNameDocuments);
+            $index = array_search($projectDocument->getFile()['fileName'], $smartCatDocumentNames);
 
-            try {
-                $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
-            } catch (Throwable $e) {
-                $this->errorHandler->logError("SmartCat update project error: {$e->getMessage()}");
+            $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
+
+            if (!$entity || $entity->getStatus() == ProjectEntity::STATUS_FAILED) {
+                $this->errorHandler->logError("SmartCat update project {$project->getId()}. Entity failed.");
                 continue;
             }
 
@@ -196,11 +198,28 @@ class SendProjects
                 }
 
                 $project->setIsStatisticsBuilded(false);
-                $entity
-                    ->setStatus($resDocument->getStatus())
-                    ->setDocumentId($resDocument->getId());
+
+                if (is_array($resDocument)) {
+                    foreach ($resDocument as $smartcatDocument) {
+                        $projectEntity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
+
+                        if (!$projectEntity) {
+                            continue;
+                        }
+
+                        $projectEntity
+                            ->setStatus($smartcatDocument->getStatus())
+                            ->setDocumentId($smartcatDocument->getId());
+                        $this->projectEntityService->update($projectEntity);
+                    }
+                } else {
+                    $entity
+                        ->setStatus($resDocument->getStatus())
+                        ->setDocumentId($resDocument->getId());
+                    $this->projectEntityService->update($entity);
+                }
             } catch (Throwable $e) {
-                $this->errorHandler->logError("SmartCat update project error: {$e->getMessage()}");
+                $this->errorHandler->logError("SmartCat update project {$project->getId()} error: {$e->getMessage()}");
 
                 if ($e instanceof ClientErrorException) {
                     continue;
@@ -211,8 +230,8 @@ class SendProjects
             $this->projectEntityService->update($entity);
         }
 
+        /** Если документов в статусе New больше не осталось - тогда меняем статус проекта */
         $projectDocuments = $this->projectService->getProjectDocumentModels($project);
-
         if (empty($projectDocuments)) {
             $project->setStatus($projectModel->getStatus());
         }
@@ -224,6 +243,8 @@ class SendProjects
         if ($projectModel->getExternalTag() != Module::EXTERNAL_TAG) {
             $projectChanges = (new ProjectChangesModel())
                 ->setName($projectModel->getName())
+                ->setDeadline($projectModel->getDeadline())
+                ->setClientId($projectModel->getClientId())
                 ->setDescription($projectModel->getDescription())
                 ->setExternalTag(Module::EXTERNAL_TAG);
             try {

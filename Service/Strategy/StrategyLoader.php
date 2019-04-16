@@ -67,11 +67,26 @@ class StrategyLoader
     {
         /** @var StrategyInterface $strategy */
         foreach ($this->strategies as $strategy) {
-            if ($type === $strategy::getType()) {
+            if ($type === $strategy::getEntityName()) {
                 return $strategy;
             }
         }
 
         return null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEntityNames()
+    {
+        $names = [];
+
+        /** @var StrategyInterface $strategy */
+        foreach ($this->strategies as $strategy) {
+            $names[] = $strategy::getEntityName();
+        }
+
+        return $names;
     }
 }
