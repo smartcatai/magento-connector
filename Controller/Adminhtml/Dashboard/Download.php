@@ -37,6 +37,7 @@ class Download extends Action
      *
      * @param Context $context
      * @param Raw $resultRaw
+     * @param FileFactory $fileFactory
      */
     public function __construct(
         Context $context,
@@ -49,10 +50,9 @@ class Download extends Action
     }
 
     /**
-     * Index action
+     * Download action
      *
      * @return \Magento\Framework\Controller\ResultInterface
-     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function execute()
     {
