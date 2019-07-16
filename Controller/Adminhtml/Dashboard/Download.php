@@ -70,7 +70,8 @@ class Download extends Action
                 null
             );
         } catch (\Exception $exception) {
-            var_dump($exception);
+            $this->resultRaw->setHttpResponseCode(404);
+            return $this->resultRaw->setContents("File not found");
         }
 
         return $this->resultRaw->renderResult($file);
