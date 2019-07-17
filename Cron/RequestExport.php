@@ -71,7 +71,7 @@ class RequestExport
                 $smartCatProject = $projectManager->projectGet($project->getGuid());
                 $this->setStatuses($smartCatProject);
             } catch (Throwable $e) {
-                $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
+                $this->errorHandler->handleProjectError($e, $project, "Smartcat API Error");
                 continue;
             }
 
@@ -99,7 +99,7 @@ class RequestExport
                 if ($e instanceof ClientErrorException && $e->getResponse()->getStatusCode() == 404) {
                     $entity->setStatus(ProjectEntity::STATUS_FAILED);
                 }
-                $this->errorHandler->logError("SmartCat API Error: {$e->getMessage()}");
+                $this->errorHandler->logError("Smartcat API Error: {$e->getMessage()}");
                 $this->projectEntityService->update($entity);
                 continue;
             }

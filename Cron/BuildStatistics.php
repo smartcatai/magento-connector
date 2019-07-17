@@ -50,7 +50,6 @@ class BuildStatistics
     public function execute()
     {
         if (!$this->smartCatService->checkCredentials()) {
-            $this->errorHandler->logError("SmartCat Login Error: Network error, or Login/Password is incorrect");
             return;
         }
 
@@ -64,7 +63,7 @@ class BuildStatistics
             try {
                 $smartCatProject = $projectManager->projectGet($project->getGuid());
             } catch (\Throwable $e) {
-                $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
+                $this->errorHandler->handleProjectError($e, $project, "Smartcat API Error");
             }
 
             if (!$smartCatProject) {
@@ -89,7 +88,7 @@ class BuildStatistics
                         $projectManager->projectBuildStatistics($smartCatProject->getId());
                         $project->setIsStatisticsBuilded(true);
                     } catch (\Throwable $e) {
-                        $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
+                        $this->errorHandler->handleProjectError($e, $project, "Smartcat API Error");
                     }
                 }
             }
