@@ -16,16 +16,16 @@
 					<validate>validate-select</validate>
 					<comment>Select Smartcat server</comment>
 				</field>
-				<field id="token" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="2" translate="label" type="obscure">
+				<field id="application_id" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="2" translate="label" type="text">
+					<label>Smartcat Account ID</label>
+					<validate>validate-no-html-tags</validate>
+					<comment>Insert your Smartcat account ID</comment>
+				</field>
+				<field id="token" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="3" translate="label" type="obscure">
 					<label>API Key</label>
 					<backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 					<validate>validate-no-html-tags</validate>
 					<comment>Insert Smartcat API Key</comment>
-				</field>
-				<field id="application_id" showInDefault="1" showInStore="0" showInWebsite="0" sortOrder="3" translate="label" type="text">
-					<label>Smartcat Account ID</label>
-					<validate>validate-no-html-tags</validate>
-					<comment>Insert your Smartcat account ID</comment>
 				</field>
 				<field id="test" translate="label" type="label" sortOrder="4" showInDefault="1" showInStore="0" showInWebsite="0">
 					<label>Note:</label>

@@ -24,8 +24,7 @@ namespace SmartCat\Connector\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Message\Manager;
-use Psr\Log\LoggerInterface;
+use SmartCat\Connector\Logger\Logger;
 use SmartCat\Connector\Helper\SmartCatFacade;
 
 class SaveConfigObserver implements ObserverInterface
@@ -34,10 +33,10 @@ class SaveConfigObserver implements ObserverInterface
     private $smartCat;
 
     /**
-     * @param LoggerInterface $logger
+     * @param Logger $logger
      * @param SmartCatFacade $smartCat
      */
-    public function __construct(LoggerInterface $logger, SmartCatFacade $smartCat)
+    public function __construct(Logger $logger, SmartCatFacade $smartCat)
     {
         $this->logger = $logger;
         $this->smartCat = $smartCat;

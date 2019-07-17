@@ -19,17 +19,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector;
+namespace SmartCat\Connector\Logger;
 
-class Module
+class Logger extends \Monolog\Logger
 {
-    const MANUFACTURER = 'smartcat_connector';
-
-    const LOG_FILE_NAME = 'smartcat.log';
-
-    const EXTERNAL_TAG = 'source:Magento';
-
-    const PROJECT_TABLE_NAME = self::MANUFACTURER . '_project';
-    const PROFILE_TABLE_NAME = self::MANUFACTURER . '_profile';
-    const PROJECT_ENTITY_TABLE_NAME = self::MANUFACTURER . '_project_entity';
 }

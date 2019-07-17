@@ -25,7 +25,7 @@ use Http\Client\Common\Exception\ClientErrorException;
 use Http\Client\Common\Exception\ServerErrorException;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
+use SmartCat\Connector\Logger\Logger;
 use SmartCat\Connector\Model\Project;
 use SmartCat\Connector\Model\ProjectRepository;
 use \Throwable;
@@ -37,10 +37,10 @@ class ErrorHandler
 
     /**
      * ErrorHandler constructor.
-     * @param LoggerInterface $logger
+     * @param Logger $logger
      * @param ProjectRepository $projectRepository
      */
-    public function __construct(LoggerInterface $logger, ProjectRepository $projectRepository)
+    public function __construct(Logger $logger, ProjectRepository $projectRepository)
     {
         $this->logger = $logger;
         $this->projectRepository = $projectRepository;
@@ -92,18 +92,38 @@ class ErrorHandler
 
     /**
      * @param $message
+     * @param array $context
      */
-    public function logError($message)
+    public function logError($message, $context = [])
     {
-        $this->logger->error($message);
+        $this->logger->error($message, $context);
     }
 
     /**
      * @param $message
+     * @param array $context
      */
-    public function logInfo($message)
+    public function logInfo($message, $context = [])
     {
-        $this->logger->info($message);
+        $this->logger->info($message, $context);
+    }
+
+    /**
+     * @param $message
+     * @param array $context
+     */
+    public function logWarning($message, $context = [])
+    {
+        $this->logger->warning($message, $context);
+    }
+
+    /**
+     * @param $message
+     * @param array $context
+     */
+    public function logDebug($message, $context = [])
+    {
+        $this->logger->debug($message, $context);
     }
 
     /**

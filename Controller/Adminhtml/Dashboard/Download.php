@@ -26,6 +26,7 @@ use Magento\Backend\App\Action\Context;
 use Magento\Backend\App\Response\Http\FileFactory;
 use Magento\Framework\Controller\Result\Raw;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use SmartCat\Connector\Module;
 
 class Download extends Action
 {
@@ -63,7 +64,7 @@ class Download extends Action
                 $fileName,
                 [
                     'type' => 'filename',
-                    'value' => 'system.log'
+                    'value' => Module::LOG_FILE_NAME
                 ],
                 DirectoryList::LOG,
                 'application/octet-stream',
