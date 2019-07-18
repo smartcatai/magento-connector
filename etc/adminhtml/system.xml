@@ -33,7 +33,7 @@
 				</field>
 				<field id="error_log" translate="label" type="button" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
 					<frontend_model>SmartCat\Connector\Block\Adminhtml\System\Config\DownloadLog</frontend_model>
-					<label>Download error log</label>
+					<label>Error log</label>
 				</field>
 			</group>
 		</section>

@@ -51,7 +51,7 @@ class SaveConfigObserver implements ObserverInterface
         try {
             $this->smartCat->getAccountManager()->accountGetAccountInfo();
         } catch (\Throwable $e) {
-            $this->logger->info('Smartcat credentials are incorrect. Login failed.');
+            $this->logger->error('Smartcat credentials are incorrect. Login failed.');
             throw new LocalizedException(__('Smartcat credentials are incorrect. Login failed.'));
         }
     }
