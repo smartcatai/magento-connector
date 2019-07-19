@@ -25,6 +25,13 @@ use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use SmartCat\Connector\Model\ResourceModel\Project as ProjectResourceModel;
 use SmartCat\Connector\Model\Project;
 
+/**
+ * Class Collection
+ *
+ * @method getItems() SmartCat\Connector\Model\Project[]
+ *
+ * @package SmartCat\Connector\Model\ResourceModel\Project
+ */
 class Collection extends AbstractCollection
 {
     /**

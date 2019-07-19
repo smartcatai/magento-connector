@@ -25,6 +25,13 @@ use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use SmartCat\Connector\Model\ResourceModel\Profile as ProfileResourceModel;
 use SmartCat\Connector\Model\Profile;
 
+/**
+ * Class Collection
+ *
+ * @method getItems() SmartCat\Connector\Model\Profile[]
+ *
+ * @package SmartCat\Connector\Model\ResourceModel\Profile
+ */
 class Collection extends AbstractCollection
 {
     /**
