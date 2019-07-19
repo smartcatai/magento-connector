@@ -21,7 +21,7 @@
 
 namespace SmartCat\Connector\Cron;
 
-use Http\Client\Common\Exception\ClientErrorException;
+use Http\Client\Common\Exception\ServerErrorException;
 use SmartCat\Client\Model\ProjectModel;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
@@ -96,11 +96,14 @@ class RequestExport
                     ->getDocumentExportManager()
                     ->documentExportRequestExport(['documentIds' => [$entity->getDocumentId()]]);
             } catch (Throwable $e) {
-                if ($e instanceof ClientErrorException && $e->getResponse()->getStatusCode() == 404) {
+                if (!($e instanceof ServerErrorException)) {
                     $entity->setStatus(ProjectEntity::STATUS_FAILED);
+                    $this->errorHandler->logError("Smartcat API Error", ['entity' => $entity, 'exception' => $e]);
+                    $this->projectEntityService->update($entity);
+                } else {
+                    $this->errorHandler->logWarning("Can't request export document", ['entity' => $entity, 'exception' => $e]);
                 }
-                $this->errorHandler->logError("Smartcat API Error: {$e->getMessage()}");
-                $this->projectEntityService->update($entity);
+
                 continue;
             }
 

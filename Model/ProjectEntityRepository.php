@@ -127,7 +127,7 @@ class ProjectEntityRepository
      * @param $type
      * @param $entityId
      * @param $status
-     * @return \SmartCat\Connector\Model\ResourceModel\ProjectEntity|null
+     * @return \SmartCat\Connector\Model\ProjectEntity|null
      */
     public function getItemByTypeIdStatus($type, $entityId, $status)
     {
@@ -140,6 +140,20 @@ class ProjectEntityRepository
         $item = $collection->setCurPage(1)->setPageSize(1)->getItems();
 
         return $item[0] ?? null;
+    }
+
+    /**
+     * @param Project $project
+     * @return \SmartCat\Connector\Model\ProjectEntity[]
+     */
+    public function getItemsByProject(Project $project)
+    {
+        $collection = $this->projectEntityCollectionFactory->create();
+        $collection->addFilter(ProjectEntity::PROJECT_ID, $project->getId());
+
+        $items = $collection->getItems();
+
+        return $items;
     }
 
     /**

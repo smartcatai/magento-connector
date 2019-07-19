@@ -102,8 +102,16 @@ class SendProjects
             ->setSourceLanguage($profile->getSourceLang())
             ->setTargetLanguages($profile->getTargetLangArray())
             ->setWorkflowStages($profile->getStagesArray())
-            ->setExternalTag(Module::EXTERNAL_TAG)
-            ->setAssignToVendor(false);
+            ->setExternalTag(Module::EXTERNAL_TAG);
+
+        if ($profile->getVendor()) {
+            $newProjectModel
+                ->setAssignToVendor(true)
+                ->setVendorAccountIds([$profile->getVendor()]);
+        } else {
+            $newProjectModel
+                ->setAssignToVendor(false);
+        }
 
         try {
             $projectModel = $projectManager->projectCreateProject($newProjectModel);
@@ -134,21 +142,6 @@ class SendProjects
             ->setStatus($projectModel->getStatus());
 
         $this->projectService->update($project);
-
-        // If Vendor ID exists - update project and set vendor
-        if ($profile->getVendor()) {
-            $projectChanges = (new ProjectChangesModel())
-                ->setName($projectModel->getName())
-                ->setDescription($projectModel->getDescription())
-                ->setExternalTag(Module::EXTERNAL_TAG)
-                ->setVendorAccountIds([$profile->getVendor()]);
-            try {
-                $projectManager->projectUpdateProject($projectModel->getId(), $projectChanges);
-            } catch (Throwable $e) {
-                $this->errorHandler->handleProjectError($e, $project, "Smartcat error update project to vendor");
-                return;
-            }
-        }
     }
 
     /**
@@ -179,7 +172,10 @@ class SendProjects
             $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
 
             if (!$entity || $entity->getStatus() == ProjectEntity::STATUS_FAILED) {
-                $this->errorHandler->logError("Smartcat update project {$project->getId()}. Entity failed.");
+                $this->errorHandler->logError(
+                    "Smartcat update project. Entity error.",
+                    ['entity' => $entity, 'project' => $project]
+                );
                 continue;
             }
 
@@ -219,7 +215,10 @@ class SendProjects
                     $this->projectEntityService->update($entity);
                 }
             } catch (Throwable $e) {
-                $this->errorHandler->logError("Smartcat update project {$project->getId()} error: {$e->getMessage()}");
+                $this->errorHandler->logError(
+                    "Smartcat update project error",
+                    ['project' => $project, 'entity' => $entity, 'exception' => $e]
+                );
 
                 if ($e instanceof ClientErrorException) {
                     continue;
