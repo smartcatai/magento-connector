@@ -98,10 +98,16 @@ class RequestExport
             } catch (Throwable $e) {
                 if (!($e instanceof ServerErrorException)) {
                     $entity->setStatus(ProjectEntity::STATUS_FAILED);
-                    $this->errorHandler->logError("Smartcat API Error", ['entity' => $entity, 'exception' => $e]);
+                    $this->errorHandler->logError(
+                        "Smartcat API Error",
+                        ['entity' => $entity, 'exception' => $e]
+                    );
                     $this->projectEntityService->update($entity);
                 } else {
-                    $this->errorHandler->logWarning("Can't request export document", ['entity' => $entity, 'exception' => $e]);
+                    $this->errorHandler->logWarning(
+                        "Can't request export document",
+                        ['entity' => $entity, 'exception' => $e]
+                    );
                 }
 
                 continue;
