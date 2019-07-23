@@ -80,10 +80,10 @@ class ErrorHandler
                     ['entity' => $entity, 'project' => $project, 'exception' => $e]
 
                 );
-            } catch (Throwable $e) {
+            } catch (Throwable $ex) {
                 $this->logWarning(
                     "Can't save project entity",
-                    ['entity' => $entity, 'project' => $project, 'exception' => $e]
+                    ['entity' => $entity, 'project' => $project, 'exception' => $ex]
                 );
                 continue;
             }
@@ -91,10 +91,10 @@ class ErrorHandler
 
         try {
             $this->projectRepository->save($project);
-        } catch (Throwable $e) {
+        } catch (Throwable $ex) {
             $this->logWarning(
                 "Can't save project",
-                ['project' => $project, 'exception' => $e]
+                ['project' => $project, 'exception' => $ex]
             );
         }
 
