@@ -150,6 +150,7 @@ class RequestExport
                 if ($e instanceof ClientErrorException) {
                     $entity->setStatus( ProjectEntity::STATUS_FAILED);
                     $this->projectEntityService->update($entity);
+                    continue;
                 }
 
                 throw $e;
