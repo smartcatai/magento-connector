@@ -21,6 +21,7 @@
 
 namespace SmartCat\Connector\Cron;
 
+use Http\Client\Common\Exception\ClientErrorException;
 use Http\Client\Common\Exception\ServerErrorException;
 use SmartCat\Client\Model\ProjectModel;
 use SmartCat\Connector\Helper\ErrorHandler;
@@ -69,7 +70,7 @@ class RequestExport
         foreach ($projects as $project) {
             try {
                 $smartCatProject = $projectManager->projectGet($project->getGuid());
-                $this->setStatuses($smartCatProject);
+                $this->setStatuses($smartCatProject, $project);
             } catch (Throwable $e) {
                 $this->errorHandler->handleProjectError($e, $project, "Smartcat API Error");
                 continue;
@@ -122,8 +123,10 @@ class RequestExport
 
     /**
      * @param ProjectModel $smartCatProject
+     * @param Project $project
+     * @throws Throwable
      */
-    private function setStatuses(ProjectModel $smartCatProject)
+    private function setStatuses(ProjectModel $smartCatProject, Project $project)
     {
         foreach ($smartCatProject->getDocuments() as $document) {
             $projectEntity = $this->projectEntityService->getEntityById($document->getExternalId());
@@ -135,6 +138,21 @@ class RequestExport
             if (!in_array($projectEntity->getStatus(), ProjectEntity::getSelfStatuses())) {
                 $projectEntity->setStatus($document->getStatus());
                 $this->projectEntityService->update($projectEntity);
+            }
+        }
+
+        $entities = $this->projectEntityService->getEntitiesByProject($project);
+
+        foreach ($entities as $entity) {
+            try {
+                $this->smartCatService->getDocumentManager()->documentGet(['documentId' => $entity->getDocumentId()]);
+            } catch (\Throwable $e) {
+                if ($e instanceof ClientErrorException) {
+                    $entity->setStatus( ProjectEntity::STATUS_FAILED);
+                    $this->projectEntityService->update($entity);
+                }
+
+                throw $e;
             }
         }
     }
