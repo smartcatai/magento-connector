@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Cron;
 
 use Http\Client\Common\Exception\ClientErrorException;
+use Http\Client\Common\Exception\ServerErrorException;
 use SmartCat\Client\Model\ProjectModel;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
@@ -69,9 +70,9 @@ class RequestExport
         foreach ($projects as $project) {
             try {
                 $smartCatProject = $projectManager->projectGet($project->getGuid());
-                $this->setStatuses($smartCatProject);
+                $this->setStatuses($smartCatProject, $project);
             } catch (Throwable $e) {
-                $this->errorHandler->handleProjectError($e, $project, "SmartCat API Error");
+                $this->errorHandler->handleProjectError($e, $project, "Smartcat API Error");
                 continue;
             }
 
@@ -96,11 +97,20 @@ class RequestExport
                     ->getDocumentExportManager()
                     ->documentExportRequestExport(['documentIds' => [$entity->getDocumentId()]]);
             } catch (Throwable $e) {
-                if ($e instanceof ClientErrorException && $e->getResponse()->getStatusCode() == 404) {
+                if (!($e instanceof ServerErrorException)) {
                     $entity->setStatus(ProjectEntity::STATUS_FAILED);
+                    $this->errorHandler->logError(
+                        "Smartcat API Error",
+                        ['entity' => $entity, 'exception' => $e]
+                    );
+                    $this->projectEntityService->update($entity);
+                } else {
+                    $this->errorHandler->logWarning(
+                        "Can't request export document",
+                        ['entity' => $entity, 'exception' => $e]
+                    );
                 }
-                $this->errorHandler->logError("SmartCat API Error: {$e->getMessage()}");
-                $this->projectEntityService->update($entity);
+
                 continue;
             }
 
@@ -113,8 +123,10 @@ class RequestExport
 
     /**
      * @param ProjectModel $smartCatProject
+     * @param Project $project
+     * @throws Throwable
      */
-    private function setStatuses(ProjectModel $smartCatProject)
+    private function setStatuses(ProjectModel $smartCatProject, Project $project)
     {
         foreach ($smartCatProject->getDocuments() as $document) {
             $projectEntity = $this->projectEntityService->getEntityById($document->getExternalId());
@@ -126,6 +138,22 @@ class RequestExport
             if (!in_array($projectEntity->getStatus(), ProjectEntity::getSelfStatuses())) {
                 $projectEntity->setStatus($document->getStatus());
                 $this->projectEntityService->update($projectEntity);
+            }
+        }
+
+        $entities = $this->projectEntityService->getEntitiesByProject($project);
+
+        foreach ($entities as $entity) {
+            try {
+                $this->smartCatService->getDocumentManager()->documentGet(['documentId' => $entity->getDocumentId()]);
+            } catch (\Throwable $e) {
+                if ($e instanceof ClientErrorException) {
+                    $entity->setStatus( ProjectEntity::STATUS_FAILED);
+                    $this->projectEntityService->update($entity);
+                    continue;
+                }
+
+                throw $e;
             }
         }
     }

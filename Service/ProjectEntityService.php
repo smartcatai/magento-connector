@@ -172,6 +172,15 @@ class ProjectEntityService
     }
 
     /**
+     * @param Project $project
+     * @return ProjectEntity[]|null
+     */
+    public function getEntitiesByProject(Project $project)
+    {
+        return $this->projectEntityRepository->getItemsByProject($project);
+    }
+
+    /**
      * @param $filePath
      * @param $fileName
      * @param ProjectEntity $entity

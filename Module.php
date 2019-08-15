@@ -25,6 +25,8 @@ class Module
 {
     const MANUFACTURER = 'smartcat_connector';
 
+    const LOG_FILE_NAME = 'smartcat.log';
+
     const EXTERNAL_TAG = 'source:Magento';
 
     const PROJECT_TABLE_NAME = self::MANUFACTURER . '_project';

@@ -26,7 +26,7 @@ use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ResourceModel\Store;
 use Magento\Store\Model\StoreFactory;
 use Magento\Store\Model\StoreManager;
-use Psr\Log\LoggerInterface;
+use SmartCat\Connector\Logger\Logger;
 use SmartCat\Connector\Helper\LanguageDictionary;
 
 class StoreService
@@ -42,7 +42,7 @@ class StoreService
         StoreFactory $storeFactory,
         StoreManager $storeManager,
         Store $storeResourceModel,
-        LoggerInterface $logger
+        Logger $logger
     ) {
         $this->storeFactory = $storeFactory;
         $this->storeManager = $storeManager;

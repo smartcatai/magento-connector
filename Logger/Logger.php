@@ -19,28 +19,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Model\ResourceModel\Project;
+namespace SmartCat\Connector\Logger;
 
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
-use SmartCat\Connector\Model\ResourceModel\Project as ProjectResourceModel;
-use SmartCat\Connector\Model\Project;
-
-/**
- * Class Collection
- *
- * @method getItems() SmartCat\Connector\Model\Project[]
- *
- * @package SmartCat\Connector\Model\ResourceModel\Project
- */
-class Collection extends AbstractCollection
+class Logger extends \Monolog\Logger
 {
-    /**
-     * Define resource model
-     *
-     * @return void
-     */
-    public function _construct()
-    {
-        $this->_init(Project::class, ProjectResourceModel::class);
-    }
 }

@@ -21,7 +21,7 @@
 
 namespace SmartCat\Connector\Cron;
 
-use Http\Client\Common\Exception\ClientErrorException;
+use Http\Client\Common\Exception\ServerErrorException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use SmartCat\Connector\Helper\ErrorHandler;
 use SmartCat\Connector\Helper\SmartCatFacade;
@@ -68,16 +68,29 @@ class ExportDocuments
                     ->getDocumentExportManager()
                     ->documentExportDownloadExportResult($entity->getTaskId());
             } catch (Throwable $e) {
-                $status = ($e instanceof ClientErrorException)
-                    ? ProjectEntity::STATUS_COMPLETED : ProjectEntity::STATUS_FAILED;
-                $entity->setStatus($status);
-                $this->errorHandler
-                    ->logError("Document export error: Task id {$entity->getTaskId()} {$e->getMessage()}");
+                if ($e instanceof ServerErrorException) {
+                    $entity->setStatus(ProjectEntity::STATUS_COMPLETED);
+                    $this->errorHandler->logWarning(
+                        "Can't export document",
+                        ['entity' => $entity, 'exception' => $e]
+                    );
+                } else {
+                    $entity->setStatus(ProjectEntity::STATUS_FAILED);
+                    $this->errorHandler->logWarning(
+                        "Document export error",
+                        ['entity' => $entity, 'exception' => $e]
+                    );
+                }
+
                 $this->projectEntityService->update($entity);
                 continue;
             }
 
             if ($response->getStatusCode() != 200) {
+                $this->errorHandler->logInfo(
+                    "Document is still being processed",
+                    ['entity' => $entity, 'response' => $response]
+                );
                 continue;
             }
 
@@ -87,8 +100,10 @@ class ExportDocuments
             try {
                 $strategy->setContent($content, $entity);
             } catch (Throwable $e) {
-                $this->errorHandler
-                    ->logError("Can't save content to entity {$entity->getId()}. Error: {$e->getMessage()}");
+                $this->errorHandler->logError(
+                    "Can't save content to entity",
+                    ['entity' => $entity, 'exception' => $e]
+                );
 
                 if ($e instanceof NoSuchEntityException) {
                     $entity->setStatus(ProjectEntity::STATUS_FAILED);

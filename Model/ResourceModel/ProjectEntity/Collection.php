@@ -28,6 +28,13 @@ use SmartCat\Connector\Model\ResourceModel\ProjectEntity as ProjectEntityResourc
 use SmartCat\Connector\Model\ProjectEntity;
 use SmartCat\Connector\Module;
 
+/**
+ * Class Collection
+ *
+ * @method getItems() SmartCat\Connector\Model\ProjectEntity[]
+ *
+ * @package SmartCat\Connector\Model\ResourceModel\ProjectEntity
+ */
 class Collection extends AbstractCollection
 {
     /**

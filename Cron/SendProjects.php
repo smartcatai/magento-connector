@@ -81,7 +81,7 @@ class SendProjects
                     $this->createProject($project, $profile);
                 }
             } catch (Throwable $e) {
-                $this->errorHandler->handleError($e, "SmartCat sending project error");
+                $this->errorHandler->handleError($e, "Smartcat sending project error");
                 continue;
             }
         }
@@ -98,12 +98,20 @@ class SendProjects
 
         $newProjectModel = (new CreateProjectModel())
             ->setName($project->getElement())
-            ->setDescription('Magento SmartCat Connector. Product: ' . $project->getUniqueId())
+            ->setDescription('Magento Smartcat Connector. Product: ' . $project->getUniqueId())
             ->setSourceLanguage($profile->getSourceLang())
             ->setTargetLanguages($profile->getTargetLangArray())
             ->setWorkflowStages($profile->getStagesArray())
-            ->setExternalTag(Module::EXTERNAL_TAG)
-            ->setAssignToVendor(false);
+            ->setExternalTag(Module::EXTERNAL_TAG);
+
+        if ($profile->getVendor()) {
+            $newProjectModel
+                ->setAssignToVendor(true)
+                ->setVendorAccountIds([$profile->getVendor()]);
+        } else {
+            $newProjectModel
+                ->setAssignToVendor(false);
+        }
 
         try {
             $projectModel = $projectManager->projectCreateProject($newProjectModel);
@@ -125,7 +133,7 @@ class SendProjects
                 $this->projectEntityService->update($projectEntity);
             }
         } catch (Throwable $e) {
-            $this->errorHandler->handleProjectError($e, $project, "SmartCat create project error");
+            $this->errorHandler->handleProjectError($e, $project, "Smartcat create project error");
             return;
         }
 
@@ -134,21 +142,6 @@ class SendProjects
             ->setStatus($projectModel->getStatus());
 
         $this->projectService->update($project);
-
-        // If Vendor ID exists - update project and set vendor
-        if ($profile->getVendor()) {
-            $projectChanges = (new ProjectChangesModel())
-                ->setName($projectModel->getName())
-                ->setDescription($projectModel->getDescription())
-                ->setExternalTag(Module::EXTERNAL_TAG)
-                ->setVendorAccountIds([$profile->getVendor()]);
-            try {
-                $projectManager->projectUpdateProject($projectModel->getId(), $projectChanges);
-            } catch (Throwable $e) {
-                $this->errorHandler->handleProjectError($e, $project, "SmartCat error update project to vendor");
-                return;
-            }
-        }
     }
 
     /**
@@ -169,7 +162,7 @@ class SendProjects
                 return $value->getName() . StrategyInterface::EXTENSION;
             }, $smartCatDocuments);
         } catch (Throwable $e) {
-            $this->errorHandler->handleProjectError($e, $project, "SmartCat update project error");
+            $this->errorHandler->handleProjectError($e, $project, "Smartcat update project error");
             return;
         }
 
@@ -179,7 +172,10 @@ class SendProjects
             $entity = $this->projectEntityService->getEntityById($projectDocument->getExternalId());
 
             if (!$entity || $entity->getStatus() == ProjectEntity::STATUS_FAILED) {
-                $this->errorHandler->logError("SmartCat update project {$project->getId()}. Entity failed.");
+                $this->errorHandler->logError(
+                    "Smartcat update project. Entity error.",
+                    ['entity' => $entity, 'project' => $project]
+                );
                 continue;
             }
 
@@ -219,7 +215,10 @@ class SendProjects
                     $this->projectEntityService->update($entity);
                 }
             } catch (Throwable $e) {
-                $this->errorHandler->logError("SmartCat update project {$project->getId()} error: {$e->getMessage()}");
+                $this->errorHandler->logError(
+                    "Smartcat update project error",
+                    ['project' => $project, 'entity' => $entity, 'exception' => $e]
+                );
 
                 if ($e instanceof ClientErrorException) {
                     continue;
@@ -250,7 +249,7 @@ class SendProjects
             try {
                 $projectManager->projectUpdateProject($projectModel->getId(), $projectChanges);
             } catch (Throwable $e) {
-                $this->errorHandler->handleProjectError($e, $project, "SmartCat error update project external tag");
+                $this->errorHandler->handleProjectError($e, $project, "Smartcat error update project external tag");
                 return;
             }
         }
