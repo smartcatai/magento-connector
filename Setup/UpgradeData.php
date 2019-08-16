@@ -38,6 +38,10 @@ class UpgradeData implements UpgradeDataInterface
             $this->ver120($setup);
         }
 
+        if (version_compare($context->getVersion(), "1.2.2", "<")) {
+            $this->ver122($setup);
+        }
+
         $setup->endSetup();
     }
 
@@ -60,6 +64,13 @@ class UpgradeData implements UpgradeDataInterface
 
         $setup->getConnection()->query(
             "UPDATE smartcat_connector_project_entity SET type = (SELECT SUBSTRING_INDEX(type, '|', -1));"
+        );
+    }
+
+    private function ver122(ModuleDataSetupInterface $setup)
+    {
+        $setup->getConnection()->query(
+            "UPDATE smartcat_connector_project_entity SET source_lang = 'en';"
         );
     }
 }

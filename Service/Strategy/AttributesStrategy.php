@@ -92,6 +92,12 @@ class AttributesStrategy extends AbstractStrategy
         $data = [];
         $searchCriteria = $this->searchCriteriaBuilder->create();
 
+        $storeID = $this->storeService->getStoreIdByCode($entity->getSourceLang());
+
+        if ($storeID === null) {
+            throw new \Exception("Store view with code '{$this->storeService::getStoreCode($entity->getSourceLang())}' not found");
+        }
+
         /** @var Attribute[] $attributesList */
         $attributesList = $this->attributeRepository
             ->getList('catalog_product', $searchCriteria)
@@ -99,7 +105,7 @@ class AttributesStrategy extends AbstractStrategy
 
         foreach ($attributesList as $attribute) {
             if ($attribute->getDefaultFrontendLabel()) {
-                $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel(0)]);
+                $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel($storeID)]);
             }
         }
 

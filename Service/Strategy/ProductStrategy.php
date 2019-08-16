@@ -104,10 +104,16 @@ class ProductStrategy extends AbstractStrategy
             return null;
         }
 
+        $storeID = $this->storeService->getStoreIdByCode($entity->getSourceLang());
+
+        if ($storeID === null) {
+            throw new \Exception("Store view with code '{$this->storeService::getStoreCode($entity->getSourceLang())}' not found");
+        }
+
         $attributes = [];
 
         /** @var Product $product */
-        $product = $this->productRepository->getById($entity->getEntityId());
+        $product = $this->productRepository->getById($entity->getEntityId(), false, $storeID);
 
         foreach ($product->getAttributes() as $attribute) {
             $attributeCode = $attribute->getAttributeCode();
