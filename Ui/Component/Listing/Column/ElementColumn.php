@@ -83,7 +83,7 @@ class ElementColumn extends Column
         }
 
         $url = $strategy->getUrlToEntity($item[ProjectEntity::ENTITY_ID]);
-        $text = $strategy->getEntityNormalName($item[ProjectEntity::ENTITY_ID]);
+        $text = $strategy->getEntityNormalName($item[ProjectEntity::ID]);
 
         return "<a href='{$url}' target='_blank'>{$text}</a>";
     }
