@@ -163,13 +163,16 @@ class ProductStrategy extends AbstractStrategy
     }
 
     /**
-     * @param $entityId
+     * @param $projectEntityId
      * @return string|null
      */
-    public function getEntityNormalName($entityId)
+    public function getEntityNormalName($projectEntityId)
     {
         try {
-            return $this->productRepository->getById($entityId, false, 1)->getName();
+            $entity = $this->projectEntityService->getEntityById($projectEntityId);
+            $storeID = $this->storeService->getStoreIdByCode($entity->getSourceLang());
+
+            return $this->productRepository->getById($entity->getEntityId(), false, $storeID ?? 1)->getName();
         } catch (\Throwable $e) {
         }
 
