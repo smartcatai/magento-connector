@@ -62,6 +62,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->ver120($setup);
         }
 
+        if (version_compare($context->getVersion(), "1.2.2", "<")) {
+            $this->ver122($setup);
+        }
+
         $setup->endSetup();
     }
 
@@ -184,6 +188,25 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'nullable' => false
                 ],
                 'comment' => 'Entity name'
+            ]
+        );
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function ver122(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('smartcat_connector_project_entity'),
+            'source_lang',
+            [
+                'type' => Table::TYPE_TEXT,
+                'size' => 255,
+                'options' => [
+                    'nullable' => false
+                ],
+                'comment' => 'Document source language'
             ]
         );
     }

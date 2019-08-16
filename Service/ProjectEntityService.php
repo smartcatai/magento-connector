@@ -71,6 +71,7 @@ class ProjectEntityService
                 ->setEntity($entityName)
                 ->setStatus(ProjectEntity::STATUS_NEW)
                 ->setTargetLang($targetLang)
+                ->setSourceLang($profile->getSourceLang())
                 ->setProjectId($project->getId());
 
             if ($entity instanceof AbstractModel) {
