@@ -85,16 +85,16 @@ class CategoryStrategy extends AbstractStrategy
     {
         $data = [];
 
-        $storeID = $this->storeService->getStoreIdByCode($entity->getSourceLang());
+        $store = $this->storeService->getStoreByCode($entity->getSourceLang());
 
-        if ($storeID === null) {
+        if ($store === null) {
             throw new \Exception("Store view with code '{$this->storeService::getStoreCode($entity->getSourceLang())}' not found");
         }
 
         /** @var Category[] $categories */
         $categories = $this->categoryFactory->create()
             ->addAttributeToSelect('*')
-            ->setProductStoreId($storeID);
+            ->setStore($store);
 
         foreach ($categories as $category) {
             if ($category->getId() == 1) {
