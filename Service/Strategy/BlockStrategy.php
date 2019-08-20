@@ -181,13 +181,15 @@ class BlockStrategy extends AbstractStrategy
     }
 
     /**
-     * @param $entityId
+     * @param $projectEntityId
      * @return string
      */
-    public function getEntityNormalName($entityId)
+    public function getEntityNormalName($projectEntityId)
     {
         try {
-            return $this->blockRepository->getById($entityId)->getTitle();
+            $entity = $this->projectEntityService->getEntityById($projectEntityId);
+
+            return $this->blockRepository->getById($entity->getEntityId())->getTitle();
         } catch (\Throwable $e) {
         }
 

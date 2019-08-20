@@ -31,6 +31,7 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     const TASK_ID = 'task_id';
     const ID = 'id';
     const TARGET_LANG = 'target_lang';
+    const SOURCE_LANG = 'source_lang';
     const ENTITY = 'entity';
 
     const STATUS_NEW = 'new';
@@ -200,6 +201,25 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     public function setTargetLang($targetLang)
     {
         return $this->setData(self::TARGET_LANG, $targetLang);
+    }
+
+    /**
+     * Get source lang
+     * @return string
+     */
+    public function getSourceLang()
+    {
+        return $this->getData(self::SOURCE_LANG);
+    }
+
+    /**
+     * Set source lang
+     * @param $sourceLang
+     * @return $this
+     */
+    public function setSourceLang($sourceLang)
+    {
+        return $this->setData(self::SOURCE_LANG, $sourceLang);
     }
 
     /**

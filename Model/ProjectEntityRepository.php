@@ -139,7 +139,7 @@ class ProjectEntityRepository
 
         $item = $collection->setCurPage(1)->setPageSize(1)->getItems();
 
-        return $item[0] ?? null;
+        return array_shift($item);
     }
 
     /**
