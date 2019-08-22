@@ -55,14 +55,6 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     }
 
     /**
-     * @return string
-     */
-    public function getUniqueId()
-    {
-        return md5($this->getData(self::ID));
-    }
-
-    /**
      * Get guid
      * @return string
      */

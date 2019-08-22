@@ -98,7 +98,7 @@ class SendProjects
 
         $newProjectModel = (new CreateProjectModel())
             ->setName($project->getElement())
-            ->setDescription('Magento Smartcat Connector. Product: ' . $project->getUniqueId())
+            ->setDescription('Magento Smartcat Connector. Project id: ' . $project->getId())
             ->setSourceLanguage($profile->getSourceLang())
             ->setTargetLanguages($profile->getTargetLangArray())
             ->setWorkflowStages($profile->getStagesArray())
