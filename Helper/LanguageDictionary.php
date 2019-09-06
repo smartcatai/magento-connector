@@ -220,6 +220,10 @@ class LanguageDictionary
     {
         $index = array_search($code, array_column(self::getLanguages(), 'code'));
 
+        if ($index === false) {
+            return false;
+        }
+
         return self::getLanguages()[$index]['name'];
     }
 }

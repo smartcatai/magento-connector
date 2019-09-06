@@ -58,8 +58,14 @@ class LanguagesList implements ArrayInterface
 
         if (isset($languageList)) {
             foreach ($languageList as $language) {
+                $label = LanguageDictionary::getNameByCode($language->getId());
+
+                if ($label === false) {
+                    continue;
+                }
+
                 $languages[] = [
-                    'label' => LanguageDictionary::getNameByCode($language->getId()) . ' - ' . $language->getId(),
+                    'label' => $label . ' - ' . $language->getId(),
                     'value' => $language->getId()
                 ];
             }
