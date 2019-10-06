@@ -141,11 +141,6 @@
                 <label translate="true">Deadline</label>
             </settings>
         </column>
-        <column name="comment" sortOrder="80">
-            <settings>
-                <label translate="true">Comment</label>
-            </settings>
-        </column>
         <column name="document_id" class="SmartCat\Connector\Ui\Component\Listing\Column\SmartCatDocumentColumn" sortOrder="90">
             <settings>
                 <bodyTmpl>ui/grid/cells/html</bodyTmpl>

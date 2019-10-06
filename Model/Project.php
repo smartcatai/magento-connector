@@ -188,25 +188,6 @@ class Project extends \Magento\Framework\Model\AbstractModel implements ProjectI
     }
 
     /**
-     * Get comment
-     * @return string
-     */
-    public function getComment()
-    {
-        return $this->getData(self::COMMENT);
-    }
-
-    /**
-     * Set comment
-     * @param string $comment
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
-     */
-    public function setComment($comment)
-    {
-        return $this->setData(self::COMMENT, $comment);
-    }
-
-    /**
      * Get is builded statistics
      * @return bool
      */

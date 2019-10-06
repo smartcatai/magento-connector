@@ -66,6 +66,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->ver122($setup);
         }
 
+        if (version_compare($context->getVersion(), "1.2.3", "<")) {
+            $this->ver123($setup);
+        }
+
         $setup->endSetup();
     }
 
@@ -208,6 +212,17 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 ],
                 'comment' => 'Document source language'
             ]
+        );
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function ver123(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->dropColumn(
+            $setup->getTable('smartcat_connector_project'),
+            'comment'
         );
     }
 
