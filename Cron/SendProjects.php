@@ -236,6 +236,7 @@ class SendProjects
         /** Если документов в статусе New больше не осталось - тогда меняем статус проекта */
         $projectDocuments = $this->projectService->getProjectDocumentModels($project);
         if (empty($projectDocuments)) {
+            $projectModel = $projectManager->projectGet($profile->getProjectGuid());
             $project->setStatus($projectModel->getStatus());
         }
 
