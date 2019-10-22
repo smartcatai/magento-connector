@@ -65,9 +65,7 @@ class ErrorHandler
             return $message;
         }
 
-        $project
-            ->setStatus(Project::STATUS_FAILED)
-            ->setComment($message);
+        $project->setStatus(Project::STATUS_FAILED);
 
         $entities = $this->entityRepository->getItemsByProject($project);
 

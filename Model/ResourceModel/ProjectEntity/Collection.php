@@ -55,7 +55,7 @@ class Collection extends AbstractCollection
             ->joinLeft(
                 ['projectTable' => $this->getTable(Module::PROJECT_TABLE_NAME)],
                 'main_table.' . ProjectEntity::PROJECT_ID . ' = projectTable.' . Project::ID,
-                ['comment', 'profile_id', 'deadline']
+                ['profile_id', 'deadline']
             )->joinLeft(
                 ['profileTable' => $this->getTable(Module::PROFILE_TABLE_NAME)],
                 'projectTable.' . Project::PROFILE_ID . ' = profileTable.' . Profile::ID,
@@ -63,7 +63,6 @@ class Collection extends AbstractCollection
             );
 
         $this
-            ->addFilterToMap('comment', 'projectTable.comment')
             ->addFilterToMap('deadline', 'projectTable.deadline')
             ->addFilterToMap('source_lang', 'profileTable.source_lang')
             ->addFilterToMap('target_lang', 'main_table.target_lang')

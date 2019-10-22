@@ -26,7 +26,6 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     const ID = 'id';
     const TRANSLATE = 'translate';
     const DEADLINE = 'deadline';
-    const COMMENT = 'comment';
     const IS_STATS_BUILDED = 'is_stats_builded';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -148,19 +147,6 @@ interface ProjectInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
      * @return \SmartCat\Connector\Api\Data\ProjectInterface
      */
     public function setDeadline($deadline);
-
-    /**
-     * Get comment
-     * @return string|null
-     */
-    public function getComment();
-
-    /**
-     * Set comment
-     * @param string $comment
-     * @return \SmartCat\Connector\Api\Data\ProjectInterface
-     */
-    public function setComment($comment);
 
     /**
      * Get is builded statistics
