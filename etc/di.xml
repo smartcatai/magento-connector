@@ -59,4 +59,16 @@
 			</argument>
 		</arguments>
 	</type>
+	<type name="SmartCat\Connector\Ui\Component\MassAction\Localize">
+		<arguments>
+			<argument name="data" xsi:type="array">
+				<item name="url" xsi:type="string">smartcat_connector/localize/product</item>
+				<item name="paramName" xsi:type="string">id</item>
+				<item name="confirm" xsi:type="array">
+					<item name="title" xsi:type="string" translatable="true">Are you sure?</item>
+					<item name="message" xsi:type="string" translatable="true">Are you sure to translate selected products?</item>
+				</item>
+			</argument>
+		</arguments>
+	</type>
 </config>
