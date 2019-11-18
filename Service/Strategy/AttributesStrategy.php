@@ -90,13 +90,8 @@ class AttributesStrategy extends AbstractStrategy
     public function getDocumentModel(ProjectEntity $entity)
     {
         $data = [];
+
         $searchCriteria = $this->searchCriteriaBuilder->create();
-
-        $storeID = $this->storeService->getStoreIdByCode($entity->getSourceLang());
-
-        if ($storeID === null) {
-            throw new \Exception("Store view with code '{$this->storeService::getStoreCode($entity->getSourceLang())}' not found");
-        }
 
         /** @var Attribute[] $attributesList */
         $attributesList = $this->attributeRepository
@@ -105,7 +100,7 @@ class AttributesStrategy extends AbstractStrategy
 
         foreach ($attributesList as $attribute) {
             if ($attribute->getDefaultFrontendLabel()) {
-                $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel($storeID)]);
+                $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel($entity->getSourceStore())]);
             }
         }
 
@@ -143,12 +138,6 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
-
-        if ($storeID === null) {
-            return false;
-        }
-
         $searchCriteria = $this->searchCriteriaBuilder->create();
 
         /** @var Attribute[] $attributesList */
@@ -170,7 +159,11 @@ class AttributesStrategy extends AbstractStrategy
                 $attribute = clone $attributesList[$index];
                 $frontendLabels = array_merge(
                     $attribute->getFrontendLabels(),
-                    [$this->attributeFrontendLabelFactory->create()->setStoreId($storeID)->setLabel($label)]
+                    [
+                        $this->attributeFrontendLabelFactory->create()
+                            ->setStoreId($entity->getTargetStore())
+                            ->setLabel($label)
+                    ]
                 );
                 $attribute->setFrontendLabels($frontendLabels);
                 try {

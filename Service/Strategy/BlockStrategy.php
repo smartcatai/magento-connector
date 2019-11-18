@@ -145,12 +145,6 @@ class BlockStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
-
-        if ($storeID === null) {
-            return false;
-        }
-
         $block = $this->blockRepository->getById($entity->getEntityId());
 
         if ($entity->getType() == $this->typeTag) {
@@ -164,7 +158,7 @@ class BlockStrategy extends AbstractStrategy
                 $newBlock = $this->blockFactory->create();
                 $newBlock
                     ->setIsActive(true)
-                    ->setStoreId([$storeID])
+                    ->setStoreId([$entity->getTargetStore()])
                     ->setIdentifier($newIdentifier);
             }
 

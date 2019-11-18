@@ -85,11 +85,7 @@ class CategoryStrategy extends AbstractStrategy
     {
         $data = [];
 
-        $store = $this->storeService->getStoreByCode($entity->getSourceLang());
-
-        if ($store === null) {
-            throw new \Exception("Store view with code '{$this->storeService::getStoreCode($entity->getSourceLang())}' not found");
-        }
+        $store = $this->storeService->getStoreById($entity->getSourceStore());
 
         /** @var Category[] $categories */
         $categories = $this->categoryFactory->create()
@@ -143,12 +139,6 @@ class CategoryStrategy extends AbstractStrategy
      */
     public function setContent($jsonContent, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
-
-        if ($storeID === null) {
-            return false;
-        }
-
         $data = $this->decodeJsonParameters($jsonContent);
 
         foreach ($data as $id => $content) {
@@ -156,7 +146,7 @@ class CategoryStrategy extends AbstractStrategy
 
             if (count($index) == 2) {
                 /** @var Category $category */
-                $category = $this->categoryRepository->get($index[1], $storeID);
+                $category = $this->categoryRepository->get($index[1], $entity->getTargetStore());
 
                 $category
                     ->setData('name', $content["name"])

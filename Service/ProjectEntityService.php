@@ -64,14 +64,16 @@ class ProjectEntityService
      */
     public function create(Project $project, $entity, Profile $profile, $entityName, $type)
     {
-        foreach ($profile->getTargetLangArray() as $targetLang) {
+        foreach ($profile->getTargets() as $target) {
             $projectEntity = $this->projectEntityRepository->create();
             $projectEntity
                 ->setType($type)
                 ->setEntity($entityName)
                 ->setStatus(ProjectEntity::STATUS_NEW)
-                ->setTargetLang($targetLang)
+                ->setTargetLang($target['target_lang'])
                 ->setSourceLang($profile->getSourceLang())
+                ->setSourceStore($profile->getSourceStore())
+                ->setTargetStore($target['target_store'])
                 ->setProjectId($project->getId());
 
             if ($entity instanceof AbstractModel) {
@@ -179,6 +181,23 @@ class ProjectEntityService
     public function getEntitiesByProject(Project $project)
     {
         return $this->projectEntityRepository->getItemsByProject($project);
+    }
+
+    /**
+     * @return array|ProjectEntity[]
+     */
+    public function getAllEntities()
+    {
+        $searchCriteria = $this->searchCriteriaBuilder->create();
+
+        try {
+            /** @var ProjectEntity[] $entities */
+            $entities = $this->projectEntityRepository->getList($searchCriteria)->getItems();
+        } catch (\Throwable $e) {
+            return [];
+        }
+
+        return $entities;
     }
 
     /**

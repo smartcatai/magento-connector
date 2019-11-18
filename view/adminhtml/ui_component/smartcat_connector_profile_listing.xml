@@ -86,7 +86,7 @@
 				<dataType>select</dataType>
 			</settings>
 		</column>
-		<column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="30">
+		<column name="targets" class="SmartCat\Connector\Ui\Component\Listing\Column\TargetLanguageColumn" sortOrder="30">
 			<settings>
 				<label translate="true">Target Language</label>
 			</settings>

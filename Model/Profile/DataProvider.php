@@ -21,10 +21,12 @@
 
 namespace SmartCat\Connector\Model\Profile;
 
+use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\ResourceModel\Profile\CollectionFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Ui\DataProvider\AbstractDataProvider;
 
-class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
+class DataProvider extends AbstractDataProvider
 {
     protected $collection;
     private $dataPersistor;
@@ -65,10 +67,15 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         if (isset($this->loadedData)) {
             return $this->loadedData;
         }
+
         $items = $this->collection->getItems();
+
+        /** @var Profile $model */
         foreach ($items as $model) {
             $this->loadedData[$model->getId()] = $model->getData();
+            $this->loadedData[$model->getId()][Profile::TARGETS] = json_decode($model->getData(Profile::TARGETS));
         }
+
         $data = $this->dataPersistor->get('smartcat_connector_profile');
         
         if (!empty($data)) {
