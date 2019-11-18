@@ -146,7 +146,7 @@
 					<formElements>
 						<select>
 							<settings>
-								<options class="SmartCat\Connector\Model\Config\Source\StoresList" />
+								<options class="SmartCat\Connector\Model\Config\Source\StoresNewList" />
 							</settings>
 						</select>
 					</formElements>

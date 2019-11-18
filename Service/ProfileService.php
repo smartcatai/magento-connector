@@ -65,7 +65,7 @@ class ProfileService
      * @throws ProfileServiceException
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function createFromData(array $data)
+    public function createFromData(array &$data)
     {
         if (!empty($data[Profile::ID])) {
             $model = $this->profileRepository->getById($data[Profile::ID]);
@@ -88,6 +88,23 @@ class ProfileService
         if (empty($data[Profile::NAME])) {
             $data[Profile::NAME] =
                 __('Languages:') . ' ' . $data[Profile::SOURCE_LANG] . ' -> ' . implode(', ', array_column($data[Profile::TARGETS], 'target_lang'));
+        }
+
+        foreach ($data[Profile::TARGETS] as $key => $target) {
+            if ($target['target_store'] == 0) {
+                $storeId = $this->storeService->createStoreByCode($target['target_lang']);
+
+                if ($storeId == 0) {
+                    unset($data[Profile::TARGETS][$key]);
+                    continue;
+                }
+
+                $data[Profile::TARGETS][$key]['target_store'] = $storeId;
+            }
+        }
+
+        if (empty($data[Profile::TARGETS])) {
+            throw new ProfileServiceException(__('Targets was been deleted after store creating problem'));
         }
 
         $data[Profile::TARGETS] = json_encode($data[Profile::TARGETS]);
