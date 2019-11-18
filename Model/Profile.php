@@ -119,7 +119,7 @@ class Profile extends AbstractModel implements ProfileInterface
      */
     public function getTargets()
     {
-        return json_decode($this->getData(self::TARGET_LANG), true);
+        return json_decode($this->getData(self::TARGETS), true);
     }
 
     /**

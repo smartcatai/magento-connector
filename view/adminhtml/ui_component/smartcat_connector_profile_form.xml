@@ -39,6 +39,9 @@
 	<fieldset name="general">
 		<settings>
 			<label/>
+			<additionalClasses>
+				<class name="admin__fieldset-visual-select-large">true</class>
+			</additionalClasses>
 		</settings>
 		<field formElement="input" name="name" sortOrder="10">
 			<argument name="data" xsi:type="array">
@@ -97,7 +100,7 @@
 			</argument>
 			<settings>
 				<dataType>text</dataType>
-				<label translate="true">Source Store</label>
+				<label translate="true">Source Store View</label>
 				<dataScope>source_store</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">true</rule>
@@ -108,7 +111,7 @@
 			<settings>
 				<label translate="true">Targets</label>
 				<recordTemplate>record</recordTemplate>
-				<addButtonLabel>New target</addButtonLabel>
+				<addButtonLabel>Add new</addButtonLabel>
 				<deleteProperty>false</deleteProperty>
 				<componentType>dynamicRows</componentType>
 				<dndConfig>
@@ -140,7 +143,7 @@
 				<field formElement="select" name="target_store" sortOrder="41">
 					<settings>
 						<dataType>text</dataType>
-						<label translate="true">Target Store</label>
+						<label translate="true">Target Store View</label>
 						<dataScope>target_store</dataScope>
 					</settings>
 					<formElements>
@@ -155,7 +158,6 @@
 					<settings>
 						<componentType>actionDelete</componentType>
 						<dataType>text</dataType>
-						<label translate="true">Actions</label>
 						<additionalClasses>
 							<class name="data-grid-actions-cell">true</class>
 						</additionalClasses>
