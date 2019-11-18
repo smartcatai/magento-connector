@@ -88,22 +88,81 @@
 				</validation>
 			</settings>
 		</field>
-		<field formElement="multiselect" name="target_lang" sortOrder="40">
+		<field formElement="select" name="source_store" sortOrder="31">
 			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\LanguagesList</item>
+				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\StoresList</item>
 				<item name="config" xsi:type="array">
 					<item name="source" xsi:type="string">Profile</item>
 				</item>
 			</argument>
 			<settings>
 				<dataType>text</dataType>
-				<label translate="true">Target Language</label>
-				<dataScope>target_lang</dataScope>
+				<label translate="true">Source Store</label>
+				<dataScope>source_store</dataScope>
 				<validation>
 					<rule name="required-entry" xsi:type="boolean">true</rule>
 				</validation>
 			</settings>
 		</field>
+		<dynamicRows name="targets" sortOrder="32" component="Magento_Ui/js/dynamic-rows/dynamic-rows">
+			<settings>
+				<label translate="true">Targets</label>
+				<recordTemplate>record</recordTemplate>
+				<addButtonLabel>New target</addButtonLabel>
+				<deleteProperty>false</deleteProperty>
+				<componentType>dynamicRows</componentType>
+				<dndConfig>
+					<param name="enabled" xsi:type="boolean">false</param>
+				</dndConfig>
+			</settings>
+			<container name="record" component="Magento_Ui/js/dynamic-rows/record">
+				<argument name="data" xsi:type="array">
+					<item name="config" xsi:type="array">
+						<item name="isTemplate" xsi:type="boolean">true</item>
+						<item name="is_collection" xsi:type="boolean">true</item>
+						<item name="showFallbackReset" xsi:type="boolean">false</item>
+					</item>
+				</argument>
+				<field formElement="select" name="target_lang" sortOrder="40">
+					<settings>
+						<dataType>text</dataType>
+						<label translate="true">Target Language</label>
+						<dataScope>target_lang</dataScope>
+					</settings>
+					<formElements>
+						<select>
+							<settings>
+								<options class="SmartCat\Connector\Model\Config\Source\LanguagesList" />
+							</settings>
+						</select>
+					</formElements>
+				</field>
+				<field formElement="select" name="target_store" sortOrder="41">
+					<settings>
+						<dataType>text</dataType>
+						<label translate="true">Target Store</label>
+						<dataScope>target_store</dataScope>
+					</settings>
+					<formElements>
+						<select>
+							<settings>
+								<options class="SmartCat\Connector\Model\Config\Source\StoresList" />
+							</settings>
+						</select>
+					</formElements>
+				</field>
+				<actionDelete>
+					<settings>
+						<componentType>actionDelete</componentType>
+						<dataType>text</dataType>
+						<label translate="true">Actions</label>
+						<additionalClasses>
+							<class name="data-grid-actions-cell">true</class>
+						</additionalClasses>
+					</settings>
+				</actionDelete>
+			</container>
+		</dynamicRows>
 		<field formElement="multiselect" name="stages" sortOrder="50">
 			<argument name="data" xsi:type="array">
 				<item name="options" xsi:type="object">SmartCat\Connector\Model\Config\Source\WorkflowStagesList</item>

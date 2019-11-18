@@ -32,6 +32,8 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     const ID = 'id';
     const TARGET_LANG = 'target_lang';
     const SOURCE_LANG = 'source_lang';
+    const SOURCE_STORE = 'source_store';
+    const TARGET_STORE = 'target_store';
     const ENTITY = 'entity';
 
     const STATUS_NEW = 'new';
@@ -220,6 +222,44 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     public function setSourceLang($sourceLang)
     {
         return $this->setData(self::SOURCE_LANG, $sourceLang);
+    }
+
+    /**
+     * Get target store
+     * @return int
+     */
+    public function getTargetStore()
+    {
+        return $this->getData(self::TARGET_STORE);
+    }
+
+    /**
+     * Set target store
+     * @param $targetStore
+     * @return $this
+     */
+    public function setTargetStore($targetStore)
+    {
+        return $this->setData(self::TARGET_STORE, $targetStore);
+    }
+
+    /**
+     * Get source store
+     * @return int
+     */
+    public function getSourceStore()
+    {
+        return $this->getData(self::SOURCE_STORE);
+    }
+
+    /**
+     * Set source store
+     * @param $sourceStore
+     * @return $this
+     */
+    public function setSourceStore($sourceStore)
+    {
+        return $this->setData(self::SOURCE_STORE, $sourceStore);
     }
 
     /**

@@ -100,7 +100,7 @@ class SendProjects
             ->setName($project->getElement())
             ->setDescription('Magento Smartcat Connector. Project id: ' . $project->getId())
             ->setSourceLanguage($profile->getSourceLang())
-            ->setTargetLanguages($profile->getTargetLangArray())
+            ->setTargetLanguages($profile->getTargetLangs())
             ->setWorkflowStages($profile->getStagesArray())
             ->setExternalTag(Module::EXTERNAL_TAG);
 

@@ -21,9 +21,13 @@
 
 namespace SmartCat\Connector\Setup;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
+use SmartCat\Connector\Service\ProfileService;
+use SmartCat\Connector\Service\ProjectEntityService;
+use SmartCat\Connector\Service\StoreService;
 
 class UpgradeData implements UpgradeDataInterface
 {
@@ -40,6 +44,10 @@ class UpgradeData implements UpgradeDataInterface
 
         if (version_compare($context->getVersion(), "1.2.2", "<")) {
             $this->ver122($setup);
+        }
+
+        if (version_compare($context->getVersion(), "1.3.0", "<")) {
+            $this->ver130($setup);
         }
 
         $setup->endSetup();
@@ -72,5 +80,48 @@ class UpgradeData implements UpgradeDataInterface
         $setup->getConnection()->query(
             "UPDATE smartcat_connector_project_entity SET source_lang = 'en';"
         );
+    }
+
+    private function ver130(ModuleDataSetupInterface $setup)
+    {
+        /** @var StoreService $storeService */
+        $storeService = ObjectManager::getInstance()->create(StoreService::class);
+        /** @var ProfileService $profileService */
+        $profileService = ObjectManager::getInstance()->create(ProfileService::class);
+        /** @var ProjectEntityService $projectEntityService */
+        $projectEntityService = ObjectManager::getInstance()->create(ProjectEntityService::class);
+
+        foreach ($profileService->getAllProfiles() as $profile) {
+            $data = [];
+            $recordId = 0;
+            $targetLanguages = explode(', ', $profile->getData('targets'));
+
+            foreach ($targetLanguages as $targetLanguage) {
+                $data = array_merge(
+                    $data,
+                    [
+                        [
+                            'record_id' => $recordId++,
+                            'target_lang' => $targetLanguage,
+                            'target_store' => $storeService->getStoreIdByCode($targetLanguage) ?? 1
+                        ]
+                    ]
+                );
+            }
+
+            $profile->setData('targets', json_encode($data));
+            $sourceStore = $storeService->getStoreIdByCode($profile->getData('source_lang')) ?? 1;
+            $profile->setData('source_store', $sourceStore);
+            $profileService->update($profile);
+        }
+
+        foreach ($projectEntityService->getAllEntities() as $entity) {
+            $sourceStore = $storeService->getStoreIdByCode($entity->getData('source_lang')) ?? 1;
+            $targetStore = $storeService->getStoreIdByCode($entity->getData('target_lang')) ?? 1;
+
+            $entity->setData('source_store', $sourceStore);
+            $entity->setData('target_store', $targetStore);
+            $projectEntityService->update($entity);
+        }
     }
 }

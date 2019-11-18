@@ -104,16 +104,10 @@ class ProductStrategy extends AbstractStrategy
             return null;
         }
 
-        $storeID = $this->storeService->getStoreIdByCode($entity->getSourceLang());
-
-        if ($storeID === null) {
-            throw new \Exception("Store view with code '{$this->storeService::getStoreCode($entity->getSourceLang())}' not found");
-        }
-
         $attributes = [];
 
         /** @var Product $product */
-        $product = $this->productRepository->getById($entity->getEntityId(), false, $storeID);
+        $product = $this->productRepository->getById($entity->getEntityId(), false, $entity->getSourceStore());
 
         foreach ($product->getAttributes() as $attribute) {
             $attributeCode = $attribute->getAttributeCode();
@@ -170,9 +164,12 @@ class ProductStrategy extends AbstractStrategy
     {
         try {
             $entity = $this->projectEntityService->getEntityById($projectEntityId);
-            $storeID = $this->storeService->getStoreIdByCode($entity->getSourceLang());
 
-            return $this->productRepository->getById($entity->getEntityId(), false, $storeID ?? 1)->getName();
+            return $this->productRepository->getById(
+                $entity->getEntityId(),
+                false,
+                $entity->getSourceStore()
+            )->getName();
         } catch (\Throwable $e) {
         }
 
@@ -187,12 +184,6 @@ class ProductStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
-
-        if ($storeID === null) {
-            return false;
-        }
-
         if ($entity->getType() == $this->typeTag) {
             $attributes = $this->decodeJsonParameters($content);
 
@@ -200,7 +191,7 @@ class ProductStrategy extends AbstractStrategy
             $product = $this->productRepository->getById($entity->getEntityId());
 
             foreach ($attributes as $attributeCode => $attributeContent) {
-                $product->addAttributeUpdate($attributeCode, $attributeContent, $storeID);
+                $product->addAttributeUpdate($attributeCode, $attributeContent, $entity->getTargetStore());
             }
 
             return true;

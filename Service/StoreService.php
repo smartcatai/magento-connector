@@ -91,6 +91,24 @@ class StoreService
     }
 
     /**
+     * @return array|StoreInterface[]
+     */
+    public function getAllStores()
+    {
+        return $this->storeManager->getStores(true, true);
+    }
+
+    /**
+     * @param $id
+     * @return StoreInterface|string|null
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function getStoreById($id)
+    {
+        return $this->storeManager->getStore($id);
+    }
+
+    /**
      * @param $storeCode
      * @return int|null
      */

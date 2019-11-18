@@ -70,6 +70,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->ver123($setup);
         }
 
+        if (version_compare($context->getVersion(), "1.3.0", "<")) {
+            $this->ver130($setup);
+        }
+
         $setup->endSetup();
     }
 
@@ -223,6 +227,65 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $setup->getConnection()->dropColumn(
             $setup->getTable('smartcat_connector_project'),
             'comment'
+        );
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function ver130(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('smartcat_connector_project_entity'),
+            'source_store',
+            [
+                'type' => Table::TYPE_INTEGER,
+                'size' => null,
+                'options' => [
+                    'nullable' => false
+                ],
+                'comment' => 'Document source store'
+            ]
+        );
+
+        $setup->getConnection()->addColumn(
+            $setup->getTable('smartcat_connector_project_entity'),
+            'target_store',
+            [
+                'type' => Table::TYPE_INTEGER,
+                'size' => null,
+                'options' => [
+                    'nullable' => false
+                ],
+                'comment' => 'Document target store'
+            ]
+        );
+
+        $setup->getConnection()->addColumn(
+            $setup->getTable('smartcat_connector_profile'),
+            'source_store',
+            [
+                'type' => Table::TYPE_INTEGER,
+                'size' => null,
+                'options' => [
+                    'nullable' => false
+                ],
+                'comment' => 'Profile source store'
+            ]
+        );
+
+        $setup->getConnection()->changeColumn(
+            $setup->getTable('smartcat_connector_profile'),
+            'target_lang',
+            'targets',
+            [
+                'type' => Table::TYPE_TEXT,
+                'size' => null,
+                'options' => [
+                    'nullable' => false,
+                ],
+                'comment' => 'Profile targets',
+            ]
         );
     }
 
