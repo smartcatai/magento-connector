@@ -70,10 +70,10 @@ class ProjectEntityService
                 ->setType($type)
                 ->setEntity($entityName)
                 ->setStatus(ProjectEntity::STATUS_NEW)
-                ->setTargetLang($target['target_lang'])
+                ->setTargetLang($target[Profile::TARGET_LANG])
                 ->setSourceLang($profile->getSourceLang())
                 ->setSourceStore($profile->getSourceStore())
-                ->setTargetStore($target['target_store'])
+                ->setTargetStore($target[Profile::TARGET_STORE])
                 ->setProjectId($project->getId());
 
             if ($entity instanceof AbstractModel) {

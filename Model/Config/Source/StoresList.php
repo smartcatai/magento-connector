@@ -26,9 +26,6 @@ use Magento\Framework\Data\OptionSourceInterface;
 
 class StoresList implements OptionSourceInterface
 {
-    /**
-     * @var StoreService
-     */
     private $storeService;
 
     /**
@@ -40,12 +37,17 @@ class StoresList implements OptionSourceInterface
         $this->storeService = $storeService;
     }
 
+    /**
+     * @return array
+     */
     public function toOptionArray()
     {
         $stores = [];
 
+        $defaultStore = $this->storeService->getDefaultStore();
+
         foreach ($this->storeService->getAllStores() as $store) {
-            if ($store->getCode() === 'admin') {
+            if (in_array($store->getCode(), ['admin', $defaultStore->getCode()])) {
                 continue;
             }
 
@@ -53,6 +55,15 @@ class StoresList implements OptionSourceInterface
                 ['value' => $store->getId(), 'label' => "{$store->getName()} ({$store->getCode()})"]
             ]);
         }
+
+        usort($stores, function ($a, $b) {
+            return strnatcmp($a['label'], $b['label']);
+        });
+
+        array_unshift(
+            $stores,
+            ['value' => $defaultStore->getId(), 'label' => "{$defaultStore->getName()} ({$defaultStore->getCode()})"]
+        );
 
         return $stores;
     }

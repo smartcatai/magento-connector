@@ -97,6 +97,14 @@ class StoreService
     }
 
     /**
+     * @return StoreInterface|null
+     */
+    public function getDefaultStore()
+    {
+        return $this->storeManager->getDefaultStoreView();
+    }
+
+    /**
      * @return array|StoreInterface[]
      */
     public function getAllStores()
