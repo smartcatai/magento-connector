@@ -77,34 +77,31 @@ class ProfileService
             throw new ProfileServiceException(__('Targets are not set'));
         }
 
-        if (in_array($data[Profile::SOURCE_LANG], array_column($data[Profile::TARGETS], 'target_lang'))) {
+        if (in_array($data[Profile::SOURCE_LANG], array_column($data[Profile::TARGETS], Profile::TARGET_LANG))) {
             throw new ProfileServiceException(__('Source Language and Target Language are identical'));
         }
 
-        if (in_array($data[Profile::SOURCE_STORE], array_column($data[Profile::TARGETS], 'target_store'))) {
+        if (in_array($data[Profile::SOURCE_STORE], array_column($data[Profile::TARGETS], Profile::TARGET_STORE))) {
             throw new ProfileServiceException(__('Source Store and Target Store are identical'));
+        }
+
+        foreach ($data[Profile::TARGETS] as $key => $target) {
+            if ($target[Profile::TARGET_STORE] == 0) {
+                $storeId = $this->storeService->createStoreByCode($target[Profile::TARGET_LANG]);
+
+                if ($storeId == 0) {
+                    throw new ProfileServiceException(
+                        __('There has been a problem creating a new Store View. Please check the list of existing Store Views.')
+                    );
+                }
+
+                $data[Profile::TARGETS][$key][Profile::TARGET_STORE] = $storeId;
+            }
         }
 
         if (empty($data[Profile::NAME])) {
             $data[Profile::NAME] =
-                __('Languages:') . ' ' . $data[Profile::SOURCE_LANG] . ' -> ' . implode(', ', array_column($data[Profile::TARGETS], 'target_lang'));
-        }
-
-        foreach ($data[Profile::TARGETS] as $key => $target) {
-            if ($target['target_store'] == 0) {
-                $storeId = $this->storeService->createStoreByCode($target['target_lang']);
-
-                if ($storeId == 0) {
-                    unset($data[Profile::TARGETS][$key]);
-                    continue;
-                }
-
-                $data[Profile::TARGETS][$key]['target_store'] = $storeId;
-            }
-        }
-
-        if (empty($data[Profile::TARGETS])) {
-            throw new ProfileServiceException(__('Targets was been deleted after store creating problem'));
+                __('Languages:') . ' ' . $data[Profile::SOURCE_LANG] . ' -> ' . implode(', ', array_column($data[Profile::TARGETS], Profile::TARGET_LANG));
         }
 
         $data[Profile::TARGETS] = json_encode($data[Profile::TARGETS]);

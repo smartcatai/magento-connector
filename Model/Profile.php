@@ -142,7 +142,7 @@ class Profile extends AbstractModel implements ProfileInterface
      */
     public function getTargetLangs()
     {
-        return array_column($this->getTargets(), 'target_lang');
+        return array_column($this->getTargets(), self::TARGET_LANG);
     }
 
     /**
@@ -151,7 +151,7 @@ class Profile extends AbstractModel implements ProfileInterface
      */
     public function getTargetStores()
     {
-        return array_column($this->getTargets(), 'target_store');
+        return array_column($this->getTargets(), self::TARGET_STORE);
     }
 
     /**

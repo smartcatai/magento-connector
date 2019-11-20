@@ -42,12 +42,7 @@ class StoresNewList implements OptionSourceInterface
 
     public function toOptionArray()
     {
-        $stores = [
-            [
-                'value' => 0,
-                'label' => __('New Store View')
-            ]
-        ];
+        $stores = [];
 
         foreach ($this->storeService->getAllStores() as $store) {
             if ($store->getCode() === 'admin') {
@@ -58,6 +53,18 @@ class StoresNewList implements OptionSourceInterface
                 ['value' => $store->getId(), 'label' => "{$store->getName()} ({$store->getCode()})"]
             ]);
         }
+
+        usort($stores, function ($a, $b) {
+            return strnatcmp($a['label'], $b['label']);
+        });
+
+        array_unshift(
+            $stores,
+            [
+                'value' => 0,
+                'label' => __('New Store View')
+            ]
+        );
 
         return $stores;
     }

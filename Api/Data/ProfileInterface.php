@@ -37,6 +37,9 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     const PROJECT_GUID = 'project_guid';
     const VENDOR_NAME = 'vendor_name';
 
+    const TARGET_LANG = 'target_lang';
+    const TARGET_STORE = 'target_store';
+
     /**
      * Get profile_id
      * @return string|null
