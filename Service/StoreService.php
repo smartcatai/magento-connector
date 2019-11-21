@@ -52,9 +52,11 @@ class StoreService
 
     /**
      * @param $languageCode
+     * @return int
      */
     public function createStoreByCode($languageCode)
     {
+        /** @var  \Magento\Store\Model\Store $store */
         $store = $this->storeFactory->create();
 
         $store
@@ -66,10 +68,14 @@ class StoreService
 
         try {
             $this->storeResourceModel->save($store);
+
+            return $this->getStoreIdByCode($this->getStoreCode($languageCode));
         } catch (AlreadyExistsException $e) {
         } catch (\Exception $e) {
             $this->logger->error("SmartCat Store Service error: {$e->getMessage()}");
         }
+
+        return 0;
     }
 
     /**
@@ -88,6 +94,32 @@ class StoreService
         }
 
         return $stores[self::getStoreCode($storeCode)];
+    }
+
+    /**
+     * @return StoreInterface|null
+     */
+    public function getDefaultStore()
+    {
+        return $this->storeManager->getDefaultStoreView();
+    }
+
+    /**
+     * @return array|StoreInterface[]
+     */
+    public function getAllStores()
+    {
+        return $this->storeManager->getStores(true, true);
+    }
+
+    /**
+     * @param $id
+     * @return StoreInterface|string|null
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function getStoreById($id)
+    {
+        return $this->storeManager->getStore($id);
     }
 
     /**

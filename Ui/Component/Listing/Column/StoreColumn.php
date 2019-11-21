@@ -21,11 +21,34 @@
 
 namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Helper\LanguageDictionary;
+use SmartCat\Connector\Service\StoreService;
 
-class LanguageColumn extends Column
+class StoreColumn extends Column
 {
+    private $storeService;
+
+    /**
+     * StoreColumn constructor.
+     * @param ContextInterface $context
+     * @param UiComponentFactory $uiComponentFactory
+     * @param StoreService $storeService
+     * @param array $components
+     * @param array $data
+     */
+    public function __construct(
+        ContextInterface $context,
+        UiComponentFactory $uiComponentFactory,
+        StoreService $storeService,
+        array $components = [],
+        array $data = []
+    ) {
+        $this->storeService = $storeService;
+        parent::__construct($context, $uiComponentFactory, $components, $data);
+    }
+
     /**
      * Prepare Data Source
      *
@@ -36,11 +59,14 @@ class LanguageColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                $codes = explode(',', $item[$this->getData('name')]);
-                foreach ($codes as &$code) {
-                    $code = LanguageDictionary::getNameByCode($code);
+                try {
+                    $store = $this->storeService->getStoreById($item[$this->getData('name')]);
+                } catch (\Exception $e) {
+                    $item[$this->getData('name')] = __('Undefined Store');
+                    continue;
                 }
-                $item[$this->getData('name')] = implode(', ', $codes);
+
+                $item[$this->getData('name')] = "{$store->getName()} ({$store->getCode()})";
             }
         }
 

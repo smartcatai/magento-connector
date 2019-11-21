@@ -62,7 +62,7 @@ class Category extends \Magento\Backend\App\Action
 
             $this->messageManager->addSuccessMessage(__('All categories were sent to localization'));
         } catch (\Throwable $e) {
-            $this->messageManager->addErrorMessage(__('An a error occurred: %s', $e->getMessage()));
+            $this->messageManager->addErrorMessage(__('An a error occurred: ' . $e->getMessage()));
         }
 
         return $redirectFactory->setPath('catalog/category/index');

@@ -86,9 +86,22 @@
 				<dataType>select</dataType>
 			</settings>
 		</column>
-		<column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\LanguageColumn" sortOrder="30">
+		<column name="source_store" class="SmartCat\Connector\Ui\Component\Listing\Column\StoreColumn" sortOrder="21">
+			<settings>
+				<filter>select</filter>
+				<options class="SmartCat\Connector\Model\Config\Source\StoresList"/>
+				<label translate="true">Source Store View</label>
+				<dataType>select</dataType>
+			</settings>
+		</column>
+		<column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\TargetLanguageColumn" sortOrder="30">
 			<settings>
 				<label translate="true">Target Language</label>
+			</settings>
+		</column>
+		<column name="target_store" class="SmartCat\Connector\Ui\Component\Listing\Column\TargetStoreColumn" sortOrder="31">
+			<settings>
+				<label translate="true">Target Store View</label>
 			</settings>
 		</column>
 		<column name="stages" class="SmartCat\Connector\Ui\Component\Listing\Column\WorkFlowColumn" sortOrder="40">

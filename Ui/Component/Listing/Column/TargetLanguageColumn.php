@@ -23,8 +23,9 @@ namespace SmartCat\Connector\Ui\Component\Listing\Column;
 
 use Magento\Ui\Component\Listing\Columns\Column;
 use SmartCat\Connector\Helper\LanguageDictionary;
+use SmartCat\Connector\Model\Profile;
 
-class LanguageColumn extends Column
+class TargetLanguageColumn extends Column
 {
     /**
      * Prepare Data Source
@@ -36,7 +37,7 @@ class LanguageColumn extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                $codes = explode(',', $item[$this->getData('name')]);
+                $codes = array_column(json_decode($item[Profile::TARGETS], true), Profile::TARGET_LANG);
                 foreach ($codes as &$code) {
                     $code = LanguageDictionary::getNameByCode($code);
                 }

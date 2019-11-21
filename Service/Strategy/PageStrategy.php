@@ -148,17 +148,11 @@ class PageStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $storeID = $this->storeService->getStoreIdByCode($entity->getTargetLang());
-
-        if ($storeID === null) {
-            return false;
-        }
-
         $page = $this->pageRepository->getById($entity->getEntityId());
 
         if ($entity->getType() == $this->typeTag) {
             $parameters = $this->decodeJsonParameters($content);
-            $duplicate = $this->pageRepository->getListByIdentifier($page->getIdentifier(), $storeID);
+            $duplicate = $this->pageRepository->getListByIdentifier($page->getIdentifier(), $entity->getTargetStore());
 
             if (!empty($duplicate)) {
                 $newPage = array_shift($duplicate);
@@ -166,7 +160,7 @@ class PageStrategy extends AbstractStrategy
                 $newPage = $this->pageFactory->create();
 
                 $newPage
-                    ->setStoreId([$storeID])
+                    ->setStoreId([$entity->getTargetStore()])
                     ->setIsActive(true)
                     ->setIdentifier($page->getIdentifier())
                     ->setPageLayout($page->getPageLayout());

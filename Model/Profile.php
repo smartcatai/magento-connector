@@ -115,34 +115,62 @@ class Profile extends AbstractModel implements ProfileInterface
 
     /**
      * Get target_lang
-     * @return string
+     * @return array
      */
-    public function getTargetLang()
+    public function getTargets()
     {
-        return $this->getData(self::TARGET_LANG);
+        return json_decode($this->getData(self::TARGETS), true);
+    }
+
+    /**
+     * Set target_lang
+     * @param string|array $targets
+     * @return ProfileInterface
+     */
+    public function setTargets($targets)
+    {
+        if (is_array($targets)) {
+            $targets = json_encode($targets);
+        }
+
+        return $this->setData(self::TARGETS, $targets);
     }
 
     /**
      * Get target_lang
      * @return array
      */
-    public function getTargetLangArray()
+    public function getTargetLangs()
     {
-        return explode(',', $this->getTargetLang());
+        return array_column($this->getTargets(), self::TARGET_LANG);
     }
 
     /**
-     * Set target_lang
-     * @param string|array $targetLang
-     * @return ProfileInterface
+     * Get target store
+     * @return array
      */
-    public function setTargetLang($targetLang)
+    public function getTargetStores()
     {
-        if (is_array($targetLang)) {
-            $targetLang = implode(',', $targetLang);
-        }
+        return array_column($this->getTargets(), self::TARGET_STORE);
+    }
 
-        return $this->setData(self::TARGET_LANG, $targetLang);
+    /**
+     * Get source store
+     * @return int
+     */
+    public function getSourceStore()
+    {
+        return $this->getData(self::SOURCE_STORE);
+    }
+
+    /**
+     * Set source store
+     * @param $sourceStore
+     * @return $this
+     */
+    public function setSourceStore($sourceStore)
+    {
+        return $this->setData(self::SOURCE_STORE, $sourceStore);
     }
 
     /**

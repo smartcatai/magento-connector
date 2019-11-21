@@ -124,7 +124,7 @@ class ProjectService
         $project
             ->setProfileId($profile->getId())
             ->setElement($name)
-            ->setTranslate($profile->getSourceLang() . ' -> ' . $profile->getTargetLang())
+            ->setTranslate($profile->getSourceLang() . ' -> ' . implode(', ', $profile->getTargetLangs()))
             ->setStatus(Project::STATUS_WAITING);
 
         if ($profile->getProjectGuid()) {

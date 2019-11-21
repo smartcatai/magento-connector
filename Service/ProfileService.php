@@ -65,7 +65,7 @@ class ProfileService
      * @throws ProfileServiceException
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function createFromData(array $data)
+    public function createFromData(array &$data)
     {
         if (!empty($data[Profile::ID])) {
             $model = $this->profileRepository->getById($data[Profile::ID]);
@@ -73,15 +73,38 @@ class ProfileService
             $model = $this->profileRepository->create();
         }
 
-        if (in_array($data[Profile::SOURCE_LANG], $data[Profile::TARGET_LANG])) {
+        if (empty($data[Profile::TARGETS])) {
+            throw new ProfileServiceException(__('Targets are not set'));
+        }
+
+        if (in_array($data[Profile::SOURCE_LANG], array_column($data[Profile::TARGETS], Profile::TARGET_LANG))) {
             throw new ProfileServiceException(__('Source Language and Target Language are identical'));
         }
 
-        foreach ($data[Profile::TARGET_LANG] as $language) {
-            $this->storeService->createStoreByCode($language);
+        if (in_array($data[Profile::SOURCE_STORE], array_column($data[Profile::TARGETS], Profile::TARGET_STORE))) {
+            throw new ProfileServiceException(__('Source Store and Target Store are identical'));
         }
 
-        $data[Profile::TARGET_LANG] = implode(',', $data[Profile::TARGET_LANG]);
+        foreach ($data[Profile::TARGETS] as $key => $target) {
+            if ($target[Profile::TARGET_STORE] == 0) {
+                $storeId = $this->storeService->createStoreByCode($target[Profile::TARGET_LANG]);
+
+                if ($storeId == 0) {
+                    throw new ProfileServiceException(
+                        __('There has been a problem creating a new Store View. Please check the list of existing Store Views.')
+                    );
+                }
+
+                $data[Profile::TARGETS][$key][Profile::TARGET_STORE] = $storeId;
+            }
+        }
+
+        if (empty($data[Profile::NAME])) {
+            $data[Profile::NAME] =
+                __('Languages:') . ' ' . $data[Profile::SOURCE_LANG] . ' -> ' . implode(', ', array_column($data[Profile::TARGETS], Profile::TARGET_LANG));
+        }
+
+        $data[Profile::TARGETS] = json_encode($data[Profile::TARGETS]);
         $data[Profile::STAGES] = implode(',', $data[Profile::STAGES]);
 
         if (!empty($data[Profile::VENDOR]) && $data[Profile::VENDOR] != 0) {
@@ -101,16 +124,12 @@ class ProfileService
             }
         }
 
-        if (empty($data[Profile::NAME])) {
-            $data[Profile::NAME] =
-                __('Languages:') . ' ' . $data[Profile::SOURCE_LANG] . ' -> ' . $data[Profile::TARGET_LANG];
-        }
+        $model->setData($data);
 
         if (!empty($data[Profile::PROJECT_GUID])) {
             $this->checkProject($model, $data[Profile::PROJECT_GUID]);
         }
 
-        $model->setData($data);
         $this->profileRepository->save($model);
 
         return $model->getId();
@@ -129,11 +148,16 @@ class ProfileService
 
             $targetLanguages = $smartCatProject->getTargetLanguages();
             $sourceLanguage = $smartCatProject->getSourceLanguage();
-
-            $model->setTargetLang($targetLanguages);
-            $model->setSourceLang($sourceLanguage);
         } catch (\Throwable $e) {
             throw new ProfileServiceException(__($e->getMessage()));
+        }
+
+        if (!empty(array_diff($targetLanguages, $model->getTargetLangs()))) {
+            throw new ProfileServiceException(__('Target languages are not identical with project from Smartcat'));
+        }
+
+        if ($sourceLanguage !== $model->getSourceLang()) {
+            throw new ProfileServiceException(__('Source languages are not identical with project from Smartcat'));
         }
     }
 
@@ -183,5 +207,22 @@ class ProfileService
         }
 
         return $profiles;
+    }
+
+    /**
+     * @param Profile $model
+     * @return bool
+     */
+    public function update(Profile $model)
+    {
+        try {
+            if ($model->hasDataChanges()) {
+                $this->profileRepository->save($model);
+            }
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        return true;
     }
 }

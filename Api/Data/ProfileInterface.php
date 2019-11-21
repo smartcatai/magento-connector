@@ -30,12 +30,15 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
     const UPDATED_AT = 'updated_at';
     const VENDOR = 'vendor';
     const NAME = 'name';
-    const TARGET_LANG = 'target_lang';
+    const TARGETS = 'targets';
     const AUTO_SEND_NEW = 'auto_send_new';
     const AUTO_SEND_SAVE = 'auto_send_save';
-    const EXCLUDED_ATTRIBUTES = 'excluded_attributes';
+    const SOURCE_STORE = 'source_store';
     const PROJECT_GUID = 'project_guid';
     const VENDOR_NAME = 'vendor_name';
+
+    const TARGET_LANG = 'target_lang';
+    const TARGET_STORE = 'target_store';
 
     /**
      * Get profile_id
@@ -93,14 +96,33 @@ interface ProfileInterface extends \Magento\Framework\Api\ExtensibleDataInterfac
      * Get target_lang
      * @return string|null
      */
-    public function getTargetLang();
+    public function getTargets();
 
     /**
      * Set target_lang
-     * @param string $targetLang
+     * @param string $targets
      * @return \SmartCat\Connector\Api\Data\ProfileInterface
      */
-    public function setTargetLang($targetLang);
+    public function setTargets($targets);
+
+    /**
+     * Get source_store
+     * @return int|null
+     */
+    public function getSourceStore();
+
+    /**
+     * Set source_store
+     * @param string $sourceStore
+     * @return \SmartCat\Connector\Api\Data\ProfileInterface
+     */
+    public function setSourceStore($sourceStore);
+
+    /**
+     * Get target_store
+     * @return int|null
+     */
+    public function getTargetLangs();
 
     /**
      * Get stages
