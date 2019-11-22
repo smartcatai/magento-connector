@@ -8,23 +8,11 @@
                 </item>
             </argument>
             <action name="localize_pages">
-                <argument name="data" xsi:type="array">
-                    <item name="config" xsi:type="array">
-                        <item name="type" xsi:type="string">localize_pages</item>
-                        <item name="label" xsi:type="string" translate="true">Submit for translation</item>
-                    </item>
-                </argument>
-                <argument name="actions" xsi:type="configurableObject">
-                    <argument name="class" xsi:type="string">SmartCat\Connector\Ui\Component\MassAction\Localize</argument>
-                    <argument name="data" xsi:type="array">
-                        <item name="url" xsi:type="string">smartcat_connector/localize/page</item>
-                        <item name="paramName" xsi:type="string">id</item>
-                        <item name="confirm" xsi:type="array">
-                            <item name="title" xsi:type="string" translate="true">Are you sure?</item>
-                            <item name="message" xsi:type="string" translate="true">Are you sure to translate selected pages?</item>
-                        </item>
-                    </argument>
-                </argument>
+                <settings>
+                    <type>localize_pages</type>
+                    <label translate="true">Submit for translation</label>
+                    <actions class="SmartCat\Connector\Ui\Component\MassAction\PageLocalize"/>
+                </settings>
             </action>
         </massaction>
     </listingToolbar>

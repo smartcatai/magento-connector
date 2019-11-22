@@ -19,36 +19,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Helper;
+namespace SmartCat\Connector\Ui\Component\MassAction;
 
-use SmartCat\Client\SmartCat;
-
-class SmartCatFacade extends SmartCat
+/**
+ * Class Options
+ */
+class PageLocalize extends AbstractLocalize
 {
     /**
-     * SmartCatFacade constructor.
-     * @param ConfigurationHelper $helper
+     * Base URL for subactions
+     *
+     * @var string
      */
-    public function __construct(ConfigurationHelper $helper)
-    {
-         parent::__construct(
-             $helper->getApplicationId(),
-             $helper->getToken(),
-             $helper->getServer()
-         );
-    }
+    protected $urlPath = 'smartcat_connector/localize/page';
 
     /**
-     * @return bool
+     * Param name for subactions
+     *
+     * @var string
      */
-    public function checkCredentials()
-    {
-        try {
-            $this->getAccountManager()->accountGetAccountInfo();
-        } catch (\Throwable $e) {
-            return false;
-        }
-
-        return true;
-    }
+    protected $paramName = 'id';
 }
