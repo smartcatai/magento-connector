@@ -148,25 +148,12 @@ class PageStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $page = $this->pageRepository->getById($entity->getEntityId());
+        $page = $this->getPage($entity);
 
         if ($entity->getType() == $this->typeTag) {
             $parameters = $this->decodeJsonParameters($content);
-            $duplicate = $this->pageRepository->getListByIdentifier($page->getIdentifier(), $entity->getTargetStore());
 
-            if (!empty($duplicate)) {
-                $newPage = array_shift($duplicate);
-            } else {
-                $newPage = $this->pageFactory->create();
-
-                $newPage
-                    ->setStoreId([$entity->getTargetStore()])
-                    ->setIsActive(true)
-                    ->setIdentifier($page->getIdentifier())
-                    ->setPageLayout($page->getPageLayout());
-            }
-
-            $newPage
+            $page
                 ->setTitle($parameters['title'])
                 ->setMetaTitle($parameters['meta_title'])
                 ->setMetaDescription($parameters['meta_description'])
@@ -174,7 +161,10 @@ class PageStrategy extends AbstractStrategy
                 ->setContentHeading($parameters['content_heading'])
                 ->setContent($parameters['content']);
 
-            $this->pageRepository->save($newPage);
+            $this->pageRepository->save($page);
+
+            $entity->setTargetEntityId($page->getId());
+            $this->projectEntityService->update($entity);
 
             return true;
         }
@@ -205,5 +195,34 @@ class PageStrategy extends AbstractStrategy
     public function getUrlToEntity($entityId)
     {
         return $this->urlManager->getUrl('cms/page/edit', ['page_id' => $entityId]);
+    }
+
+    /**
+     * @param ProjectEntity $entity
+     * @return Page
+     * @throws NoSuchEntityException
+     */
+    private function getPage(ProjectEntity $entity)
+    {
+        if ($entity->getTargetEntityId()) {
+            return $this->pageRepository->getById($entity->getTargetEntityId());
+        }
+
+        $page = $this->pageRepository->getById($entity->getEntityId());
+        $duplicate = $this->pageRepository->getListByIdentifier($page->getIdentifier(), $entity->getTargetStore());
+
+        if (!empty($duplicate)) {
+            $newPage = array_shift($duplicate);
+        } else {
+            $newPage = $this->pageFactory->create();
+
+            $newPage
+                ->setStoreId([$entity->getTargetStore()])
+                ->setIsActive(true)
+                ->setIdentifier($page->getIdentifier())
+                ->setPageLayout($page->getPageLayout());
+        }
+
+        return $newPage;
     }
 }

@@ -136,6 +136,7 @@ class CategoryStrategy extends AbstractStrategy
      * @param ProjectEntity $entity
      * @return bool
      * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
     public function setContent($jsonContent, ProjectEntity $entity): bool
     {
@@ -155,7 +156,7 @@ class CategoryStrategy extends AbstractStrategy
                     ->setData('meta_title', $content["meta_title"])
                     ->setData('meta_keywords', $content["meta_keywords"]);
 
-                $category->save();
+                $this->categoryRepository->save($category);
             }
         }
 
