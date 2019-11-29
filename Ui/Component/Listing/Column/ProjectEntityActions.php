@@ -66,7 +66,7 @@ class ProjectEntityActions extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                if (isset($item[ProjectEntity::ID])) {
+                if ($item[ProjectEntity::STATUS] === ProjectEntity::STATUS_SAVED) {
                     $item[$this->getData('name')] = [
                         'sync' => [
                             'href' => $this->urlBuilder->getUrl(
