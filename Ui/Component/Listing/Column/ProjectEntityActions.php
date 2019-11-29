@@ -65,9 +65,19 @@ class ProjectEntityActions extends Column
     public function prepareDataSource(array $dataSource)
     {
         if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['items'] as &$item) {
-                if ($item[ProjectEntity::STATUS] === ProjectEntity::STATUS_SAVED) {
-                    $item[$this->getData('name')] = [
+            foreach ($dataSource['data']['items'] as $key => &$item) {
+                $actions = [];
+                if (!empty($item[ProjectEntity::DOCUMENT_ID])) {
+                    $smartcatProject = [
+                        'smartcat_project' => [
+                            'href' => $this->getProjectUrl($item[ProjectEntity::DOCUMENT_ID]),
+                            'label' => __('Go to Smartcat'),
+                        ],
+                    ];
+                    $actions = array_merge($actions, $smartcatProject);
+                }
+                if ($dataSource['data']['original_items'][$key]['status'] === ProjectEntity::STATUS_SAVED) {
+                    $sync = [
                         'sync' => [
                             'href' => $this->urlBuilder->getUrl(
                                 static::URL_PATH_SYNC,
@@ -76,18 +86,9 @@ class ProjectEntityActions extends Column
                             'label' => __('Sync'),
                         ],
                     ];
-
-                    if (!empty($item[ProjectEntity::DOCUMENT_ID])) {
-                        $smartcatproject = [
-                            'smartcat_project' => [
-                                'href' => $this->getProjectUrl($item[ProjectEntity::DOCUMENT_ID]),
-                                'label' => __('Go to Smartcat'),
-                            ],
-                        ];
-
-                        $item[$this->getData('name')] = array_merge($smartcatproject, $item[$this->getData('name')]);
-                    }
+                    $actions = array_merge($actions, $sync);
                 }
+                $item[$this->getData('name')] = $actions;
             }
         }
         
