@@ -72,6 +72,7 @@ class ProjectEntityActions extends Column
                         'smartcat_project' => [
                             'href' => $this->getProjectUrl($item[ProjectEntity::DOCUMENT_ID]),
                             'label' => __('Go to Smartcat'),
+                            'target' => '_blank',
                         ],
                     ];
                     $actions = array_merge($actions, $smartcatProject);

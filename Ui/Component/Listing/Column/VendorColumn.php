@@ -59,67 +59,18 @@ class VendorColumn extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        $vendors = [];
-
         if (isset($dataSource['data']['items'])) {
-            try {
-                $vendorsList = $this->smartCatService->getDirectoriesManager()
-                    ->directoriesGet(['type' => 'vendor'])
-                    ->getItems();
-
-                foreach ($vendorsList as $vendor) {
-                    $vendors[] = [
-                        'id' => $vendor->getId(),
-                        'name' => $vendor->getName()
-                    ];
-                }
-            } catch (\Throwable $e) {
-            }
-
             foreach ($dataSource['data']['items'] as &$item) {
                 if ($this->getData('name') == Profile::VENDOR) {
                     if (trim($item[Profile::VENDOR]) === 0 || !trim($item[Profile::VENDOR])) {
                         $item[$this->getData('name')] = __('Translate internally');
                     } else {
-                        $item[$this->getData('name')] = $this->vendorOrId($vendors, $item);
+                        $item[$this->getData('name')] = $item[Profile::VENDOR_NAME];
                     }
                 }
             }
         }
 
         return $dataSource;
-    }
-
-    /**
-     * @param $vendorId
-     * @param $vendorsArray
-     * @return mixed
-     */
-    private function vendorSearch($vendorId, $vendorsArray)
-    {
-        $vendor = array_search($vendorId, array_column($vendorsArray, 'id'));
-        if ($vendor !== false) {
-            return $vendorsArray[$vendor]['name'];
-        }
-
-        return $vendorId;
-    }
-
-    /**
-     * @param $vendorsArray
-     * @param $item
-     * @return mixed
-     */
-    private function vendorOrId($vendorsArray, $item)
-    {
-        if (!empty($vendorsArray)) {
-            return $this->vendorSearch($item[Profile::VENDOR], $vendorsArray);
-        } else {
-            if (trim($item[Profile::VENDOR_NAME])) {
-                return $item[Profile::VENDOR_NAME];
-            } else {
-                return $item[Profile::VENDOR];
-            }
-        }
     }
 }

@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml\Dashboard;
+namespace SmartCat\Connector\Controller\Adminhtml\Entity;
 
 use Magento\Backend\App\Action;
 use SmartCat\Connector\Service\ProfileService;
