@@ -56,7 +56,7 @@ class Sync extends Action
         try {
             $this->projectEntityService->sync($entityId);
 
-            $this->messageManager->addSuccessMessage(__('All items are sent to sync'));
+            $this->messageManager->addSuccessMessage(__('The item update has been successfully requested'));
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(__('An a error occurred: ') . $e->getMessage());
         }

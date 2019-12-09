@@ -148,6 +148,7 @@ class CategoryStrategy extends AbstractStrategy
             if (count($index) == 2) {
                 /** @var Category $category */
                 $category = $this->categoryRepository->get($index[1], $entity->getTargetStore());
+                $category->setStoreId($entity->getTargetStore());
 
                 $category
                     ->setData('name', $content["name"])
