@@ -148,7 +148,9 @@ class CategoryStrategy extends AbstractStrategy
             if (count($index) == 2) {
                 /** @var Category $category */
                 $category = $this->categoryRepository->get($index[1], $entity->getTargetStore());
-                $category->setStoreId($entity->getTargetStore());
+
+                //https://github.com/magento/magento2/issues/15215
+                $this->storeService->setCurrentStore($entity->getTargetStore());
 
                 $category
                     ->setData('name', $content["name"])
