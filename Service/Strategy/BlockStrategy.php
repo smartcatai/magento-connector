@@ -92,7 +92,7 @@ class BlockStrategy extends AbstractStrategy
         $block = $this->blockRepository->getById($entity->getEntityId());
 
         $data = $this->encodeJsonParameters($block);
-        $fileName = "{$block->getTitle()}({$entity->getTargetLang()})"  . self::EXTENSION;
+        $fileName = "{$block->getTitle()}({$entity->getTargetLang()})" . self::EXTENSION;
 
         return $this->getDocumentFile($data, $fileName, $entity);
     }
@@ -145,28 +145,19 @@ class BlockStrategy extends AbstractStrategy
      */
     public function setContent($content, ProjectEntity $entity): bool
     {
-        $block = $this->blockRepository->getById($entity->getEntityId());
+        $block = $this->getBlock($entity);
 
         if ($entity->getType() == $this->typeTag) {
             $parameters = $this->decodeJsonParameters($content);
-            $newIdentifier = $block->getIdentifier() . '_' . $entity->getTargetLang();
-            $duplicate = $this->blockRepository->getListByIdentifier($newIdentifier);
 
-            if (!empty($duplicate)) {
-                $newBlock = array_shift($duplicate);
-            } else {
-                $newBlock = $this->blockFactory->create();
-                $newBlock
-                    ->setIsActive(true)
-                    ->setStoreId([$entity->getTargetStore()])
-                    ->setIdentifier($newIdentifier);
-            }
-
-            $newBlock
+            $block
                 ->setContent($parameters['content'])
                 ->setTitle($parameters['title']);
 
-            $this->blockRepository->save($newBlock);
+            $this->blockRepository->save($block);
+
+            $entity->setTargetEntityId($block->getId());
+            $this->projectEntityService->update($entity);
 
             return true;
         }
@@ -197,5 +188,34 @@ class BlockStrategy extends AbstractStrategy
     public function getUrlToEntity($entityId)
     {
         return $this->urlManager->getUrl('cms/block/edit', ['block_id' => $entityId]);
+    }
+
+    /**
+     * @param ProjectEntity $entity
+     * @return Block
+     * @throws NoSuchEntityException
+     */
+    private function getBlock(ProjectEntity $entity)
+    {
+        if ($entity->getTargetEntityId()) {
+            return $this->blockRepository->getById($entity->getTargetEntityId());
+        }
+
+        $block = $this->blockRepository->getById($entity->getEntityId());
+
+        $newIdentifier = $block->getIdentifier() . '_' . $entity->getTargetLang();
+        $duplicate = $this->blockRepository->getListByIdentifier($newIdentifier);
+
+        if (!empty($duplicate)) {
+            $newBlock = array_shift($duplicate);
+        } else {
+            $newBlock = $this->blockFactory->create();
+            $newBlock
+                ->setIsActive(true)
+                ->setStoreId([$entity->getTargetStore()])
+                ->setIdentifier($newIdentifier);
+        }
+
+        return $newBlock;
     }
 }

@@ -35,6 +35,7 @@ class EntityColumn extends Column
     public function prepareDataSource(array $dataSource)
     {
         if (isset($dataSource['data']['items'])) {
+            $dataSource['data']['original_items'] = $dataSource['data']['items'];
             foreach ($dataSource['data']['items'] as &$item) {
                 if ($this->getData('name') == ProjectEntity::ENTITY) {
                     $item[$this->getData('name')] = ucfirst($item[$this->getData('name')]);

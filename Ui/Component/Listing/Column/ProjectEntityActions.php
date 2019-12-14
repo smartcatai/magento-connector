@@ -24,19 +24,22 @@ namespace SmartCat\Connector\Ui\Component\Listing\Column;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
+use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Helper\ConfigurationHelper;
 use SmartCat\Connector\Model\ProjectEntity;
 
-class SmartCatDocumentColumn extends Column
+class ProjectEntityActions extends Column
 {
+    const URL_PATH_SYNC = 'smartcat_connector/entity/sync';
+
+    private $urlBuilder;
     private $configurationHelper;
 
     /**
-     * Constructor
-     *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param ConfigurationHelper $configurationHelper
+     * @param UrlInterface $urlBuilder
      * @param array $components
      * @param array $data
      */
@@ -44,9 +47,11 @@ class SmartCatDocumentColumn extends Column
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
         ConfigurationHelper $configurationHelper,
+        UrlInterface $urlBuilder,
         array $components = [],
         array $data = []
     ) {
+        $this->urlBuilder = $urlBuilder;
         $this->configurationHelper = $configurationHelper;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
@@ -60,15 +65,34 @@ class SmartCatDocumentColumn extends Column
     public function prepareDataSource(array $dataSource)
     {
         if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') == ProjectEntity::DOCUMENT_ID) {
-                    if (isset($item[$this->getData('name')])) {
-                        $item[$this->getData('name')] = $this->getHtml($item[$this->getData('name')]);
-                    }
+            foreach ($dataSource['data']['items'] as $key => &$item) {
+                $actions = [];
+                if (!empty($item[ProjectEntity::DOCUMENT_ID])) {
+                    $smartcatProject = [
+                        'smartcat_project' => [
+                            'href' => $this->getProjectUrl($item[ProjectEntity::DOCUMENT_ID]),
+                            'label' => __('Go to Smartcat'),
+                            'target' => '_blank',
+                        ],
+                    ];
+                    $actions = array_merge($actions, $smartcatProject);
                 }
+                if ($dataSource['data']['original_items'][$key]['status'] === ProjectEntity::STATUS_SAVED) {
+                    $sync = [
+                        'sync' => [
+                            'href' => $this->urlBuilder->getUrl(
+                                static::URL_PATH_SYNC,
+                                [ProjectEntity::ID => $item[ProjectEntity::ID]]
+                            ),
+                            'label' => __('Sync'),
+                        ],
+                    ];
+                    $actions = array_merge($actions, $sync);
+                }
+                $item[$this->getData('name')] = $actions;
             }
         }
-
+        
         return $dataSource;
     }
 
@@ -85,21 +109,5 @@ class SmartCatDocumentColumn extends Column
         }
 
         return "https://{$this->configurationHelper->getServer()}/Editor?DocumentId={$doc[0]}&LanguageId={$doc[1]}";
-    }
-
-    /**
-     * @param $documentId
-     * @return string
-     */
-    private function getHtml($documentId)
-    {
-        $text = __('Go to Smartcat');
-        $url = $this->getProjectUrl($documentId);
-
-        if ($url) {
-            return "<a href='{$url}' target='_blank'>{$text}</a>";
-        }
-
-        return '';
     }
 }

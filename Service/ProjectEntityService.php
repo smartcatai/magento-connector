@@ -22,6 +22,7 @@
 namespace SmartCat\Connector\Service;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Model\AbstractModel;
 use SmartCat\Client\Model\BilingualFileImportSettingsModel;
@@ -83,6 +84,23 @@ class ProjectEntityService
             }
 
             $this->update($projectEntity);
+        }
+    }
+
+    /**
+     * @param $entityId
+     * @throws NoSuchEntityException
+     * @throws LocalizedException
+     */
+    public function sync($entityId)
+    {
+        $entity = $this->projectEntityRepository->getById($entityId);
+
+        if ($entity->getStatus() === ProjectEntity::STATUS_SAVED) {
+            $entity->setStatus(ProjectEntity::STATUS_COMPLETED);
+            $this->update($entity);
+        } else {
+           throw new LocalizedException(__('Document is not completed'));
         }
     }
 

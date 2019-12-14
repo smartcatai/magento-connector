@@ -35,6 +35,7 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     const SOURCE_STORE = 'source_store';
     const TARGET_STORE = 'target_store';
     const ENTITY = 'entity';
+    const TARGET_ENTITY_ID = 'target_entity_id';
 
     const STATUS_NEW = 'new';
     const STATUS_SENDED = 'sended';
@@ -279,6 +280,25 @@ class ProjectEntity extends \Magento\Framework\Model\AbstractModel
     public function setEntity($entity)
     {
         return $this->setData(self::ENTITY, $entity);
+    }
+
+    /**
+     * Get Target Entity Id
+     * @return int
+     */
+    public function getTargetEntityId()
+    {
+        return $this->getData(self::TARGET_ENTITY_ID);
+    }
+
+    /**
+     * Set Target Entity Id
+     * @param int $targetId
+     * @return ProjectEntity
+     */
+    public function setTargetEntityId($targetId)
+    {
+        return $this->setData(self::TARGET_ENTITY_ID, $targetId);
     }
 
     /**
