@@ -19,17 +19,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Controller\Adminhtml\Localize;
+namespace SmartCat\Connector\Controller\Adminhtml\Entity;
 
 use Magento\Backend\App\Action;
 use SmartCat\Connector\Service\ProfileService;
+use SmartCat\Connector\Service\ProjectEntityService;
 use SmartCat\Connector\Service\ProjectService;
-use SmartCat\Connector\Service\Strategy\AttributesStrategy;
 
-class Attributes extends Action
+class Sync extends Action
 {
-    private $profileService;
-    private $projectService;
+    private $projectEntityService;
 
     /**
      * Category constructor.
@@ -39,11 +38,9 @@ class Attributes extends Action
      */
     public function __construct(
         Action\Context $context,
-        ProfileService $profileService,
-        ProjectService $projectService
+        ProjectEntityService $projectEntityService
     ) {
-        $this->profileService = $profileService;
-        $this->projectService = $projectService;
+        $this->projectEntityService = $projectEntityService;
         parent::__construct($context);
     }
 
@@ -54,17 +51,16 @@ class Attributes extends Action
     {
         $redirectFactory = $this->resultRedirectFactory->create();
 
-        $profilesIds = $this->getRequest()->getParam('profiles');
+        $entityId = $this->getRequest()->getParam('id');
 
         try {
-            $profile = $this->profileService->getProfileById($profilesIds);
-            $this->projectService->createByKey(AttributesStrategy::getEntityName(), $profile);
+            $this->projectEntityService->sync($entityId);
 
-            $this->messageManager->addSuccessMessage(__('All attributes were sent to localization'));
+            $this->messageManager->addSuccessMessage(__('The item update has been successfully requested'));
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(__('An a error occurred: ') . $e->getMessage());
         }
 
-        return $redirectFactory->setPath('catalog/product_attribute/index');
+        return $redirectFactory->setPath('smartcat_connector/dashboard/index');
     }
 }

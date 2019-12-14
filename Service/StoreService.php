@@ -123,6 +123,16 @@ class StoreService
     }
 
     /**
+     * @param $storeId
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function setCurrentStore($storeId)
+    {
+        $store = $this->getStoreById($storeId);
+        $this->storeManager->setCurrentStore($store);
+    }
+
+    /**
      * @param $storeCode
      * @return int|null
      */
