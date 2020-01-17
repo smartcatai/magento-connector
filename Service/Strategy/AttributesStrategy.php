@@ -99,7 +99,12 @@ class AttributesStrategy extends AbstractStrategy
 
         foreach ($attributesList as $attribute) {
             if ($attribute->getDefaultFrontendLabel()) {
-                $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel($entity->getSourceStore())]);
+                $data = array_merge(
+                    $data,
+                    [
+                        $attribute->getName() => $attribute->getStoreLabel($entity->getSourceStore())
+                    ]
+                );
             }
         }
 

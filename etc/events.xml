@@ -1,7 +1,13 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <event name="controller_action_catalog_product_save_entity_after">
-        <observer name="AutoSendCreatedProducts" instance="SmartCat\Connector\Observer\AddProductObserver" />
+    <event name="catalog_product_save_after">
+        <observer name="AutoSendCreatedProducts" instance="SmartCat\Connector\Observer\AddModelAfterSaveObserver" />
+    </event>
+    <event name="cms_page_save_after">
+        <observer name="AutoSendCreatedPages" instance="SmartCat\Connector\Observer\AddModelAfterSaveObserver" />
+    </event>
+    <event name="cms_block_save_after">
+        <observer name="AutoSendCreatedBlocks" instance="SmartCat\Connector\Observer\AddModelAfterSaveObserver" />
     </event>
     <event name="admin_system_config_changed_section_smartcat_localization">
         <observer name="custom_admin_system_config_changed_section_smartcat_localization" instance="SmartCat\Connector\Observer\SaveConfigObserver"/>
