@@ -100,7 +100,7 @@ class ProjectEntityService
             $entity->setStatus(ProjectEntity::STATUS_COMPLETED);
             $this->update($entity);
         } else {
-           throw new LocalizedException(__('Document is not completed'));
+            throw new LocalizedException(__('Document is not completed'));
         }
     }
 
