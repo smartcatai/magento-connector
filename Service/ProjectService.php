@@ -75,7 +75,7 @@ class ProjectService
             throw new SmartCatHttpException(__('Models array is empty'));
         }
 
-        $strategy = $this->strategyLoader->getStrategyByModel(get_class(array_shift($models)));
+        $strategy = $this->strategyLoader->getStrategyByModel(get_class($models[0]));
 
         try {
             $project = $this->create($strategy->getElementNames($models), $profile);

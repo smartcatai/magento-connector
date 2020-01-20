@@ -25,11 +25,18 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
 use SmartCat\Connector\Model\Config\Source\ProjectEntityStatusList;
+use Magento\Framework\UrlInterface;
+use SmartCat\Connector\Model\ProjectEntity;
+use SmartCat\Connector\Service\Strategy\AttributesStrategy;
+use SmartCat\Connector\Service\Strategy\BlockStrategy;
+use SmartCat\Connector\Service\Strategy\CategoryStrategy;
+use SmartCat\Connector\Service\Strategy\PageStrategy;
+use SmartCat\Connector\Service\Strategy\ProductStrategy;
 
 class DocumentStatusColumn extends Column
 {
-    /** @var ProjectEntityStatusList */
     private $statusList;
+    private $urlBuilder;
 
     /**
      * Constructor
@@ -44,10 +51,12 @@ class DocumentStatusColumn extends Column
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
         ProjectEntityStatusList $statusList,
+        UrlInterface $urlBuilder,
         array $components = [],
         array $data = []
     ) {
         $this->statusList = $statusList;
+        $this->urlBuilder = $urlBuilder;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -55,6 +64,7 @@ class DocumentStatusColumn extends Column
      * Prepare Data Source
      *
      * @param array $dataSource
+     *
      * @return array
      */
     public function prepareDataSource(array $dataSource)
@@ -62,17 +72,70 @@ class DocumentStatusColumn extends Column
         $statusList = $this->statusList->toOptionArray();
 
         if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['items'] as &$item) {
-                if ($this->getData('name') == 'status') {
+            foreach ($dataSource['data']['original_items'] as $key => $item) {
+                if ($this->getData('name') == ProjectEntity::STATUS) {
                     $index = array_search(
-                        $item[$this->getData('name')],
+                        $item[ProjectEntity::STATUS],
                         array_column($statusList, 'value')
                     );
-                    $item[$this->getData('name')] = $statusList[$index]['label'];
+                    $dataSource['data']['items'][$key][ProjectEntity::STATUS] =
+                      $this->getStoreUrl($item, $statusList[$index]['label']);
                 }
             }
         }
 
         return $dataSource;
     }
+
+    /**
+     * @param $item
+     * @param $label
+     *
+     * @return string
+     */
+    public function getStoreUrl($item, $label)
+    {
+        $scope = [];
+        $route = null;
+
+        if ($item[ProjectEntity::STATUS] !== ProjectEntity::STATUS_SAVED) {
+            return $label;
+        }
+
+        switch ($item[ProjectEntity::ENTITY]) {
+            case ProductStrategy::getEntityName():
+                $scope = [
+                    'store' => $item[ProjectEntity::TARGET_STORE],
+                    'id' => $item[ProjectEntity::TARGET_ENTITY_ID],
+                ];
+                $route = 'catalog/product/edit';
+                break;
+            case BlockStrategy::getEntityName():
+                $scope['block_id'] = $item[ProjectEntity::TARGET_ENTITY_ID];
+                $route = 'cms/block/edit';
+                break;
+            case PageStrategy::getEntityName():
+                $scope['page_id'] = $item[ProjectEntity::TARGET_ENTITY_ID];
+                $route = 'cms/page/edit';
+                break;
+            case CategoryStrategy::getEntityName():
+                $scope['store'] = $item[ProjectEntity::TARGET_STORE];
+                $route = 'catalog/category/index';
+                break;
+            case AttributesStrategy::getEntityName():
+                $scope['store'] = $item[ProjectEntity::TARGET_STORE];
+                $route = 'catalog/product_attribute/index';
+                break;
+            default:
+                break;
+        }
+
+        if ($route) {
+            $href = $this->urlBuilder->getUrl($route, $scope);
+            return sprintf('<a href="%s" target="_blank">%s</a>', $href, $label);
+        } else {
+            return $label;
+        }
+    }
+
 }
