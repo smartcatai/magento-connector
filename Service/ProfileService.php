@@ -107,7 +107,7 @@ class ProfileService
         $data[Profile::TARGETS] = json_encode($data[Profile::TARGETS]);
         $data[Profile::STAGES] = implode(',', $data[Profile::STAGES]);
 
-        if (!empty($data[Profile::VENDOR]) && $data[Profile::VENDOR] != 0) {
+        if ($data[Profile::VENDOR] !== '0') {
             try {
                 $vendorsList = $this->smartCatService->getDirectoriesManager()
                     ->directoriesGet(['type' => 'vendor'])
@@ -122,6 +122,8 @@ class ProfileService
             } catch (\Throwable $e) {
                 $data[Profile::VENDOR_NAME] = null;
             }
+        } else {
+            $data[Profile::VENDOR_NAME] = null;
         }
 
         $model->setData($data);

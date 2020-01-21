@@ -19,29 +19,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Ui\Component\Listing\Column;
+namespace SmartCat\Connector\Ui\Component\DataProvider;
 
-use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\ProjectEntity;
+use Magento\Framework\Api\Search\SearchResultInterface;
+use Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider;
 
-class EntityColumn extends Column
+class ProjectEntity extends DataProvider
 {
     /**
-     * Prepare Data Source
-     *
-     * @param array $dataSource
+     * @param SearchResultInterface $searchResult
      * @return array
      */
-    public function prepareDataSource(array $dataSource)
+    protected function searchResultToOutput(SearchResultInterface $searchResult)
     {
-        if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['original_items'] as $key => $item) {
-                if ($this->getData('name') == ProjectEntity::ENTITY) {
-                    $dataSource['data']['items'][$key][ProjectEntity::ENTITY] = ucfirst($item[ProjectEntity::ENTITY]);
-                }
-            }
-        }
+        $arrItems = parent::searchResultToOutput($searchResult);
+        $arrItems['original_items'] = $arrItems['items'];
 
-        return $dataSource;
+        return $arrItems;
     }
 }

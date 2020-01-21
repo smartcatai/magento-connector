@@ -25,7 +25,6 @@ use Magento\Eav\Model\Attribute;
 use Magento\Eav\Model\AttributeRepository;
 use Magento\Eav\Model\Entity\Attribute\FrontendLabelFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
 use SmartCat\Connector\Model\Project;
@@ -100,7 +99,12 @@ class AttributesStrategy extends AbstractStrategy
 
         foreach ($attributesList as $attribute) {
             if ($attribute->getDefaultFrontendLabel()) {
-                $data = array_merge($data, [$attribute->getName() => $attribute->getStoreLabel($entity->getSourceStore())]);
+                $data = array_merge(
+                    $data,
+                    [
+                        $attribute->getName() => $attribute->getStoreLabel($entity->getSourceStore())
+                    ]
+                );
             }
         }
 
@@ -124,7 +128,7 @@ class AttributesStrategy extends AbstractStrategy
      */
     public function getElementNames(array $strings)
     {
-        $strings = ['Attributes'];
+        $strings = ['Attribute'];
 
         return parent::getElementNames($strings);
     }
@@ -166,11 +170,8 @@ class AttributesStrategy extends AbstractStrategy
                     ]
                 );
                 $attribute->setFrontendLabels($frontendLabels);
-                try {
-                    $this->attributeRepository->save($attribute);
-                } catch (\Throwable $e) {
-                    throw new LocalizedException(__("Error on save {$attribute->getId()}. Default label: '{$attribute->getDefaultFrontendLabel()}' to store {$storeID} with new label: '{$label}'"), $e);
-                }
+
+                $this->attributeRepository->save($attribute);
             }
         }
 

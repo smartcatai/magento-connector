@@ -23,7 +23,7 @@
             </storageConfig>
         </settings>
         <aclResource>SmartCat_Connector::ProjectEntity</aclResource>
-        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="smartcat_connector_project_entity_listing_data_source">
+        <dataProvider class="SmartCat\Connector\Ui\Component\DataProvider\ProjectEntity" name="smartcat_connector_project_entity_listing_data_source">
             <settings>
                 <requestFieldName>id</requestFieldName>
                 <primaryFieldName>id</primaryFieldName>
@@ -131,6 +131,7 @@
         <column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\DocumentStatusColumn" sortOrder="60">
             <settings>
                 <label translate="true">Status</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
             </settings>
         </column>
         <column name="deadline" component="Magento_Ui/js/grid/columns/date" sortOrder="70">
@@ -141,12 +142,12 @@
                 <label translate="true">Deadline</label>
             </settings>
         </column>
-        <column name="document_id" class="SmartCat\Connector\Ui\Component\Listing\Column\SmartCatDocumentColumn" sortOrder="90">
+        <actionsColumn class="SmartCat\Connector\Ui\Component\Listing\Column\ProjectEntityActions" name="actions" sortOrder="999">
             <settings>
-                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
-                <label translate="true">Smartcat project</label>
-                <sortable>false</sortable>
+                <indexField>id</indexField>
+                <resizeEnabled>false</resizeEnabled>
+                <resizeDefaultWidth>107</resizeDefaultWidth>
             </settings>
-        </column>
+        </actionsColumn>
     </columns>
 </listing>

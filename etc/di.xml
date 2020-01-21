@@ -59,14 +59,33 @@
 			</argument>
 		</arguments>
 	</type>
-	<type name="SmartCat\Connector\Ui\Component\MassAction\Localize">
+
+	<type name="SmartCat\Connector\Ui\Component\MassAction\ProductLocalize">
 		<arguments>
 			<argument name="data" xsi:type="array">
-				<item name="url" xsi:type="string">smartcat_connector/localize/product</item>
-				<item name="paramName" xsi:type="string">id</item>
 				<item name="confirm" xsi:type="array">
 					<item name="title" xsi:type="string" translatable="true">Are you sure?</item>
 					<item name="message" xsi:type="string" translatable="true">Are you sure to translate selected products?</item>
+				</item>
+			</argument>
+		</arguments>
+	</type>
+	<type name="SmartCat\Connector\Ui\Component\MassAction\PageLocalize">
+		<arguments>
+			<argument name="data" xsi:type="array">
+				<item name="confirm" xsi:type="array">
+					<item name="title" xsi:type="string" translatable="true">Are you sure?</item>
+					<item name="message" xsi:type="string" translatable="true">Are you sure to translate selected pages?</item>
+				</item>
+			</argument>
+		</arguments>
+	</type>
+	<type name="SmartCat\Connector\Ui\Component\MassAction\BlockLocalize">
+		<arguments>
+			<argument name="data" xsi:type="array">
+				<item name="confirm" xsi:type="array">
+					<item name="title" xsi:type="string" translatable="true">Are you sure?</item>
+					<item name="message" xsi:type="string" translatable="true">Are you sure to translate selected blocks?</item>
 				</item>
 			</argument>
 		</arguments>

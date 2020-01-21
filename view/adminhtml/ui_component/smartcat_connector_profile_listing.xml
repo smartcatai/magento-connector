@@ -97,6 +97,15 @@
 		<column name="target_lang" class="SmartCat\Connector\Ui\Component\Listing\Column\TargetLanguageColumn" sortOrder="30">
 			<settings>
 				<label translate="true">Target Language</label>
+				<sortable>false</sortable>
+				<filter>false</filter>
+			</settings>
+		</column>
+		<column name="target_store" class="SmartCat\Connector\Ui\Component\Listing\Column\TargetStoreColumn" sortOrder="31">
+			<settings>
+				<label translate="true">Target Store View</label>
+				<sortable>false</sortable>
+				<filter>false</filter>
 			</settings>
 		</column>
 		<column name="target_store" class="SmartCat\Connector\Ui\Component\Listing\Column\TargetStoreColumn" sortOrder="31">

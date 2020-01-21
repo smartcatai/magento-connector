@@ -41,7 +41,7 @@ class SmartCatFacade extends SmartCat
     /**
      * @return bool
      */
-    public function checkCredentials(): bool
+    public function checkCredentials()
     {
         try {
             $this->getAccountManager()->accountGetAccountInfo();

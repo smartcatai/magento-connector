@@ -60,9 +60,9 @@ class ElementColumn extends Column
     public function prepareDataSource(array $dataSource)
     {
         if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['items'] as &$item) {
+            foreach ($dataSource['data']['original_items'] as $key => $item) {
                 if ($this->getData('name') == ProjectEntity::ENTITY_ID) {
-                    $item[$this->getData('name')] = $this->getColumnHtml($item);
+                    $dataSource['data']['items'][$key][ProjectEntity::ENTITY_ID] = $this->getColumnHtml($item);
                 }
             }
         }

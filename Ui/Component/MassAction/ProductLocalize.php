@@ -19,29 +19,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SmartCat\Connector\Ui\Component\Listing\Column;
+namespace SmartCat\Connector\Ui\Component\MassAction;
 
-use Magento\Ui\Component\Listing\Columns\Column;
-use SmartCat\Connector\Model\ProjectEntity;
-
-class EntityColumn extends Column
+/**
+ * Class Options
+ */
+class ProductLocalize extends AbstractLocalize
 {
     /**
-     * Prepare Data Source
+     * Base URL for subactions
      *
-     * @param array $dataSource
-     * @return array
+     * @var string
      */
-    public function prepareDataSource(array $dataSource)
-    {
-        if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['original_items'] as $key => $item) {
-                if ($this->getData('name') == ProjectEntity::ENTITY) {
-                    $dataSource['data']['items'][$key][ProjectEntity::ENTITY] = ucfirst($item[ProjectEntity::ENTITY]);
-                }
-            }
-        }
+    protected $urlPath = 'smartcat_connector/localize/product';
 
-        return $dataSource;
-    }
+    /**
+     * Param name for subactions
+     *
+     * @var string
+     */
+    protected $paramName = 'id';
 }

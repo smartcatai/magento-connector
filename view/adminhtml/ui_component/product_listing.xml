@@ -6,7 +6,7 @@
                 <settings>
                     <type>localize_products</type>
                     <label translate="true">Submit for translation</label>
-                    <actions class="SmartCat\Connector\Ui\Component\MassAction\Localize"/>
+                    <actions class="SmartCat\Connector\Ui\Component\MassAction\ProductLocalize"/>
                 </settings>
             </action>
         </massaction>

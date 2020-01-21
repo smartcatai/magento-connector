@@ -23,13 +23,12 @@ namespace SmartCat\Connector\Ui\Component\MassAction;
 
 use Magento\Framework\UrlInterface;
 use SmartCat\Connector\Model\Profile;
-use Zend\Stdlib\JsonSerializable;
 use SmartCat\Connector\Model\ResourceModel\Profile\CollectionFactory;
 
 /**
  * Class Options
  */
-class Localize implements JsonSerializable
+abstract class AbstractLocalize implements \JsonSerializable
 {
     /**
      * @var array
@@ -114,7 +113,9 @@ class Localize implements JsonSerializable
                 $options[$i]['label'] = $badge->getName();
                 $i++;
             }
+
             $this->prepareData();
+
             foreach ($options as $optionCode) {
                 $this->options[$optionCode['value']] = [
                     'type' => 'profile_' . $optionCode['value'],
