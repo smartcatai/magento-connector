@@ -35,7 +35,6 @@ use SmartCat\Connector\Service\StoreService;
 
 class PageStrategy extends AbstractStrategy
 {
-    private $allStores;
     private $pageRepository;
     private $pageFactory;
     private $typeTag = 'parameters';
@@ -57,12 +56,6 @@ class PageStrategy extends AbstractStrategy
     ) {
         $this->pageRepository = $pageRepository;
         $this->pageFactory = $pageFactory;
-
-        $stores = array();
-        foreach ($storeService->getAllStores() as $item) {
-            array_push($stores, intval($item->getId()));
-        }
-        $this->allStores = $stores;
 
         parent::__construct($projectEntityService, $storeService, $urlManager);
     }
@@ -227,7 +220,7 @@ class PageStrategy extends AbstractStrategy
             $stores = $page->getStores() ?: [];
             $stores = array_diff($stores, [0]);
             if (count($stores) === 0) {
-                $newStoreIds = array_diff($this->allStores, [0, $entity->getTargetStore()]);
+                $newStoreIds = array_diff($this->getAllStores(), [0, $entity->getTargetStore()]);
             } else {
                 $newStoreIds = array_diff($stores, [$entity->getTargetStore()]);
             }
@@ -242,5 +235,18 @@ class PageStrategy extends AbstractStrategy
         }
 
         return $newPage;
+    }
+
+    /**
+     * @return array|int[]
+     */
+    private function getAllStores()
+    {
+        $allStores = array();
+        foreach ($this->storeService->getAllStores() as $item) {
+            array_push($allStores, intval($item->getId()));
+        }
+
+        return $allStores;
     }
 }
