@@ -29,28 +29,6 @@ use SmartCat\Connector\Model\Profile;
 
 class VendorColumn extends Column
 {
-    private $smartCatService;
-
-    /**
-     * Constructor
-     *
-     * @param ContextInterface $context
-     * @param UiComponentFactory $uiComponentFactory
-     * @param SmartCatFacade  $smartCatService
-     * @param array $components
-     * @param array $data
-     */
-    public function __construct(
-        ContextInterface $context,
-        UiComponentFactory $uiComponentFactory,
-        SmartCatFacade $smartCatService,
-        array $components = [],
-        array $data = []
-    ) {
-        $this->smartCatService = $smartCatService;
-        parent::__construct($context, $uiComponentFactory, $components, $data);
-    }
-
     /**
      * Prepare Data Source
      *
@@ -63,9 +41,9 @@ class VendorColumn extends Column
             foreach ($dataSource['data']['items'] as &$item) {
                 if ($this->getData('name') == Profile::VENDOR) {
                     if (trim($item[Profile::VENDOR]) === 0 || !trim($item[Profile::VENDOR])) {
-                        $item[$this->getData('name')] = __('Translate internally');
+                        $item[Profile::VENDOR] = __('Translate internally');
                     } else {
-                        $item[$this->getData('name')] = $item[Profile::VENDOR_NAME];
+                        $item[Profile::VENDOR] = $item[Profile::VENDOR_NAME];
                     }
                 }
             }

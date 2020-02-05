@@ -194,6 +194,9 @@ class ProductStrategy extends AbstractStrategy
                 $product->addAttributeUpdate($attributeCode, $attributeContent, $entity->getTargetStore());
             }
 
+            $entity->setTargetEntityId($product->getId());
+            $this->projectEntityService->update($entity);
+
             return true;
         }
 

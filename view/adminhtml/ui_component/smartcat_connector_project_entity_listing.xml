@@ -23,7 +23,7 @@
             </storageConfig>
         </settings>
         <aclResource>SmartCat_Connector::ProjectEntity</aclResource>
-        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="smartcat_connector_project_entity_listing_data_source">
+        <dataProvider class="SmartCat\Connector\Ui\Component\DataProvider\ProjectEntity" name="smartcat_connector_project_entity_listing_data_source">
             <settings>
                 <requestFieldName>id</requestFieldName>
                 <primaryFieldName>id</primaryFieldName>
@@ -131,6 +131,7 @@
         <column name="status" class="SmartCat\Connector\Ui\Component\Listing\Column\DocumentStatusColumn" sortOrder="60">
             <settings>
                 <label translate="true">Status</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
             </settings>
         </column>
         <column name="deadline" component="Magento_Ui/js/grid/columns/date" sortOrder="70">
