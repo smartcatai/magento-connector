@@ -56,6 +56,7 @@ class PageStrategy extends AbstractStrategy
     ) {
         $this->pageRepository = $pageRepository;
         $this->pageFactory = $pageFactory;
+
         parent::__construct($projectEntityService, $storeService, $urlManager);
     }
 
@@ -216,6 +217,16 @@ class PageStrategy extends AbstractStrategy
         } else {
             $newPage = $this->pageFactory->create();
 
+            $stores = $page->getStores() ?: [];
+            $stores = array_diff($stores, [0]);
+            if (count($stores) === 0) {
+                $newStoreIds = array_diff($this->getAllStores(), [0, $entity->getTargetStore()]);
+            } else {
+                $newStoreIds = array_diff($stores, [$entity->getTargetStore()]);
+            }
+            $page->setStoreId($newStoreIds);
+            $this->pageRepository->save($page);
+
             $newPage
                 ->setStoreId([$entity->getTargetStore()])
                 ->setIsActive(true)
@@ -224,5 +235,18 @@ class PageStrategy extends AbstractStrategy
         }
 
         return $newPage;
+    }
+
+    /**
+     * @return array|int[]
+     */
+    private function getAllStores()
+    {
+        $allStores = array();
+        foreach ($this->storeService->getAllStores() as $item) {
+            array_push($allStores, intval($item->getId()));
+        }
+
+        return $allStores;
     }
 }
