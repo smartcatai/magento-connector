@@ -35,6 +35,10 @@
 					<frontend_model>SmartCat\Connector\Block\Adminhtml\System\Config\DownloadLog</frontend_model>
 					<label>Error log</label>
 				</field>
+                <field id="version" translate="label" type="label" sortOrder="6" showInDefault="1" showInStore="0" showInWebsite="0">
+                    <label>Version:</label>
+                    <comment>1.3.5</comment>
+                </field>
 			</group>
 		</section>
 	</system>
