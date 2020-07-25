@@ -108,6 +108,11 @@
 				<filter>false</filter>
 			</settings>
 		</column>
+		<column name="target_store" class="SmartCat\Connector\Ui\Component\Listing\Column\TargetStoreColumn" sortOrder="31">
+			<settings>
+				<label translate="true">Target Store View</label>
+			</settings>
+		</column>
 		<column name="stages" class="SmartCat\Connector\Ui\Component\Listing\Column\WorkFlowColumn" sortOrder="40">
 			<settings>
 				<label translate="true">Workflow</label>

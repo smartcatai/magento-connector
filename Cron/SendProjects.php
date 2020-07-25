@@ -71,13 +71,17 @@ class SendProjects
 
         $projects = $this->projectService->getWaitingProjects();
 
+        $this->errorHandler->logDebug("Waiting projects = " . count($projects));
+
         foreach ($projects as $project) {
             try {
                 $profile = $this->profileService->getProfileByProject($project);
 
                 if ($project->getGuid()) {
+                    $this->errorHandler->logDebug("Update project {$project->getId()}");
                     $this->updateProject($project, $profile);
                 } else {
+                    $this->errorHandler->logDebug("Create project {$project->getId()}");
                     $this->createProject($project, $profile);
                 }
             } catch (Throwable $e) {
