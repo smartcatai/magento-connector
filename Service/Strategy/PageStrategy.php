@@ -219,13 +219,13 @@ class PageStrategy extends AbstractStrategy
 
             $stores = $page->getStores() ?: [];
             $stores = array_diff($stores, [0]);
+            $stores = array_diff($stores, ["0"]);
             if (count($stores) === 0) {
                 $newStoreIds = array_diff($this->getAllStores(), [0, $entity->getTargetStore()]);
             } else {
                 $newStoreIds = array_diff($stores, [$entity->getTargetStore()]);
             }
-            $page->setStoreId($newStoreIds);
-            $this->pageRepository->save($page);
+            $page->setStoreId($newStoreIds)->save();
 
             $newPage
                 ->setStoreId([$entity->getTargetStore()])
