@@ -96,7 +96,11 @@ class ProjectEntityService
     {
         $entity = $this->projectEntityRepository->getById($entityId);
 
-        if ($entity->getStatus() === ProjectEntity::STATUS_SAVED) {
+        if (
+            $entity->getStatus() === ProjectEntity::STATUS_SAVED ||
+            $entity->getStatus() === ProjectEntity::STATUS_FAILED
+
+        ) {
             $entity->setStatus(ProjectEntity::STATUS_COMPLETED);
             $this->update($entity);
         } else {

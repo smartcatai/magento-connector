@@ -89,6 +89,20 @@ class ProjectEntityActions extends Column
                     ];
                     $actions = array_merge($actions, $sync);
                 }
+
+                if ($dataSource['data']['original_items'][$key]['status'] === ProjectEntity::STATUS_FAILED) {
+                    $sync = [
+                        'sync' => [
+                            'href' => $this->urlBuilder->getUrl(
+                                static::URL_PATH_SYNC,
+                                [ProjectEntity::ID => $item[ProjectEntity::ID]]
+                            ),
+                            'label' => __('Sync'),
+                        ],
+                    ];
+                    $actions = array_merge($actions, $sync);
+                }
+
                 $item[$this->getData('name')] = $actions;
             }
         }
