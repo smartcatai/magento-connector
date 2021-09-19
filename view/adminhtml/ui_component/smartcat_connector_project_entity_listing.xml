@@ -14,6 +14,9 @@
         <deps>
             <dep>smartcat_connector_project_entity_listing.smartcat_connector_project_entity_listing_data_source</dep>
         </deps>
+        <buttons>
+            <button name="add" class="SmartCat\Connector\Block\Adminhtml\Profile\Edit\SyncAllButton"/>
+        </buttons>
     </settings>
     <dataSource component="Magento_Ui/js/grid/provider" name="smartcat_connector_project_entity_listing_data_source">
         <settings>
