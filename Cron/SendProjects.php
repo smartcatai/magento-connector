@@ -240,7 +240,7 @@ class SendProjects
             $project->setStatus($projectModel->getStatus());
         }
 
-        if ($projectModel->getDeadline()) {
+        if ($projectModel->getDeadline() && !is_string($projectModel->getDeadline())) {
             $project->setDeadline($projectModel->getDeadline()->format('U'));
         }
 
