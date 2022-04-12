@@ -1,0 +1,59 @@
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="smartcat_connector_project" engine="innodb" comment="Smartcat projects">
+        <column xsi:type="int" name="id" primary="true" unsigned="true" nullable="false" identity="true" comment="Project ID"/>
+        <column xsi:type="text" name="guid" nullable="true" comment="Project GUID"/>
+        <column xsi:type="text" name="element" nullable="false" comment="Element"/>
+        <column xsi:type="int" name="profile_id" unsigned="true" nullable="false" comment="Profile"/>
+        <column xsi:type="text" name="translate" nullable="false" comment="Translate"/>
+        <column xsi:type="text" name="status" nullable="false" comment="Status"/>
+        <column xsi:type="float" name="price" comment="Price"/>
+        <column xsi:type="timestamp" name="deadline" nullable="false" comment="Deadline Date"/>
+        <column xsi:type="text" name="comment" nullable="false" comment="Comment"/>
+        <column xsi:type="boolean" name="is_stats_builded" default="false" comment="Is Statistics Builded"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" default="CURRENT_TIMESTAMP" nullable="false" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" default="CURRENT_TIMESTAMP" nullable="false" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+    <table name="smartcat_connector_profile" engine="innodb" comment="Smartcat profiles">
+        <column xsi:type="int" name="id" primary="true" unsigned="true" nullable="false" identity="true" comment="Profile ID"/>
+        <column xsi:type="text" name="vendor" nullable="true" comment="Vendor"/>
+        <column xsi:type="text" name="stages" nullable="false" comment="Stages"/>
+        <column xsi:type="text" name="source_lang" nullable="false" comment="Source Language"/>
+        <column xsi:type="text" name="target_lang" nullable="false" comment="Target Language"/>
+        <column xsi:type="text" name="targets" nullable="false" comment="Profile targets"/>
+        <column xsi:type="text" name="name" nullable="false" comment="Profile Name"/>
+        <column xsi:type="text" name="project_guid" nullable="true" comment="Project id to send in"/>
+        <column xsi:type="boolean" name="auto_send_new" nullable="false" default="false" comment="Auto Send New"/>
+        <column xsi:type="boolean" name="auto_send_save" nullable="false" default="false" comment="Auto Send Save"/>
+        <column xsi:type="boolean" name="batch_send" nullable="false" default="false" comment="Auto Send Save"/>
+        <column xsi:type="text" name="excluded_attributes" nullable="true" comment="Excluded attributes"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" default="CURRENT_TIMESTAMP" nullable="false" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" default="CURRENT_TIMESTAMP" nullable="false" comment="Updated At"/>
+        <column xsi:type="text" name="vendor_name" nullable="true" comment="Vendor Name"/>
+        <column xsi:type="int" name="source_store" nullable="true" comment="Profile source store"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+    <table name="smartcat_connector_project_entity" engine="innodb" comment="Smartcat entity">
+        <column xsi:type="int" name="id" primary="true" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="int" name="project_id" unsigned="true" nullable="false" comment="Project ID"/>
+        <column xsi:type="text" name="type" nullable="true" comment="Type"/>
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" comment="Entity ID"/>
+        <column xsi:type="text" name="status" nullable="false" comment="Document status"/>
+        <column xsi:type="text" name="document_id" nullable="false" comment="Smartcat Document ID"/>
+        <column xsi:type="text" name="task_id" nullable="false" comment="Export Task ID"/>
+        <column xsi:type="text" name="target_lang" nullable="true" comment="Document target language"/>
+        <column xsi:type="text" name="entity" nullable="true" comment="Entity name"/>
+        <column xsi:type="text" name="source_lang" nullable="true" comment="Document source language"/>
+        <column xsi:type="int" name="source_store" nullable="true" comment="Document source store"/>
+        <column xsi:type="int" name="target_store" nullable="true" comment="Document target store"/>
+        <column xsi:type="int" name="target_entity_id" nullable="true" comment="Target entity ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+</schema>
