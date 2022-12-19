@@ -5,10 +5,10 @@
     "ext-json": "*",
     "magento/module-catalog": ">=100.0.0",
     "magento/module-cms": ">=100.0.0",
-    "smartcat/smartcat-api": "^2.2.1"
+    "smartcat/smartcat-api": "^2.2.2"
   },
   "type": "magento2-module",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "license": "GPL-3.0-or-later",
   "autoload": {
     "files": [
